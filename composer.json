@@ -1,0 +1,33 @@
+{
+    "name": "frey/laravel-vue-admin",
+    "description": "laravel-vue-admin",
+    "type": "composer-plugin",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "JingFang",
+            "email": "FreyJing@163.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.2.5",
+        "laravel/framework": "^7.0",
+        "league/fractal": "^0.19.2",
+        "tymon/jwt-auth": "^1.0",
+        "spatie/laravel-permission": "^3.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jmhc\\Admin\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jmhc\\Admin\\Providers\\ApiResponseServiceProvider",
+                "Jmhc\\Admin\\Providers\\RouteServiceProvider"
+            ]
+        }
+    }
+}
