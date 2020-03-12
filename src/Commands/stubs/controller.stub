@@ -1,0 +1,13 @@
+<?php
+
+
+namespace {%namespace%};
+
+use App\Http\Controllers\Controller;
+use App\Library\Traits\HasResourceRoute;
+
+class {%name%}Controller extends Controller
+{
+    use HasResourceRoute;
+
+}

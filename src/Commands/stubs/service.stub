@@ -1,0 +1,26 @@
+<?php
+
+
+namespace {%namespace%};
+
+
+use App\Services\BaseService;
+
+class {%name%}Service extends BaseService
+{
+    protected $multiFields = {%multiFields%};
+
+{%attr%}
+
+    protected function rules($data, $id): array
+    {
+        return {%rule%};
+    }
+
+    protected function message(): array
+    {
+        return {%message%};
+    }
+
+{%function%}
+}

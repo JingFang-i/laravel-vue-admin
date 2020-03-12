@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jmhc\Admin\Api;
+namespace Jmhc\Admin\Response;
 
 
 use League\Fractal\Manager;

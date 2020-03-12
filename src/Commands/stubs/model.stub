@@ -1,0 +1,15 @@
+<?php
+
+namespace {%namespace%};
+
+use Illuminate\Database\Eloquent\Model;
+use App\Services{%prefix%}\{%name%}Service;
+
+class {%name%} extends Model
+{
+    protected $fillable = {%fillable%};
+
+    protected $appends = {%append%};
+
+{%function%}
+}

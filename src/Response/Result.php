@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jmhc\Admin\Api;
+namespace Jmhc\Admin\Response;
 
 
 use Illuminate\Contracts\Support\Arrayable;
@@ -22,7 +22,7 @@ class Result implements Jsonable, Arrayable
         4002 => '未登录',
         4003 => 'token无效',
         4004 => '禁止登录',
-        4005 => '短信发送间隔时间未到',
+        4005 => '短信发送间隔时间太短',
         5000 => '发生异常',
         5001 => '发生错误',
         6000 => '版本过低',

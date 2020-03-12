@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jmhc\Admin\Api;
+namespace Jmhc\Admin\Response;
 
 use Jmhc\Admin\Contracts\ApiResponseInterface;
 use Illuminate\Contracts\Pagination\Paginator;
