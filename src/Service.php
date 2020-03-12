@@ -3,16 +3,14 @@
 
 namespace Jmhc\Admin;
 
-use Jmhc\Admin\Contracts\ServiceInterface;
 use Jmhc\Admin\Factories\ServiceBindFactory;
 use Jmhc\Admin\Traits\HasResourceActions;
 use Jmhc\Admin\Traits\HasValidate;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Support\Facades\Validator;
 use League\Fractal\TransformerAbstract;
-use Jmhc\Admin\Contracts\RepositoryInterface;
 
-abstract class Service implements ServiceInterface
+abstract class Service implements \Jmhc\Admin\Contracts\Service
 {
     use HasResourceActions, HasValidate;
 
@@ -35,7 +33,7 @@ abstract class Service implements ServiceInterface
 
     protected $errorMsg = ''; // 错误信息
 
-    public function __construct(RepositoryInterface $repository)
+    public function __construct(Repository $repository)
     {
         $this->repository = $repository;
         $this->request = request();
@@ -91,7 +89,7 @@ abstract class Service implements ServiceInterface
 
     /**
      * 获取服务实例
-     * @return Service
+     * @return \Jmhc\Admin\Contracts\Service
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public static function instance()

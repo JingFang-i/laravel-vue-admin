@@ -4,7 +4,7 @@
 namespace Jmhc\Admin\Contracts;
 
 
-interface ServiceInterface
+interface Service
 {
     /**
      * 数据实体集合

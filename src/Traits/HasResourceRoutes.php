@@ -4,7 +4,7 @@
 namespace Jmhc\Admin\Traits;
 
 
-use Jmhc\Admin\Contracts\ServiceInterface;
+use Jmhc\Admin\Contracts\Service;
 
 trait HasResourceRoutes
 {
@@ -13,7 +13,7 @@ trait HasResourceRoutes
      * 查看
      *
      */
-    public function index(ServiceInterface $service)
+    public function index(Service $service)
     {
         return $service->index();
     }
@@ -21,7 +21,7 @@ trait HasResourceRoutes
     /**
      * 新增
      */
-    public function store(ServiceInterface $service)
+    public function store(Service $service)
     {
         return $service->store();
     }
@@ -29,7 +29,7 @@ trait HasResourceRoutes
     /**
      * 更新
      */
-    public function update(ServiceInterface $service, $id)
+    public function update(Service $service, $id)
     {
         return $service->update($id);
     }
@@ -38,7 +38,7 @@ trait HasResourceRoutes
      * 查询一条记录
      *
      */
-    public function show(ServiceInterface $service, $id)
+    public function show(Service $service, $id)
     {
         return $service->show($id);
     }
@@ -46,7 +46,7 @@ trait HasResourceRoutes
     /**
      * 删除
      */
-    public function destroy(ServiceInterface $service, $id)
+    public function destroy(Service $service, $id)
     {
         return $service->destroy($id);
     }
@@ -55,7 +55,7 @@ trait HasResourceRoutes
      * 批量修改
      * @return mixed
      */
-    public function multi(ServiceInterface $service)
+    public function multi(Service $service)
     {
         return $service->multi();
     }
@@ -64,7 +64,7 @@ trait HasResourceRoutes
      * 批量删除
      * @return mixed
      */
-    public function multiDestroy(ServiceInterface $service)
+    public function multiDestroy(Service $service)
     {
         return $service->multiDestroy();
     }

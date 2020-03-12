@@ -4,7 +4,7 @@
 namespace Jmhc\Admin\Contracts;
 
 
-interface RepositoryInterface
+interface Repository
 {
 
     /**

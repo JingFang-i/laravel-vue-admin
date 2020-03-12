@@ -26,7 +26,10 @@
         "laravel": {
             "providers": [
                 "Jmhc\\Admin\\Providers\\AdminServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Service": "Jmhc\\Admin\\"
+            }
         }
     }
 }

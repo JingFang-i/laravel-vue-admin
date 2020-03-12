@@ -4,7 +4,6 @@
 namespace Jmhc\Admin;
 
 
-use Jmhc\Admin\Contracts\RepositoryInterface;
 use Jmhc\Admin\Factories\ServiceBindFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Repository
  * @package App\Repositories
  */
-abstract class Repository implements RepositoryInterface
+abstract class Repository implements \Jmhc\Admin\Contracts\Repository
 {
 
     const PER_PAGE = 10; //每页的记录数
@@ -264,7 +263,7 @@ abstract class Repository implements RepositoryInterface
 
     /**
      * 实例化服务类
-     * @return RepositoryInterface
+     * @return \Jmhc\Admin\Contracts\Repository
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public static function instance()

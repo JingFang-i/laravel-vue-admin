@@ -3,8 +3,8 @@
 
 namespace Jmhc\Admin\Factories;
 
-use Jmhc\Admin\Contracts\RepositoryInterface;
-use Jmhc\Admin\Contracts\ServiceInterface;
+use Jmhc\Admin\Contracts\Repository;
+use Jmhc\Admin\Contracts\Service;
 
 class ServiceBindFactory
 {
@@ -39,14 +39,14 @@ class ServiceBindFactory
     /**
      * 绑定一个服务到容器
      */
-    public function bind($isBindInterface = true): void
+    public function bind($isBind = true): void
     {
         $app = $this->getApp();
 
         //绑定到接口实现
-        if ($isBindInterface) {
-            $app->bind(RepositoryInterface::class, $this->repositoryClassName);
-            $app->bind(ServiceInterface::class, $this->serviceClassName);
+        if ($isBind) {
+            $app->bind(Repository::class, $this->repositoryClassName);
+            $app->bind(Service::class, $this->serviceClassName);
         }
 
         //绑定仓储到容器
@@ -61,13 +61,13 @@ class ServiceBindFactory
 
     /**
      * 获取服务实例
-     * @return ServiceInterface
+     * @return Service
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function getService($isCurrent = true): ServiceInterface
+    public function getService($isCurrent = true): Service
     {
         $app = $this->getApp();
-        $containerKey = $isCurrent ? ServiceInterface::class : $this->serviceClassName;
+        $containerKey = $isCurrent ? Service::class : $this->serviceClassName;
         if (!$app->has($containerKey)) {
             $this->bind($isCurrent);
         }
@@ -77,13 +77,13 @@ class ServiceBindFactory
     /**
      * 获取仓储实例
      * @param bool $isCurrent
-     * @return RepositoryInterface
+     * @return Repository
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function getRepository($isCurrent = true): RepositoryInterface
+    public function getRepository($isCurrent = true): Repository
     {
         $app = $this->getApp();
-        $containerKey = $isCurrent ? RepositoryInterface::class : $this->repositoryClassName;
+        $containerKey = $isCurrent ? Repository::class : $this->repositoryClassName;
         if (!$app->has($containerKey)) {
             $this->bind($isCurrent);
         }
