@@ -36,7 +36,7 @@ class ImportSql extends Command
     {
         foreach ($this->getSql() as $sqlPath) {
             $sql = file_get_contents($sqlPath);
-            DB::statement($sql);
+            DB::unprepared($sql);
         }
     }
 
