@@ -1,6 +1,9 @@
 # Laravel-VUE-Admin
 
 ### 安装
+```composer
+composer require frey/laravel-vue-admin
+```
 * 添加提供者到config/app.php。
 
 ```php
