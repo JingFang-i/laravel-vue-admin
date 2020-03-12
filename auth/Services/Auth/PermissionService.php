@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jmhc\Admin\Services\Auth;
+namespace App\Services\Auth;
 
 use Jmhc\Admin\Service;
 use Jmhc\Admin\Utils\Helper;

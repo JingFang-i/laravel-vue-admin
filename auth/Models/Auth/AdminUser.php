@@ -1,6 +1,6 @@
 <?php
 
-namespace Jmhc\Admin\Models\Auth;
+namespace App\Models\Auth;
 
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;

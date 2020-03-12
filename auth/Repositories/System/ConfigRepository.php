@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jmhc\Admin\Repositories\System;
+namespace App\Repositories\System;
 
 use Jmhc\Admin\Repository;
 

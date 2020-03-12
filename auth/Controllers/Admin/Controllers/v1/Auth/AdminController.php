@@ -8,7 +8,6 @@ use App\Http\Admin\Controllers\Controller;
 use App\Models\Auth\AdminUser;
 use App\Repositories\Auth\AdminUserRepository;
 use App\Services\Auth\AdminUserService;
-use App\Library\Service;
 
 class AdminController extends Controller
 {

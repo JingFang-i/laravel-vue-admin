@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jmhc\Admin\Services\System;
+namespace App\Services\System;
 
 use Jmhc\Admin\Traits\HasResourceActions;
 use Jmhc\Admin\Service;

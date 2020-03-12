@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jmhc\Admin\Services;
+namespace App\Services;
 
 
 use Jmhc\Admin\Service;

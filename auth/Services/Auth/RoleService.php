@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Jmhc\Admin\Services\Auth;
+namespace App\Services\Auth;
 
 
-use Jmhc\Admin\Models\Auth\AdminUser;
+use App\Models\Auth\AdminUser;
 use Jmhc\Admin\Service;
 use Jmhc\Admin\Utils\Helper;
 use Illuminate\Support\Facades\DB;

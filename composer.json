@@ -25,7 +25,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Jmhc\\Admin\\Providers\\AdminServiceProvider"
+                "Jmhc\\Admin\\AdminServiceProvider"
             ],
             "aliases": {
                 "Service": "Jmhc\\Admin\\"

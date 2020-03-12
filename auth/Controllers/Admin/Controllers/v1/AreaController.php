@@ -5,7 +5,7 @@ namespace App\Http\Admin\Controllers\v1;
 
 
 use App\Http\Admin\Controllers\Controller;
-use App\Library\Service;
+use Jmhc\Admin\Contracts\Service;
 
 class AreaController extends Controller
 {

@@ -75,7 +75,7 @@ class AdminServiceProvider extends ServiceProvider
             __DIR__ . '/../resources/configs' => base_path(),
             __DIR__ . '/../routes/admin.php' => base_path('routes/admin.php'),
             __DIR__ . '/../routes/api.php' => base_path('routes/api.php'),
-            __DIR__ . '/RouteServiceProvider.php' => app_path('Providers/RouteServiceProvider.php'),
+            __DIR__ . '/../routes/RouteServiceProvider.php.stub' => app_path('Providers/RouteServiceProvider.php'),
             __DIR__ . '/../auth/Controllers' => app_path('Http'),
             __DIR__ . '/../auth/Models' => app_path('Models'),
             __DIR__ . '/../auth/Repositories' => app_path('Repositories'),

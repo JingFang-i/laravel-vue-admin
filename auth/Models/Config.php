@@ -1,8 +1,8 @@
 <?php
 
-namespace Jmhc\Admin\Models;
+namespace App\Models;
 
-use Jmhc\Admin\Services\ConfigService;
+use App\Services\ConfigService;
 use Illuminate\Database\Eloquent\Model;
 
 class Config extends Model
