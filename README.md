@@ -1,4 +1,5 @@
 # Laravel-VUE-Admin
+laravel-vue-admin整合了laravel、vue-element-admin。优势在于前后端分离，且不用分离成两个项目开发。使用了tymon/jwt-auth进行登录状态验证和laravel-permission进行权限验证。还有容器自动加载Service和Repository，只需要专注业务逻辑，减少了大量的重复性开发。
 
 ### 安装
 ```composer
@@ -19,6 +20,7 @@ composer require frey/laravel-vue-admin
 * 发布资源
 
 ```bash
+// jwt-auth 资源发布
 php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
 
 // 这一行命令会覆盖routes/api.php和 RouteServiceProvider.php
@@ -71,8 +73,11 @@ DB_PASSWORD=123456
         ],
 
 ```
+* 测试是否配置成功
 
-###命令
+服务器配置好后，通过浏览器访问```http://localdomain.com/admin/v1/test```，如果看到```Test is successful.```表示配置成功。
+
+### 命令
 * 导入sql
 ```bash
 php artisan admin:import
@@ -83,6 +88,7 @@ php artisan admin:generate table_name [--model=ModelName] --force
 ```
 ```table_name``` 为数据库表名，```model```为模型名称，可以带路径如：Order/OrderGoods。如果要覆盖，则需要带上```--force```。
 一件生成命令会自动创建资源控制器，以及对应的模型、服务、仓储类。
+
 
 ### 前端
 
