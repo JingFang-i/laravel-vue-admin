@@ -14,7 +14,7 @@ class ServiceCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'service:generation {table} {--model=} {--force}';
+    protected $signature = 'admin:generate {table} {--model=} {--force}';
 
     /**
      * The console command description.
@@ -216,8 +216,15 @@ class ServiceCommand extends Command
     {
         $routeName = $this->convertToLower($modelName, '-');
         $controllerPath = $prefix ? str_replace('/', "\\", $prefix) . "\\" : '';
-        $data = "\r\n" . sprintf("Route::resource('%s', '%s%s');", $routeName,
+        $data = "\r\n// " . $modelName;
+        $data .= "\r\n" . sprintf("Route::resource('%s', '%s%s');", $routeName,
             $controllerPath, $modelName . 'Controller');
+        $data .= "\r\n// " . $modelName . ' 批量操作';
+        $data .= "\r\n" . sprintf("Route::post('%s/multi', '%s%s');", $routeName,
+                $controllerPath, $modelName . 'Controller');
+        $data .= "\r\n// " . $modelName . ' 批量删除';
+        $data .= "\r\n" . sprintf("Route::post('%s/multi-del', '%s%s');", $routeName,
+                $controllerPath, $modelName . 'Controller') . "\r\n";
         $this->fileSystem->append($this->routePath, $data);
     }
 

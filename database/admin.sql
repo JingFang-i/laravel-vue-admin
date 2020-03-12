@@ -1,17 +1,14 @@
 -- phpMyAdmin SQL Dump
 -- version 4.9.0.1
 -- https://www.phpmyadmin.net/
+--
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+--
 
 -- --------------------------------------------------------
 
@@ -65,7 +62,7 @@ CREATE TABLE `configs` (
   `group` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '组名称',
   `title` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '标题',
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置名称',
-  `type` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置字段类型:string,text,editor,switch',
+  `type` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置字段类型:string,text,editor,switch,',
   `value` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置值内容',
   `rule` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '验证规则',
   `extend` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '扩展数据，一般类型为switch、radio的时候选择值',
@@ -119,20 +116,6 @@ CREATE TABLE `model_has_roles` (
 
 INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
 (1, 'App\\Models\\Auth\\AdminUser', 1);
-
--- --------------------------------------------------------
-
---
--- 表的结构 `modules`
---
-
-CREATE TABLE `modules` (
-  `id` smallint(5) UNSIGNED NOT NULL,
-  `name` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '名称',
-  `icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'icon',
-  `weigh` int(11) NOT NULL DEFAULT 1 COMMENT '权重',
-  `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态:0=不显示,1=显示'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -252,12 +235,6 @@ ALTER TABLE `model_has_roles`
   ADD KEY `model_has_roles_model_id_model_type_index` (`model_id`,`model_type`);
 
 --
--- 表的索引 `modules`
---
-ALTER TABLE `modules`
-  ADD PRIMARY KEY (`id`);
-
---
 -- 表的索引 `permissions`
 --
 ALTER TABLE `permissions`
@@ -303,12 +280,6 @@ ALTER TABLE `configs`
 --
 ALTER TABLE `dictionary`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- 使用表AUTO_INCREMENT `modules`
---
-ALTER TABLE `modules`
-  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用表AUTO_INCREMENT `permissions`
