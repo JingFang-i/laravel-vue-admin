@@ -92,6 +92,28 @@ php artisan admin:generate table_name [--model=ModelName] --force
 
 ### 前端
 
+在.env文件里追加```VUE_APP_BASE_API=/admin```，再修改vue.config.js中的代理配置target，如下。
+```javascript
+devServer: {
+    port: port,
+    open: true,
+    overlay: {
+      warnings: false,
+      errors: true
+    },
+    // before: require('./mock/mock-server.js'),
+    proxy: {
+      '/admin': {
+        target: 'http://yourlocaldomain/admin', // 本地后端配好的域名
+        ws: false,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/admin': '/'
+        }
+      }
+    }
+  },
+```
 前端页面在resources/page下，参考[vue-element-admin](https://panjiachen.github.io/vue-element-admin-site/zh/)文档。
 直接运行
 ```bash
