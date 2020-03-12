@@ -1,7 +1,7 @@
 {
     "name": "frey/laravel-vue-admin",
     "description": "laravel-vue-admin",
-    "type": "composer-plugin",
+    "type": "library",
     "license": "Apache-2.0",
     "authors": [
         {
