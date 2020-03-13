@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use App\Services\ConfigService;
+use App\Services\System\ConfigService;
 use Illuminate\Database\Eloquent\Model;
 
 class Config extends Model
 {
     protected $fillable = [
-        'id',
         'title',
         'group',
         'name',

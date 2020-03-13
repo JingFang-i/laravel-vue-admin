@@ -4,6 +4,7 @@ namespace App\Models\Auth;
 
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class AdminUser extends Authenticatable implements JWTSubject
@@ -55,7 +56,7 @@ class AdminUser extends Authenticatable implements JWTSubject
      */
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = \Hash::make($value);
+        $this->attributes['password'] = Hash::make($value);
     }
 
 

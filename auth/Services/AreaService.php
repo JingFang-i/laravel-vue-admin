@@ -12,7 +12,7 @@ class AreaService extends Service
     {
         $pid = $this->request->input('pid', 0);
 
-        $key = config('app.name') . '_area:pid:' . $pid;
+        $key = 'area_pid' . $pid;
         if (Cache::has($key)) {
             $areas = Cache::get($key);
         } else {
