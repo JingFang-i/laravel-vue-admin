@@ -1,8 +1,6 @@
 # Laravel-VUE-Admin
 laravel-vue-admin整合了laravel、vue-element-admin。优势在于前后端分离，且不用分离成两个项目开发。使用了tymon/jwt-auth进行登录状态验证和laravel-permission进行权限验证。还有容器自动加载Service和Repository，只需要专注业务逻辑，减少了大量的重复性开发。
 
-[TOC]
-
 ## 安装
 ```composer
 composer require frey/laravel-vue-admin
@@ -155,3 +153,7 @@ Route::get('/', function () {
     return view('index');
 });
 ```
+
+## 需完善内容
+* 系统配置
+* 权限管理
