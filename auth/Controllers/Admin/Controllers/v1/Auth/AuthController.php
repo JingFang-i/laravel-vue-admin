@@ -4,7 +4,7 @@
 namespace App\Http\Admin\Controllers\v1\Auth;
 
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Admin\Controllers\Controller;
 
 class AuthController extends Controller

@@ -71,8 +71,10 @@ class AdminServiceProvider extends ServiceProvider
             __DIR__ . '/../config/upload.php.stub' => config_path('upload.php'),
             __DIR__ . '/../config/permission.php.stub' => config_path('permission.php'),
             __DIR__ . '/../resources/page' => resource_path('page'),
+            __DIR__ . '/../resources/build' => base_path('build'),
             __DIR__ . '/../resources/plop-templates' => resource_path('plop-templates'),
             __DIR__ . '/../resources/configs' => base_path(),
+            __DIR__ . '/../resources/index.html' => resource_path('index.html'),
             __DIR__ . '/../routes/admin.php' => base_path('routes/admin.php'),
             __DIR__ . '/../routes/api.php' => base_path('routes/api.php'),
             __DIR__ . '/../routes/RouteServiceProvider.php.stub' => app_path('Providers/RouteServiceProvider.php'),
@@ -80,6 +82,7 @@ class AdminServiceProvider extends ServiceProvider
             __DIR__ . '/../auth/Models' => app_path('Models'),
             __DIR__ . '/../auth/Repositories' => app_path('Repositories'),
             __DIR__ . '/../auth/Services' => app_path('Services'),
+            __DIR__ . '/../exception/Handler.php.stub' => app_path('Exceptions/Handler.php'),
         ]);
     }
 

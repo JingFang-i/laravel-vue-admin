@@ -13,16 +13,15 @@
 
 
 Route::prefix('v1')->namespace('v1')->group(function () {
-    // 用户认证
-    Route::post('login', 'Auth\AuthController@login');
-    Route::post('logout', 'Auth\AuthController@logout');
-    Route::post('refresh', 'Auth\AuthController@refresh');
+    /**
+     * 不需要验证登录状态的路由
+     */
+    Route::post('login', 'Auth\AuthController@login'); //登录
+    Route::post('logout', 'Auth\AuthController@logout'); //退出登录
+    Route::post('refresh', 'Auth\AuthController@refresh'); //刷新token
 
     Route::get('test', 'TestController@index')->middleware('service');
 
-    /**
-     * 不需要验证权限的路由
-     */
     Route::middleware(['auth:admin'])->group(function () {
         // 获取用户信息
         Route::get('user', 'Auth\AuthController@user');
@@ -49,7 +48,7 @@ Route::prefix('v1')->namespace('v1')->group(function () {
         Route::post('assign-role', 'Auth\AdminController@assignRole');
     });
 
-    Route::middleware(['auth:admin', 'service'])->group(function() {
+    Route::middleware(['auth:admin', 'service'])->group(function() { //启用了自动加载服务中间件
 
         // *** 系统设置 ***
         // 字典设置
