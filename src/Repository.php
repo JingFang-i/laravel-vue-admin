@@ -4,6 +4,7 @@
 namespace Jmhc\Admin;
 
 
+use Jmhc\Admin\Contracts\Repository as RepositoryInterface;
 use Jmhc\Admin\Factories\ServiceBindFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Repository
  * @package App\Repositories
  */
-abstract class Repository implements \Jmhc\Admin\Contracts\Repository
+abstract class Repository implements RepositoryInterface
 {
 
     const PER_PAGE = 10; //每页的记录数
@@ -268,7 +269,7 @@ abstract class Repository implements \Jmhc\Admin\Contracts\Repository
      */
     public static function instance()
     {
-        $modelName = str_replace(config('serviceloader.repository_prefix') . "\\", '', static::class);
+        $modelName = str_replace("App\\" . config('serviceloader.repository_prefix'), '', static::class);
         $modelName = substr($modelName, 0, -10); //去掉Repository后缀
         return (new ServiceBindFactory($modelName))->getRepository(false);
     }
@@ -285,16 +286,5 @@ abstract class Repository implements \Jmhc\Admin\Contracts\Repository
         return $this->model->$name(...$arguments);
     }
 
-    /**
-     * 可静态调用
-     * @param $name
-     * @param $arguments
-     * @return mixed
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     */
-    public static function __callStatic($name, $arguments)
-    {
-        return static::instance()->$name(...$arguments);
-    }
 
 }

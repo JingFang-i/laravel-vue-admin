@@ -36,6 +36,13 @@ php artisan migrate
 ```bash
 php artisan jwt:secret
 ```
+
+#### 生成storage目录软链接
+```bash
+// 上传文件目录，需要在.env中增加 FILESYSTEM_DRIVER=public
+php artisan storage:link
+```
+
 #### 配置
 
 * 配置好数据库账号和密码，在.env中进行配置。

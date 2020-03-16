@@ -9,8 +9,9 @@ use Jmhc\Admin\Traits\HasValidate;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Support\Facades\Validator;
 use League\Fractal\TransformerAbstract;
+use Jmhc\Admin\Contracts\Service as ServiceInterface;
 
-abstract class Service implements \Jmhc\Admin\Contracts\Service
+abstract class Service implements ServiceInterface
 {
     use HasResourceActions, HasValidate;
 
@@ -37,17 +38,10 @@ abstract class Service implements \Jmhc\Admin\Contracts\Service
     {
         $this->repository = $repository;
         $this->request = request();
-        $this->response = resolve('Illuminate\Contracts\Routing\ResponseFactory');
+        $this->response = response();
 
-        $routePrefix = $this->request->route()->getPrefix();
-        if (strpos($routePrefix, 'admin') !== false) {
-            $this->guardName = 'admin';
-            $this->user = auth('admin')->user();
-        } else {
-            $this->guardName = 'api';
-            $this->user = auth('api')->user();
-        }
-
+        $this->user = UserGuard::getUser();
+        $this->guardName = UserGuard::getGuard();
     }
 
     /**
@@ -57,6 +51,7 @@ abstract class Service implements \Jmhc\Admin\Contracts\Service
     public function setTransformer(TransformerAbstract $transformer)
     {
         $this->transformer = $transformer;
+        return $this;
     }
 
     /**
@@ -66,6 +61,7 @@ abstract class Service implements \Jmhc\Admin\Contracts\Service
     public function setValidator(Validator $validator)
     {
         $this->validator = $validator;
+        return $this;
     }
 
 
@@ -94,20 +90,10 @@ abstract class Service implements \Jmhc\Admin\Contracts\Service
      */
     public static function instance()
     {
-        $modelName = str_replace(config('serviceloader.service_prefix') . "\\", '', static::class);
+        $modelName = str_replace("App\\" . config('serviceloader.service_prefix'), '', static::class);
         $modelName = substr($modelName, 0, -7); //去掉Service后缀
         return (new ServiceBindFactory($modelName))->getService(false);
     }
 
-    /**
-     * @param $method
-     * @param $arg
-     * @return mixed
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     */
-    public static function __callStatic($method, $arg)
-    {
-        return static::instance()->$method(...$arg);
-    }
 
 }
