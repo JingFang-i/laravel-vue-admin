@@ -9,7 +9,7 @@
       drag
       action="https://httpbin.org/post"
     >
-      <i class="el-icon-upload" />
+      <i class="el-icon-upload"></i>
       <div class="el-upload__text">
         将文件拖到此处，或<em>点击上传</em>
       </div>
@@ -18,7 +18,7 @@
       <div v-show="imageUrl.length>1" class="image-preview-wrapper">
         <img :src="imageUrl+'?imageView2/1/w/200/h/200'">
         <div class="image-preview-action">
-          <i class="el-icon-delete" @click="rmImage" />
+          <i class="el-icon-delete" @click="rmImage"></i>
         </div>
       </div>
     </div>

@@ -27,7 +27,7 @@ export function getPermissions() {
 
 export function logout() {
   return request({
-    url: '/vue-element-admin/user/logout',
+    url: '/logout',
     method: 'post'
   })
 }

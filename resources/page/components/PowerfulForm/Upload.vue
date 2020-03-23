@@ -3,6 +3,12 @@
     <div>
       <el-button size="small" type="primary" @click="upload">点击上传</el-button>
       <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过10M</div>
+      <div class="image-preview-list">
+        <div v-for="(item, index) in previewImgs" :key="index" class="image-preview-item">
+          <img :src="item" :alt="'上传图片_' + (index + 1)" :title="item" />
+          <span><i class="el-icon-delete" @click="removeImg(index)"></i></span>
+        </div>
+      </div>
     </div>
 
     <el-dialog
@@ -25,19 +31,19 @@
           >{{ operate.text }}</el-button>
         </div>
         <div>
-          <el-select v-model="pictrueId" placeholder="请选择相册" class="photoSelect">
+          <el-select v-model="pictureId" placeholder="请选择相册" class="photoSelect" value="">
             <el-option label="全部" value="0" />
-            <el-option v-for="(i, k) in selectList" :key="k" :label="i.name" :value="i.id" />
+            <el-option v-for="(i, k) in albums" :key="k" :label="i.name" :value="i.id" />
           </el-select>
         </div>
       </div>
-      <div v-if="change=='local'" class="content photoes">
+      <div v-if="change==='local'" class="content photos">
         <el-upload
           class="upload-demo"
           drag
           :action="uploadUrl"
           :multiple="multiple"
-          name="attachment"
+          name="file"
           :headers="headers"
           :limit="limit"
           :accept="accept"
@@ -50,25 +56,48 @@
         >
           <div>
             <div>
-              <i class="el-icon-upload" />
+              <i class="el-icon-upload"></i>
             </div>
             <el-button size="small" type="primary">点击选择文件</el-button>
             <div slot="tip" class="el-upload__tip">或将文件拖到这里，本次最多可选20个</div>
           </div>
         </el-upload>
       </div>
-      <div v-else-if="change=='photoes'" class="content photoes">
+      <div v-else-if="change==='photos'" class="content photos">
         <div class="list">
-          <span v-if="selectList1.length === 0">暂无内容!</span>
-          <el-card v-for="(item, key) in selectList1" :key="key" :body-style="{ padding: '0px' }">
-            <img :src="getImgUrl(item.path)" class="image">
-            <div style="text-align:center">
-              <span :title="item.name">{{ item.name.length > 15 ? item.name.substr(0, 15) + '...' : item.name }}</span>
-            </div>
-          </el-card>
+          <empty v-if="attachments.length === 0"></empty>
+          <el-row :gutter="2">
+            <el-checkbox-group v-model="checkedImageIndex">
+              <el-col v-for="(item, key) in attachments" :key="key" :span="6" style="margin-top: 5px">
+                <el-card :body-style="{ padding: '0px' }">
+                  <el-image
+                    :src="getImgUrl(item.path)"
+                    fit="cover"
+                    lazy>
+                    <div slot="error" class="image-slot">
+                      <i class="el-icon-picture-outline"></i>
+                    </div>
+                  </el-image>
+                  <div style="text-align:left;padding-left: 5px;">
+                    <el-checkbox :label="item.id" @change="checkImage">{{ item.name.length > 15 ? item.name.substr(0, 15) + '...' : item.name }}</el-checkbox>
+                  </div>
+                </el-card>
+              </el-col>
+            </el-checkbox-group>
+          </el-row>
+          <div class="pagination">
+            <el-pagination
+              :current-page.sync="currentPage"
+              :page-size="pageSize"
+              layout="prev, pager, next, jumper"
+              :total="pageTotal"
+              @size-change="handleSizeChange"
+              @current-change="photoslist"
+            />
+          </div>
         </div>
       </div>
-      <div v-else class="content photoes">
+      <div v-else class="content photos">
         <div class="search">
           <el-input v-model="state2" placeholder="请输入图片名字" />
           <el-button
@@ -76,17 +105,40 @@
             style="margin:0 10px 0 0;border-radius:5px"
             :plain="true"
             size="mini"
-            @click="photoeslist(null,state2)"
+            @click="photoslist(null,state2)"
           >搜索</el-button>
         </div>
         <div class="list">
-          <span v-if="selectList1.length === 0">暂无内容!</span>
-          <el-card v-for="(item, key) in selectList1" :key="key" :body-style="{ padding: '0px' }">
-            <img :src="getImgUrl(item.path)" class="image">
-            <div style="text-align:center">
-              <span :title="item.name">{{ item.name.length > 15 ? item.name.substr(0, 15) + '...' : item.name }}</span>
-            </div>
-          </el-card>
+          <empty v-if="attachments.length === 0"></empty>
+          <el-row :gutter="2">
+            <el-checkbox-group v-model="checkedImageIndex">
+              <el-col v-for="(item, key) in attachments" :key="key" :span="6" style="margin-top: 5px">
+                <el-card :body-style="{ padding: '0px' }">
+                  <el-image
+                    :src="getImgUrl(item.path)"
+                    fit="cover"
+                    lazy>
+                    <div slot="error" class="image-slot">
+                      <i class="el-icon-picture-outline"></i>
+                    </div>
+                  </el-image>
+                  <div style="text-align:left;padding-left: 5px;">
+                    <el-checkbox :label="item.id" @change="checkImage">{{ item.name.length > 15 ? item.name.substr(0, 15) + '...' : item.name }}</el-checkbox>
+                  </div>
+                </el-card>
+              </el-col>
+            </el-checkbox-group>
+          </el-row>
+          <div class="pagination">
+            <el-pagination
+              :current-page.sync="currentPage"
+              :page-size="pageSize"
+              layout="prev, pager, next, jumper"
+              :total="pageTotal"
+              @size-change="handleSizeChange"
+              @current-change="photoslist"
+            />
+          </div>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -103,8 +155,12 @@ import { getImgUrl } from '@/utils/helper'
 import { Message } from 'element-ui'
 import { lists } from '@/api/system/pictures'
 import { lists as accessoryLists } from '@/api/system/accessory'
+import Empty from '@/components/Empty'
 export default {
   name: 'Upload',
+  components: {
+    Empty
+  },
   props: {
     limit: {
       type: Number,
@@ -127,49 +183,60 @@ export default {
   data() {
     return {
       change: 'local', // 上传类型
-      selectList: [], // 相册总名字
-      selectList1: [], // 相册总图片
-      selectList2: [], // 搜索总图片
-      pictrueId: '0', // 相册名字
+      albums: [], // 相册列表
+      attachments: [], // 图片列表
+      previewImgs: [], // 预览图片
+      checkedImageIndex: [], // 选中的图片索引
+      pictureId: '0', // 相册名字
       state2: '', // 输入的图片名字
+      pageSize: 10,
+      pageTotal: 0,
+      currentPage: 1,
       operatesButtons: [
         {
-          name: 'selects',
+          name: 'local_upload',
           text: '本地上传',
           definition: 'local'
         },
         {
-          name: 'failed',
+          name: 'attachments',
           text: '相册图片',
-          definition: 'photoes'
+          definition: 'photos'
         },
         {
-          name: 'delete',
+          name: 'search_attachments',
           text: '图片搜索',
           definition: 'search'
         }
       ],
       headers: { Authorization: 'Bearer ' + getToken() },
       imageSize: 10485760, // 10M
-      uploadUrl: process.env.VUE_APP_BASE_URL + '/upload',
+      uploadUrl: process.env.VUE_APP_BASE_API + '/upload',
       fileLists: [],
       filePathLists: [],
       centerDialogVisible: false
     }
   },
   watch: {
-    pictrueId: function(value) {
-      this.photoeslist(value)
+    pictureId: function(value) {
+      this.photoslist(value)
+    },
+    files: function(value) {
+      this.previewImgs = value.split(',').map(url => url ? getImgUrl(url) : '').filter(url => url)
     }
   },
   mounted() {
-    this.putLists(this.files)
+    this.previewImgs = this.files.split(',').map(url => url ? getImgUrl(url) : '').filter(url => url)
   },
   methods: {
     getImgUrl,
+    handleSizeChange(pageSize) {
+      this.pageSize = pageSize
+    },
     // 点击上传弹出模态框
     upload() {
       this.centerDialogVisible = true
+      this.putLists(this.files)
       this.getLists()
     },
     putLists(files) {
@@ -193,12 +260,15 @@ export default {
       Message.error('图片数量超出限制!')
     },
     onRemove(file, fileList) {
-      if (file.response.code === 200) {
-        this.filePathLists.filter(n => {
-          return n !== file.response.data.filename
-        })
-      }
-      // this.$emit("remove", file, fileList);
+      const files = []
+      fileList.forEach(item => {
+        if ('response' in item && item.response.code === 2000) {
+          files.push(item.response.data.filename)
+        } else {
+          files.push(item.name)
+        }
+      })
+      this.filePathLists = files
     },
     onSuccess(response) {
       if (response.code === 2000) {
@@ -207,7 +277,11 @@ export default {
     },
     // 确定按钮
     submit() {
-      this.$emit('uploadImage', this.filePathLists)
+      if (this.filePathLists.length > this.limit) {
+        Message.error('图片不能超过' + this.limit + '张')
+        return false
+      }
+      this.$emit('update:files', this.filePathLists.join(','))
       this.close()
     },
     // 关闭模态框
@@ -223,28 +297,45 @@ export default {
       }
       lists(params)
         .then(res => {
-          this.selectList = res.data
+          this.albums = res.data
         })
         .catch(err => this.$message.error(err))
     },
     // 相册图片
-    photoeslist(id, state) {
+    photoslist(id, state) {
       const params = {
         filter: id ? { album_id: id } : { name: state },
-        operate: { album_id: '=', name: 'like' }
+        operate: { album_id: '=', name: 'like' },
+        page: this.currentPage,
+        page_size: this.pageSize
       }
       accessoryLists(params)
         .then(res => {
-          this.selectList1 = res.data.data
+          this.attachments = res.data.data
         })
         .catch(err => this.$message.error(err))
     },
     // 切换按钮
     switchOver(type) {
       this.change = type
-      if (this.change == 'photoes') {
-        this.photoeslist(this.pictrueId)
+      if (this.change === 'photos') {
+        this.attachments = []
+        this.photoslist(this.pictureId)
       }
+    },
+    removeImg(key) {
+      const files = this.files.split(',')
+      files.splice(key, 1)
+      this.$emit('update:files', files.join(','))
+    },
+    checkImage() {
+      const checkedImages = []
+      this.attachments.forEach(item => {
+        if (this.checkedImageIndex.indexOf(item.id) !== -1) {
+          checkedImages.push(item.path)
+        }
+      })
+      this.filePathLists = checkedImages
     }
   }
 }
@@ -255,11 +346,56 @@ export default {
   /deep/.el-dialog__wrapper {
     .el-dialog {
       width: 933px !important;
-      margin-left: 200px;
       .el-dialog__body {
         padding: 28px 44px;
       }
     }
+  }
+  .image-preview-list {
+    width: 40%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    .image-preview-item {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin-right: 5px;
+      margin-top: 5px;
+      border-radius: 3px;
+      &:hover {
+        opacity: 0.8;
+        filter: alpha(opacity=80);
+      }
+      span {
+        position: absolute;
+        display: inline-block;
+        top: 0;
+        left: 0;
+        height: 100px;
+        line-height: 100px;
+        font-size: 30px;
+        width: 100%;
+        text-align: center;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        &:hover {
+          opacity: 1;
+          filter: alpha(opacity=100);
+          cursor: pointer;
+        }
+        i {
+          color: red;
+        }
+      }
+      img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+      }
+    }
+
   }
   .content {
     width: 100%;
@@ -299,7 +435,7 @@ export default {
       }
     }
   }
-  .photoes {
+  .photos {
     border: 1px dotted rgba(199, 199, 199, 1);
     .search {
       display: flex;
@@ -314,15 +450,13 @@ export default {
     .list {
       display: flex;
       flex-wrap: wrap;
-      div {
-        margin-right: 14px;
-        margin-bottom: 13px;
-        &:nth-child(5n) {
-          margin-right: 0px;
-        }
+      overflow: auto;
+      height: 360px;
+      /deep/.el-image {
+        margin: 0;
+        padding: 0;
         img {
-          width: 147px;
-          height: 104px;
+          height: 130px;
         }
       }
     }

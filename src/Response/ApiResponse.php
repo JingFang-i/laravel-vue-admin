@@ -3,9 +3,9 @@
 
 namespace Jmhc\Admin\Response;
 
+use Illuminate\Support\Collection;
 use Jmhc\Admin\Contracts\ApiResponseInterface;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use League\Fractal\TransformerAbstract;
 
@@ -56,7 +56,7 @@ class ApiResponse implements ApiResponseInterface
      */
     public function success(array $data = [], string $msg = '')
     {
-        return new Result(2000, $data, $msg);
+        return new Result(200, $data, $msg);
     }
 
     /**
@@ -64,7 +64,7 @@ class ApiResponse implements ApiResponseInterface
      *
      * @return Result
      */
-    public function error(string $msg = '', int $code = 5000)
+    public function error(string $msg = '', int $code = 400)
     {
         return new Result($code, [], $msg);
     }
@@ -76,7 +76,7 @@ class ApiResponse implements ApiResponseInterface
      */
     public function unauthenticated()
     {
-        return new Result(4002);
+        return new Result(401);
     }
 
     /**
@@ -88,7 +88,7 @@ class ApiResponse implements ApiResponseInterface
      */
     public function paramError(string $msg, array $data = [])
     {
-        return new Result(4000, $data, $msg);
+        return new Result(400, $data, $msg);
     }
 
     /**
@@ -98,7 +98,7 @@ class ApiResponse implements ApiResponseInterface
      */
     public function queryNull()
     {
-        return new Result(2000, null, '未查询到任何结果');
+        return new Result(204, null, '未查询到任何结果');
     }
 
     /**
@@ -107,7 +107,7 @@ class ApiResponse implements ApiResponseInterface
      */
     public function tokenInvalid()
     {
-        return new Result(4003);
+        return new Result(420);
     }
 
 }

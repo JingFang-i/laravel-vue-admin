@@ -3,10 +3,12 @@
 namespace {%namespace%};
 
 use Illuminate\Database\Eloquent\Model;
-use App\Services{%prefix%}\{%name%}Service;
+use {%service%};
 
 class {%name%} extends Model
 {
+    protected $table = {%table%};
+
     protected $fillable = {%fillable%};
 
     protected $appends = {%append%};

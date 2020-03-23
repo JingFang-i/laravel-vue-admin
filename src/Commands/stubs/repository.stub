@@ -1,12 +1,10 @@
 <?php
 
-
 namespace {%namespace%};
 
+use Jmhc\Admin\Repository;
 
-use App\Repositories\CommonRepository;
-
-class {%name%}Repository extends CommonRepository
+class {%name%}Repository extends Repository
 {
     // 允许查出的字段
     protected $allowFields = {%allowFields%};

@@ -1,11 +1,11 @@
 <template>
   <!-- 搜索表单 -->
-  <div class="wrap c-fs-fs">
+  <div class="wrap c-fs-fs clearfix">
     <div class="btn-box r-nw-sb-c">
       <i class="el-icon-search">&nbsp;&nbsp;筛选搜索</i>
-      <el-button type="primary" size="mini" @click="check">查询</el-button>
     </div>
     <slot />
+    <el-button type="primary" size="mini" style="float: right" @click="doSearch">查询</el-button>
   </div>
 </template>
 <script>
@@ -21,8 +21,8 @@ export default {
   },
   mounted() {},
   methods: {
-    check() {
-      this.$emit('check')
+    doSearch() {
+      this.$emit('search')
     }
   }
 }

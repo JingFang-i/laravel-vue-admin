@@ -1,0 +1,53 @@
+<template>
+  <powerful-table
+    :fields="fields"
+    :operates="operates"
+    :rules="rules"
+    :form-size="formSize"
+    :resource="lists"
+    :update="update"
+    :del="del"
+    :add="add"
+    :delete-batch="multiDel"
+    :update-batch="multiUpdate"
+    :permission-rules="permissionRules"
+  />
+</template>
+<script>
+import PowerfulTable from '@/components/PowerfulTable'
+import { lists, update, del, add, multiUpdate, multiDel } from '@/api/system/{%name%}'
+export default {
+  components: {
+    PowerfulTable
+  },
+  data() {
+    return {
+      operates: ['add', 'edit', 'delete'],
+      rules: {%rule%},
+      formSize: '30%',
+      permissionRules: {
+        list: '{%name%}.index',
+        detail: '{%name%}.show',
+        edit: '{%name%}.update',
+        add: '{%name%}.store',
+        del: '{%name%}.delete',
+        updateBatch: '{%name%}.multi',
+        deleteBatch: '{%name%}.multi-del'
+      },
+    }
+  },
+  computed: {
+    fields() {
+      return {%fields%}
+    }
+  },
+  methods: {
+    lists,
+    update,
+    del,
+    add,
+    multiUpdate,
+    multiDel
+  }
+}
+</script>

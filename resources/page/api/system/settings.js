@@ -15,7 +15,7 @@ export function lists(params) {
 }
 
 /**
- * 增加相册
+ * 新增
  * @param {object} data 提交数据
  */
 export function add(data) {
@@ -27,8 +27,8 @@ export function add(data) {
 }
 
 /**
- * 更新相册
- * @param {Integer} id 更新相册的ID
+ * 更新
+ * @param {Integer} id 更新的ID
  * @param {Object} data 更新的数据
  */
 export function update(id, data) {
@@ -40,8 +40,8 @@ export function update(id, data) {
 }
 
 /**
- * 删除相册
- * @param {Integer} id 相册ID
+ * 删除
+ * @param {Integer} id
  */
 export function del(id) {
   return request({
@@ -51,7 +51,7 @@ export function del(id) {
 }
 
 /**
- * 查询一条相册
+ * 查询一条
  * @param {Integer} id 资源ID
  */
 export function show(id) {
@@ -69,5 +69,25 @@ export function updateGroup(data) {
     url: apiName + '/update-group',
     method: 'post',
     data
+  })
+}
+
+/**
+ * 获取配置组
+ */
+export function getConfigGroup() {
+  return request({
+    url: 'config-group',
+    method: 'get'
+  })
+}
+
+/**
+ * 站点配置
+ */
+export function websiteConfig() {
+  return request({
+    url: 'website-config',
+    method: 'get'
   })
 }

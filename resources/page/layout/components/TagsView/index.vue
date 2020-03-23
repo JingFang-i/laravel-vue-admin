@@ -13,7 +13,7 @@
         @contextmenu.prevent.native="openMenu(tag,$event)"
       >
         {{ tag.title }}
-        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+        <span @click.prevent.stop="closeSelectedTag(tag)" class="el-icon-close" v-if="!isAffix(tag)"></span>
       </router-link>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
@@ -61,7 +61,7 @@ export default {
       }
     }
   },
-  mounted() {
+  mounted: function() {
     this.initTags()
     this.addTags()
   },

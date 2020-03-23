@@ -3,7 +3,6 @@ import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
-console.log(process.env.VUE_APP_BASE_API);
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -52,15 +51,14 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 2000) {
+    if (res.code !== 200) {
       Message({
         message: res.msg || '出错了',
         type: 'error',
         duration: 5 * 1000
       })
 
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 4001 || res.code === 4002 || res.code === 4003) {
+      if (res.code === 420) {
         // to re-login
         MessageBox.confirm('您已经被登出了,您可以退出此页面或者重新登录', '确定退出', {
           confirmButtonText: '重新登录',

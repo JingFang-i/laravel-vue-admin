@@ -4,6 +4,8 @@
 namespace Jmhc\Admin\Traits;
 
 
+use Illuminate\Database\Eloquent\Model;
+
 trait HasResourceActions
 {
 
@@ -46,6 +48,7 @@ trait HasResourceActions
         }
         $model = $this->repository->store($formData);
         if ($model) {
+            $this->afterStore($model);
             return $this->response->success(['id' => $model->id]);
         } else {
             return $this->response->error();
@@ -66,6 +69,7 @@ trait HasResourceActions
             return $this->response->error($this->errorMsg);
         }
         if ($this->repository->update($id, $formData)) {
+            $this->afterUpdate($id, $formData);
             return $this->response->success();
         } else {
             return $this->response->error();
@@ -97,6 +101,7 @@ trait HasResourceActions
             return $this->response->error($this->errorMsg);
         }
         if ($this->repository->destroy($id)) {
+            $this->afterDestroy($id);
             return $this->response->success();
         } else {
             return $this->response->error();
@@ -114,6 +119,13 @@ trait HasResourceActions
     }
 
     /**
+     * 保存后置方法
+     * @param Model $model
+     */
+    protected function afterStore(Model $model): void
+    {}
+
+    /**
      * 更新前置方法
      * @param $data
      * @return array
@@ -123,7 +135,13 @@ trait HasResourceActions
         return $data;
     }
 
-
+    /**
+     * 更新后置方法
+     * @param int $id
+     * @param array $data
+     */
+    protected function afterUpdate(int $id, array $data): void
+    {}
 
     /**
      * 删除前置方法
@@ -134,5 +152,12 @@ trait HasResourceActions
     {
         return true;
     }
+
+    /**
+     * 删除后置方法
+     * @param int $id
+     */
+    protected function afterDestroy(int $id): void
+    {}
 
 }

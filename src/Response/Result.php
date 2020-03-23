@@ -14,21 +14,19 @@ class Result implements Jsonable, Arrayable
     protected $data; //返回的数据
 
     protected $code = [
-        2000 => '请求成功',
-        2001 => '请求成功,无数据',
-        3000 => '接口维护中',
-        4000 => '请求失败',
-        4001 => '账号在其他地方登录',
-        4002 => '未登录',
-        4003 => 'token无效',
-        4004 => '禁止登录',
-        4005 => '短信发送间隔时间太短',
-        5000 => '发生异常',
-        5001 => '发生错误',
-        6000 => '版本过低',
+        200 => '请求成功',
+        204 => '请求成功,无数据',
+        400 => '错误请求',
+        401 => '无权限',
+        403 => '禁止访问',
+        404 => '未找到',
+        405 => '无效的请求',
+        420 => 'token无效',
+        500 => '服务器发生异常',
+        503 => '服务器维护中',
     ];
 
-    public function __construct($codeStatus = 2000, $data = [], $message = '')
+    public function __construct($codeStatus = 200, $data = [], $message = '')
     {
         $this->data = $data;
         $this->codeStatus = $codeStatus;

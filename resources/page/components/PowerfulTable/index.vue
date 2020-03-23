@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-collapse-transition>
-      <search-box v-if="showSearchBox" class="search-box" @check="check">
+      <search-box v-if="showSearchBox" class="search-box" @search="doSearch">
         <el-form class="form-box r-w-fs-c" label-position="left" size="mini" label-width="auto">
           <el-row type="flex">
             <template v-for="(item, key) in fields">
@@ -9,7 +9,7 @@
                 <el-form-item :label="item.label">
                   <el-select
                     v-if="['select', 'switch', 'radio'].indexOf(item.type) !== -1"
-                    v-model="item.query"
+                    v-model="searchForm[item.field]"
                     :placeholder="item.placeholder"
                   >
                     <el-option v-for="(i, k) in item.selectList" :key="k" :label="i" :value="k" />
@@ -22,7 +22,7 @@
                   ></el-date-picker>-->
                   <el-date-picker
                     v-if="item.type === 'date'"
-                    v-model="item.query"
+                    v-model="searchForm[item.field]"
                     type="datetimerange"
                     size="mini"
                     :picker-options="pickerOptions"
@@ -37,18 +37,18 @@
                     :params="item.params"
                     :label-name="'labelName' in item ? item.labelName : 'name'"
                     :multiple="'multiple' in item ? item.multiple : false"
-                    :selected.sync="item.query"
+                    :selected.sync="searchForm[item.field]"
                   />
                   <group-select
                     v-if="item.type === 'group-select'"
                     :resource="item.selectList"
                     :label-name="'labelName' in item ? item.labelName : 'name'"
                     :multiple="'multiple' in item ? item.multiple : false"
-                    :selected.sync="item.query"
+                    :selected.sync="searchForm[item.field]"
                   />
                   <el-input
                     v-else-if="['date', 'select', 'custom-select', 'group-select', 'switch', 'radio'].indexOf(item.type) === -1"
-                    v-model="item.query"
+                    v-model="searchForm[item.field]"
                     :placeholder="item.placeholder"
                   />
                 </el-form-item>
@@ -71,14 +71,14 @@
       <el-input
         v-model="keywords"
         size="mini"
-        placeholder="ID查询"
+        :placeholder="quickSearchPlaceholder"
         style="width:200px;margin:5px 20px 5px 0"
       />
-      <el-button type="primary" size="mini" icon="el-icon-search" @click="quickSearch">查询</el-button>
+      <!--      <el-button type="primary" size="mini" icon="el-icon-search" @click="quickSearch"></el-button>-->
       <el-button type="primary" size="mini" icon="el-icon-box" @click="moreQuery">高级查询</el-button>
 
       <el-button
-        v-if="operates.indexOf('add') !== -1"
+        v-if="operates.includes('add') && checkPermission(permissionRules.add)"
         type="primary"
         size="mini"
         icon="el-icon-plus"
@@ -100,6 +100,7 @@
         row-key="id"
         border
         highlight-current-row
+        :default-expand-all="defaultExpandAll"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" />
@@ -109,19 +110,28 @@
             :key="index"
             :prop="item.field"
             :label="item.label"
+            :width="item.width"
+            :align="item.align ? item.align : 'center'"
+            header-align="center"
           />
           <el-table-column
-            v-else-if="item.visible !== false && 'formatter' in item"
+            v-else-if="item.visible !== false && typeof item.formatter === 'function'"
             :key="index"
             :prop="item.field"
             :label="item.label"
             :formatter="item.formatter"
+            :width="item.width"
+            :align="item.align ? item.align : 'center'"
+            header-align="center"
           />
           <el-table-column
             v-else-if="item.visible !== false"
             :key="index"
             :prop="item.field"
             :label="item.label"
+            :width="item.width"
+            :align="item.align ? item.align : 'center'"
+            header-align="center"
           >
             <template slot-scope="scope">
               <el-rate
@@ -143,7 +153,7 @@
                 v-if="item.type === 'image'"
                 style="width: 80px; height: 80px"
                 :src="getImgUrl(scope.row[item.field])"
-                fit="fill"
+                fit="cover"
                 :preview-src-list="[getImgUrl(scope.row[item.field])]"
                 lazy
               />
@@ -151,7 +161,7 @@
                 v-if="item.type === 'images'"
                 style="width: 80px; height: 80px"
                 :src="getImgUrl(scope.row[item.field].split(',')[0])||getImgUrl(scope.row[item.field])"
-                fit="fill"
+                fit="cover"
                 :preview-src-list="scope.row[item.field].split(',').map(item => getImgUrl(item))"
                 lazy
               />
@@ -159,9 +169,8 @@
                 v-if="item.type === 'avatar'"
                 :size="60"
                 :src="getImgUrl(scope.row[item.field])"
-                @error="() => true"
               >
-                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png">
+                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" alt="">
               </el-avatar>
               <span
                 v-if="item.type === 'price'"
@@ -173,6 +182,7 @@
                 :status-list="item.selectList"
                 :status="scope.row[item.field]"
               />
+              <pre v-if="item.type === 'code'" style="overflow:auto;"><code>{{ JSON.stringify(scope.row[item.field], null, 4).replace(/\"/g, "") }}</code></pre>
               <span
                 v-if="selectType.indexOf(item.type) !== -1"
               >{{ item.field + '_text' in scope.row ? scope.row[item.field + '_text'] : scope.row[item.field] }}</span>
@@ -190,19 +200,39 @@
             <div class="r-nw-fs-c">
               <template v-for="(operate, key) in operatesButtons">
                 <el-button
-                  v-if="key < 2"
+                  v-if="key < 2 && operate.popover === false"
                   :key="key"
-                  type="primary"
-                  style="margin:0 10px 0 0"
-                  size="mini"
-                  @click="operate.handle(scope.row.id, scope.row)"
+                  style="margin: 0 5px 0 0;float:left;"
+                  :size="'size' in operate ? operate.size : 'mini'"
+                  :type="'type' in operate ? operate.type : 'primary'"
+                  :icon="operate.icon"
+                  @click="operate.handle(scope.row.id, scope.row, operate.popover)"
                 >
-                  <i :class="operate.icon">{{ operate.text }}</i>
+                  {{ operate.text }}
                 </el-button>
+                <el-popover
+                  v-else-if="key < 2 && operate.popover === true"
+                  v-model="popoverStatus['operate_' + scope.$index]"
+                  placement="bottom"
+                  style="float: left;margin-right: 5px;"
+                >
+                  <p>{{ operate.popoverOptions.content ? operate.popoverOptions.content : '确定要操作吗？' }}</p>
+                  <div style="text-align: right; margin: 0">
+                    <el-button size="mini" type="text" @click="cancelPopover('operate_' + scope.$index)">取消</el-button>
+                    <el-button type="primary" size="mini" @click="operate.handle(scope.row.id, scope.row, true)">确定</el-button>
+                  </div>
+                  <el-button
+                    slot="reference"
+                    :icon="operate.icon"
+                    :size="'size' in operate ? operate.size : 'mini'"
+                    :type="'type' in operate ? operate.type : 'primary'"
+                  >{{ operate.text }}</el-button>
+                </el-popover>
               </template>
               <el-dropdown
                 v-if="operatesButtons.length > 2"
                 trigger="click"
+                style="float:left;"
                 @command="operateCommand"
               >
                 <el-button type="primary" size="mini">
@@ -242,13 +272,14 @@
       </slot>
     </el-drawer>
     <div class="page-box r-w-sb-c">
-      <el-dropdown trigger="click" @command="handleCommand">
+      <el-dropdown v-if="!disableBatch" trigger="click" @command="handleCommand">
         <el-button type="primary" size="mini">
           批量操作
           <i class="el-icon-arrow-down el-icon--right" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="delete">批量删除</el-dropdown-item>
+          <el-dropdown-item v-if="deleteBatch && checkPermission(permissionRules.deleteBatch)" command="delete">批量删除</el-dropdown-item>
+          <!--          TODO 批量操作待完成-->
           <template v-for="(o,k) in operation">
             <el-dropdown-item :key="k" :command="o">{{ o.lable }}</el-dropdown-item>
           </template>
@@ -258,14 +289,13 @@
         background
         hide-on-single-page
         :pager-count="pagerCount"
-        :small="device == 'desktop' ? false : true"
+        :small="device!=='desktop'"
         :current-page.sync="currentPage"
         :page-size="pageSize"
         :layout="layout"
         :total="total"
         @current-change="handleCurrentChange"
       />
-      <div />
     </div>
   </div>
 </template>
@@ -277,6 +307,7 @@ import StatusTag from './StatusTag'
 import Sortable from 'sortablejs'
 import { getImgUrl } from '@/utils/helper'
 import { mapGetters } from 'vuex'
+import checkPermission from '@/utils/permission'
 
 export default {
   components: {
@@ -296,36 +327,39 @@ export default {
     },
     update: {
       type: Function,
-      default: undefined
+      default: null
     },
     updateBatch: {
       type: Function,
-      default: undefined
-    },
-    add: {
-      type: Function,
-      default: undefined
-    },
-    del: {
-      type: Function,
-      default: undefined
+      default: null
     },
     deleteBatch: {
       type: Function,
-      default: undefined
+      default: null
+    },
+    add: {
+      type: Function,
+      default: null
+    },
+    del: {
+      type: Function,
+      default: null
     },
     operates: {
       type: Array,
       default: () => []
     },
+    // 如果此属性存在，则每次编辑表单会调用此接口填充数据
     queryRow: {
       type: Function,
-      default: undefined
+      default: null
     },
+    // 定义操作按钮
     buttons: {
       type: Array,
       default: () => []
     },
+    // 表单验证规则
     rules: {
       type: Object,
       default: () => ({})
@@ -338,18 +372,49 @@ export default {
       type: Boolean,
       default: false
     },
+    // 如果在外部需要刷新列表，则需要将此属性设置为true
     needRefresh: {
       type: Boolean,
       default: false
     },
     detail: {
       type: Function,
-      default: undefined
+      default: null
     },
     // 批量操作
     operation: {
       type: Array,
       default: () => []
+    },
+    // 快速查询字段
+    quickSearchField: {
+      type: String,
+      default: 'id'
+    },
+    // 快速查询操作
+    quickSearchOperate: {
+      type: String,
+      default: '='
+    },
+    quickSearchPlaceholder: {
+      type: String,
+      default: '快速查询'
+    },
+    defaultExpandAll: {
+      type: Boolean,
+      default: false
+    },
+    deletePopover: {
+      type: Boolean,
+      default: true
+    },
+    disableBatch: {
+      type: Boolean,
+      default: false
+    },
+    permissionRules: {
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
@@ -364,6 +429,7 @@ export default {
           name: 'detail',
           text: '查看',
           icon: 'el-icon-info',
+          popover: false,
           handle: id => {
             return this.handleDetail(id)
           }
@@ -372,6 +438,7 @@ export default {
           name: 'edit',
           text: '编辑',
           icon: 'el-icon-edit-outline',
+          popover: false,
           handle: (id, row) => {
             return this.handleEdit(id, row)
           }
@@ -380,11 +447,19 @@ export default {
           name: 'delete',
           text: '删除',
           icon: 'el-icon-delete-solid',
-          handle: id => {
-            return this.handleDelete(id)
+          type: 'danger',
+          popover: this.deletePopover,
+          popoverOptions: {
+            visible: false,
+            content: '确定要删除吗？'
+          },
+          handle: (id, row, isPopover) => {
+            return this.handleDelete(id, row, isPopover)
           }
         }
       ],
+      popoverStatus: {},
+      currentPopover: '',
       pickerOptions: {
         shortcuts: [
           {
@@ -416,9 +491,10 @@ export default {
           }
         ]
       },
+      searchForm: {},
       rows: [],
       editRow: {},
-      columnType: ['text', 'date', 'textarea', 'icon'],
+      columnType: ['text', 'date', 'textarea', 'icon', 'number'],
       selectType: ['select', 'custom-select', 'group-select'],
       total: 0,
       pageSize: 10,
@@ -427,11 +503,9 @@ export default {
       formTitle: '',
       keywords: '',
       colors: ['#CA3024', '#CA3024', '#CA3024'], // 评分颜色
-      marks: 0, // 评分值
-      qucksearchField: 'id', // 快速查询默认字段
-      quckSearchOperate: '=', // 快速查询操作
       seletedArr: [], // 选中的行数,
       changeRow: [], // 需要改变的变量值
+      throttle: false,
       showSearchBox: false,
       tableLoading: false,
       drawer: false,
@@ -447,11 +521,11 @@ export default {
         : 'prev, pager, next'
     },
     operatesButtons() {
-      return this.defaultOperateButtons
-        .filter(item => {
-          return this.operates.indexOf(item.name) !== -1
-        })
-        .concat(this.buttons)
+      return this.defaultOperateButtons.filter(item => {
+        return this.operates.includes(item.name)
+      }).concat(this.buttons).filter(item => {
+        return this.checkPermission(this.permissionRules[item.name])
+      })
     },
     size() {
       return this.formSize
@@ -478,9 +552,14 @@ export default {
     },
     drawer: function(value) {
       this.$emit('update:show', value)
+    },
+    keywords: function(value) {
+      if (this.throttle) {
+        this.throttle = false
+        setTimeout(this.quickSearch, 500)
+      }
     }
   },
-  created() {},
   mounted() {
     this.changeHeight()
     window.onresize = () => {
@@ -493,6 +572,15 @@ export default {
   },
   methods: {
     getImgUrl,
+    checkPermission,
+    _initPopoverStatus(length) {
+      for (let i = 0; i < length; i++) {
+        this.$set(this.popoverStatus, 'operate_' + i, false)
+      }
+    },
+    cancelPopover(key) {
+      this.$set(this.popoverStatus, key, false)
+    },
     // 批量操作
     handleCommand(commond) {
       if (this.seletedArr.length === 0) {
@@ -551,10 +639,10 @@ export default {
       })
     },
     // 根据条件查询
-    check() {
+    doSearch() {
       this.fields.forEach(item => {
-        if ('query' in item && item.query) {
-          this.queryParams.filter[item.field] = item.query
+        if (item.field in this.searchForm && this.searchForm[item.field]) {
+          this.queryParams.filter[item.field] = this.searchForm[item.field]
           this.queryParams.operate[item.field] =
             'operate' in item && item.operate ? item.operate : '='
         }
@@ -590,6 +678,7 @@ export default {
         // this.detail.call(this, id)
         this.detail(id)
       } else {
+        // TODO
         console.log('detail', id)
       }
     },
@@ -608,24 +697,35 @@ export default {
       }
     },
     // 删除
-    handleDelete(id) {
-      this.$confirm('确定要删除吗?')
-        .then(() => {
-          this.del(parseInt(id))
-            .then(res => {
-              this.getData()
-            })
-            .catch(err => this.$message.error(err))
-        })
-        .catch(err => console.log(err))
+    handleDelete(id, row, isPopover) {
+      if (isPopover) {
+        this.del(parseInt(id))
+          .then(res => {
+            this.getData()
+          })
+          .catch(err => this.$message.error(err))
+      } else {
+        this.$confirm('确定要删除吗?')
+          .then(() => {
+            this.del(parseInt(id))
+              .then(res => {
+                this.getData()
+              })
+              .catch(err => this.$message.error(err))
+          })
+          .catch(err => console.log(err))
+      }
     },
     // 快速查询 默认为ID查询
     quickSearch() {
       if (this.keywords) {
-        this.queryParams.filter[this.qucksearchField] = this.keywords
-        this.queryParams.operate[this.qucksearchField] = this.quckSearchOperate
-        this.getData()
+        this.queryParams.filter[this.quickSearchField] = this.keywords
+        this.queryParams.operate[this.quickSearchField] = this.quickSearchOperate
+      } else {
+        this.queryParams.filter = {}
+        this.queryParams.operate = {}
       }
+      this.getData()
     },
     refresh() {
       this.refreshLoading = true
@@ -652,6 +752,8 @@ export default {
           this.total = data.meta.pagination.total
           this.pageSize = data.meta.pagination.per_page
         }
+        this._initPopoverStatus(this.rows.length)
+        this.throttle = true
       } catch (err) {
         this.$message.error(err)
       }
@@ -685,6 +787,7 @@ export default {
         .then(res => {
           this.drawer = false
           this.getData()
+          this.editRow = {}
         })
         .catch(err => this.$message.error(err))
     },
@@ -725,6 +828,9 @@ export default {
     background: white;
     padding: 10px;
     border-radius: 0 0 10px 10px;
+    .el-pagination {
+      text-align: center;
+    }
   }
   .search {
     float: right;

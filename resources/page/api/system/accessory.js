@@ -17,10 +17,23 @@ export function lists(params) {
  * 附件删除
  * @param {object} params id数组
  */
-export function deletes(params) {
+export function deletes(data) {
   return request({
     url: apiName + '/multi-del',
     method: 'post',
-    params
+    data
   })
 }
+
+
+/**
+ * 删除资源
+ * @param {Integer} id 资源ID
+ */
+export function del(id) {
+  return request({
+    url: apiName + '/' + id,
+    method: 'delete'
+  })
+}
+

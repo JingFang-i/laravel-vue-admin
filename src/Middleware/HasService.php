@@ -2,11 +2,13 @@
 
 namespace Jmhc\Admin\Middleware;
 
+use Illuminate\Support\Facades\Route;
 use Jmhc\Admin\Factories\ServiceBindFactory;
 use Closure;
 
 class HasService
 {
+
     /**
      * Handle an incoming request.
      *
@@ -16,11 +18,10 @@ class HasService
      */
     public function handle($request, Closure $next)
     {
-        $controllerNamespace = explode('@', $request->route()->getActionName())[0];
-        $classNameArr = explode("\\", $controllerNamespace);//控制器类名
-        array_splice($classNameArr, 0, 5); //去除前缀
+        $route = Route::current()->getAction();
+        $controllerClass = explode('@', $route['controller'])[0];
 
-        $name = str_replace('Controller', '', join("\\", $classNameArr));
+        $name = str_replace([$route['namespace'] . "\\", 'Controller'], '', $controllerClass);
         (new ServiceBindFactory($name))->bind();
         return $next($request);
     }

@@ -2,17 +2,24 @@
   <el-select v-model="currentSelected" :multiple="multiple" placeholder="请选择" @change="change">
     <template v-for="(item, key) in selectList">
       <el-option
+        v-if="selectList instanceof Array"
         :key="key"
         :label="item[labelName]"
-        :value="item.id"
-        :class="{'text-bold': item.children instanceof Array && item.children.length > 0 ? true : false}"
+        :value="item[keyName]"
+        :class="{'text-bold': item.children instanceof Array && item.children.length > 0}"
+      />
+      <el-option
+        v-if="!(selectList instanceof Array)"
+        :key="key"
+        :label="item"
+        :value="key"
       />
       <template v-if="item.children instanceof Array">
         <template v-for="(v, k) in item.children">
           <el-option
             :key="key + '-' + k"
             :label="(k !== item.children.length - 1 ? '├ ' : '└ ')+ v[labelName]"
-            :value="v.id"
+            :value="v[keyName]"
           />
         </template>
       </template>
@@ -29,6 +36,10 @@ export default {
     labelName: {
       type: String,
       default: 'name'
+    },
+    keyName: {
+      type: String,
+      default: 'id'
     },
     selected: {
       type: [String, Number],

@@ -4,7 +4,7 @@
 namespace Jmhc\Admin\Traits;
 
 
-class HasMultiDestroy
+trait HasMultiDestroy
 {
 
 

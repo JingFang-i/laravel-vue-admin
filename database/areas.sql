@@ -32,7 +32,7 @@ CREATE TABLE `areas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='地区表' ROW_FORMAT=DYNAMIC;
 
 --
--- 转存表中的数据 `areas`
+-- 转存表中的数据 `jm_areas`
 --
 
 INSERT INTO `areas` (`id`, `pid`, `shortname`, `name`, `mergename`, `level`, `pinyin`, `code`, `zip`, `first`, `lng`, `lat`) VALUES
@@ -3799,7 +3799,7 @@ INSERT INTO `jm_areas` (`id`, `pid`, `shortname`, `name`, `mergename`, `level`, 
 --
 
 --
--- 表的索引 `areas`
+-- 表的索引 `jm_areas`
 --
 ALTER TABLE `areas`
   ADD PRIMARY KEY (`id`) USING BTREE,

@@ -3,8 +3,9 @@
 namespace Jmhc\Admin;
 
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Jmhc\Admin\Console\Commands\ImportSql;
-use Jmhc\Admin\Console\Commands\ServiceCommand;
+use Illuminate\Routing\Route;
+use Jmhc\Admin\Commands\ImportSql;
+use Jmhc\Admin\Commands\ServiceCommand;
 use Illuminate\Support\ServiceProvider;
 use Jmhc\Admin\Contracts\ApiResponseInterface;
 use Jmhc\Admin\Response\ApiResponse;
@@ -41,9 +42,13 @@ class AdminServiceProvider extends ServiceProvider
      */
     public function boot(ResponseFactory $responseFactory, ApiResponseInterface $apiResponse)
     {
-        //注册宏命令
+        // 注册宏命令
         $this->registerDataResponseMacro($responseFactory, $apiResponse);
         $this->registerMsgResponseMacro($responseFactory, $apiResponse);
+        // 加载语言
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'frey');
+        // 加载路由
+        $this->loadRoutesFrom(__DIR__ . '/../routes/route.php');
 
         if ($this->app->runningInConsole()) {
             $this->publishResources(); // 发布静态资源
@@ -75,14 +80,9 @@ class AdminServiceProvider extends ServiceProvider
             __DIR__ . '/../resources/plop-templates' => resource_path('plop-templates'),
             __DIR__ . '/../resources/configs' => base_path(),
             __DIR__ . '/../resources/index.html' => resource_path('index.html'),
-            __DIR__ . '/../routes/admin.php' => base_path('routes/admin.php'),
-            __DIR__ . '/../routes/api.php' => base_path('routes/api.php'),
-            __DIR__ . '/../routes/RouteServiceProvider.php.stub' => app_path('Providers/RouteServiceProvider.php'),
-            __DIR__ . '/../auth/Controllers' => app_path('Http'),
-            __DIR__ . '/../auth/Models' => app_path('Models'),
-            __DIR__ . '/../auth/Repositories' => app_path('Repositories'),
-            __DIR__ . '/../auth/Services' => app_path('Services'),
             __DIR__ . '/../exception/Handler.php.stub' => app_path('Exceptions/Handler.php'),
+            __DIR__ . '/UEditor/config.json' => resource_path('ueditor/config.json'),
+            __DIR__ . '/../resources/plugins' => public_path('plugins'),
         ]);
     }
 

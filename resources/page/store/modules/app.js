@@ -1,4 +1,6 @@
 import Cookies from 'js-cookie'
+import { websiteConfig } from '../../api/system/settings'
+import { getImgUrl } from "../../utils/helper";
 
 const state = {
   sidebar: {
@@ -6,7 +8,9 @@ const state = {
     withoutAnimation: false
   },
   device: 'desktop',
-  size: Cookies.get('size') || 'medium'
+  size: Cookies.get('size') || 'medium',
+  name: 'Laravel Vue Admin',
+  logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
 }
 
 const mutations = {
@@ -30,6 +34,12 @@ const mutations = {
   SET_SIZE: (state, size) => {
     state.size = size
     Cookies.set('size', size)
+  },
+  SET_NAME: (state, name) => {
+    state.name = name
+  },
+  SET_LOGO: (state, logo) => {
+    state.logo = logo
   }
 }
 
@@ -45,6 +55,18 @@ const actions = {
   },
   setSize({ commit }, size) {
     commit('SET_SIZE', size)
+  },
+  getWebsiteConfig({ commit }) {
+    return new Promise(resolve => {
+      websiteConfig().then(res => {
+        if (res.data.name) {
+          commit('SET_NAME', res.data.name)
+        }
+        if (res.data.logo) {
+          commit('SET_LOGO', getImgUrl(res.data.logo))
+        }
+      })
+    })
   }
 }
 

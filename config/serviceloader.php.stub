@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'service_prefix'     => "Services\\",
-    'model_prefix'       => "Models\\",
-    'repository_prefix'  => "Repositories\\",
-    'controller_prefix'  => "Http\\Controllers\\v1\\",
+    'service_prefix'     => "App\\Services",
+    'model_prefix'       => "App\\Models",
+    'repository_prefix'  => "App\\Repositories",
+    'controller_prefix'  => "App\\Http\\{:moduleName}\\Controllers\\v1",
 ];

@@ -33,10 +33,10 @@
             v-model="editRow[item.field]"
             active-color="#13ce66"
             inactive-color="#ff4949"
-            :active-text="item.yes in item.selectList ? '是' : item.selectList[item.yes]"
-            :inactive-text="item.no in item.selectList? '否' : item.selectList[item.no]"
-            :active-value="item.yes"
-            :inactive-value="item.no"
+            :active-text="item.selectList ? ('yes' in item ? item.selectList[item.yes] : item.selectList[1]) : '是'"
+            :inactive-text="item.selectList ? ('no' in item ? item.selectList[item.no] : item.selectList[0]) : '否'"
+            :active-value="'yes' in item ? item.yes : 1"
+            :inactive-value="'no' in item ? item.no : 0"
           />
           <el-input-number
             v-if="'type' in item && item.type === 'number'"
@@ -50,6 +50,7 @@
             :resource="item.selectList"
             :params="item.params"
             :label-name="'labelName' in item ? item.labelName : 'name'"
+            :key-name="'keyName' in item ? item.keyName : 'id'"
             :multiple="'multiple' in item ? item.multiple : false"
             :selected.sync="editRow[item.field]"
           />
@@ -88,6 +89,7 @@
             :autosize="item.autosize"
             :maxlength="item.maxlength"
           />
+          <svg-select v-if="item.type === 'icon'" v-model="editRow[item.field]"></svg-select>
           <!-- <icon-picker v-if="item.type === 'icon'" v-model="editRow[item.field]" /> -->
           <el-input
             v-if="item.type === 'password'"
@@ -99,10 +101,19 @@
           <upload
             v-if="item.type === 'image' || item.type === 'avatar'"
             :multiple="false"
+            :limit="1"
             :files.sync="editRow[item.field]"
           />
-          <upload v-if="item.type === 'images'" :multiple="true" :files.sync="editRow[item.field]" />
-
+          <upload
+            v-if="item.type === 'images'"
+            :limit="'limit' in item ? item.limit : 5"
+            :multiple="true"
+            :files.sync="editRow[item.field]"
+          />
+          <ueditor
+            v-if="item.type === 'editor'"
+            :value.sync="item.value"
+          />
         </el-form-item>
       </template>
       <el-form-item style="width:90%">
@@ -123,6 +134,9 @@ import GroupSelect from './GroupSelect'
 import KeyValueTable from './KeyValueTable'
 import Cascader from './Cascader'
 import Tree from './Tree'
+import Ueditor from '../UEditor/Ueditor'
+import SvgSelect from '../SvgIcon/SvgSelect'
+import { getToken } from '@/utils/auth'
 
 export default {
   components: {
@@ -131,7 +145,9 @@ export default {
     GroupSelect,
     KeyValueTable,
     Cascader,
-    Tree
+    Tree,
+    SvgSelect,
+    Ueditor
   },
   props: {
     fields: {
@@ -154,7 +170,18 @@ export default {
   data() {
     return {
       formRules: {},
-      editRow: {}
+      editRow: {},
+      ueditorConfig: {
+        // 编辑器不自动被内容撑高
+        autoHeightEnabled: false,
+        // 初始容器高度
+        initialFrameHeight: 300,
+        // 初始容器宽度
+        initialFrameWidth: '100%',
+        serverUrl: process.env.VUE_APP_BASE_URL + '/ueditor?token=' + getToken(),
+        // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
+        UEDITOR_HOME_URL: '/plugins/ueditor/'
+      }
     }
   },
   watch: {
@@ -166,13 +193,13 @@ export default {
     }
   },
   mounted() {
+    this.editRow = {}
     this.formRules = this.rules
     // 如果没有传入验证规则，则生成简单验证规则
     if (Object.keys(this.rules).length === 0) {
       this.generateRules()
     }
     this.formRules = {}
-    this.editRow = {}
     this.editRow = Object.assign({}, this.row)
   },
   methods: {

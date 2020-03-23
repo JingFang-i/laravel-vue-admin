@@ -3,11 +3,11 @@
 
 namespace {%namespace%};
 
-use App\Http\Controllers\Controller;
-use App\Library\Traits\HasResourceRoute;
+use App\Http\{%module%}\Controllers\Controller;
+use Jmhc\Admin\Traits\HasResourceRoutes;
 
 class {%name%}Controller extends Controller
 {
-    use HasResourceRoute;
+    use HasResourceRoutes;
 
 }

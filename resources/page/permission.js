@@ -26,7 +26,6 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-
       if (store.getters.permission_routes.length > 0) {
         next()
       } else {
@@ -34,9 +33,14 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           store.dispatch('user/getInfo')
+          // get website config
+          store.dispatch('app/getWebsiteConfig')
 
           // generate accessible routes map based on roles
-          await store.dispatch('permission/generateRoutes')
+          const accessedRoutes = await store.dispatch('permission/generateRoutes')
+
+          // dynamically add accessible routes
+          router.addRoutes(accessedRoutes)
 
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record

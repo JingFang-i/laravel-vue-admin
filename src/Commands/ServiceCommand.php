@@ -1,10 +1,11 @@
 <?php
 
-namespace Jmhc\Admin\Console\Commands;
+namespace Jmhc\Admin\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
+use Jmhc\Admin\Utils\Helper;
 
 class ServiceCommand extends Command
 {
@@ -14,7 +15,7 @@ class ServiceCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'admin:generate {table} {--model=} {--force}';
+    protected $signature = 'admin:generate {table} {--model=} {--module=Admin} {--force} {--view}';
 
     /**
      * The console command description.
@@ -53,26 +54,28 @@ class ServiceCommand extends Command
     {
         $table = $this->argument('table'); //不带前缀数据表名
         $modelName = $this->option('model');
+        $moduleName = $this->option('module');
         $force = $this->option('force'); //是否强制
+        $view = $this->option('view'); // 是否生成视图
         if (!$modelName) {
             $this->error('缺少模型名称');
             return false;
         }
+
         $modelName = str_replace("\\", '/', $modelName);
         $modelNameArr = explode('/', $modelName);
         $prefix = '';
         if (count($modelNameArr) > 1) {
             $prefix = join('/', array_slice($modelNameArr, 0, -1));
         }
-        $modelName = $modelName[count($modelNameArr) - 1];
+        $modelName = $modelNameArr[count($modelNameArr) - 1];
         $this->modelName = $modelName;
 
-//        $modelName = $this->convertToUpper($table);
+        $controllerPath = $this->appPath(config('serviceloader.controller_prefix'), $moduleName, $prefix);
+        $modelPath = $this->appPath(config('serviceloader.model_prefix'), $moduleName, $prefix);
+        $servicePath = $this->appPath(config('serviceloader.service_prefix'), $moduleName, $prefix);
+        $repositoryPath = $this->appPath(config('serviceloader.repository_prefix'), $moduleName, $prefix);
 
-        $controllerPath = $this->appPath(config('servoceloader.controller_prefix'), $prefix);
-        $modelPath = $this->appPath(config('servoceloader.model_prefix'), $prefix);
-        $servicePath = $this->appPath(config('servoceloader.service_prefix'), $prefix);
-        $repositoryPath = $this->appPath(config('servoceloader.repository_prefix'), $prefix);
         if (!$this->fileSystem->exists($controllerPath)) {
             $this->fileSystem->makeDirectory($controllerPath);
         }
@@ -92,12 +95,12 @@ class ServiceCommand extends Command
         $parsedTable = $this->parseTableInfo($tableInfo);
         $selectOptions = $this->makeSelectStr($parsedTable['fieldInfo']);
 
-        $controllerNamespace = "App\\" . config('serviceloader.controller_prefix') . ($prefix ? "\\" . $prefix : '');
+        $controllerNamespace = config('serviceloader.controller_prefix') . ($prefix ? "\\" . $prefix : '');
         //控制器模板
         $controllerStub = str_replace([
-            '{%namespace%}', '{%name%}'
+            '{%namespace%}', '{%module%}', '{%name%}'
         ], [
-            $controllerNamespace, $modelName
+            $controllerNamespace, $moduleName, $modelName
         ], $this->getStub('controller'));
 
         $controllerFilePath = $controllerPath . '/' . $modelName . 'Controller.php';
@@ -109,12 +112,12 @@ class ServiceCommand extends Command
         $this->info('controller创建成功!');
 
         //服务模板
-        $serviceNamespace = "App\\" . config('serviceloader.service_prefix') . ($prefix ? "\\" . $prefix : '');
-        $multiFields = $this->convertArray($parsedTable['multiFields']);
-        $rule = $this->convertArray($parsedTable['rule'], "\r\n", 2);
-        $message = $this->convertArray($parsedTable['message'], "\r\n", 2);
+        $serviceNamespace = config('serviceloader.service_prefix') . ($prefix ? "\\" . $prefix : '');
+        $multiFields = Helper::convertArray($parsedTable['multiFields']);
+        $rule = Helper::convertArray($parsedTable['rule'], "\r\n", 2);
+        $message = Helper::convertArray($parsedTable['message'], "\r\n", 2);
         $serviceStub = str_replace([
-            '{%prefix%}', '{%name%}', '{%multiFields%}', '{%rule%}', '{%message%}', '{%attr%}', '{%function%}'
+            '{%namespace%}', '{%name%}', '{%multiFields%}', '{%rule%}', '{%message%}', '{%attr%}', '{%function%}'
         ], [
             $serviceNamespace, $modelName, $multiFields, $rule, $message, $selectOptions['serviceAttr'], $selectOptions['serviceAttrFunc']
         ], $this->getStub('service'));
@@ -127,13 +130,15 @@ class ServiceCommand extends Command
         $this->info('service创建成功!');
 
         //仓储模板
-        $repositoryNamespace = "App\\" . config('serviceloader.repository_prefix') . ($prefix ? "\\" . $prefix : '');
-        $allowFields = $this->convertArray(array_keys($parsedTable['fieldInfo']));
-        $orderField = $parsedTable['sortField'] ? "'{$parsedTable['sortField']}'" : 'created_at';
+        $repositoryNamespace = config('serviceloader.repository_prefix') . ($prefix ? "\\" . $prefix : '');
+        $allowFields = array_keys($parsedTable['fieldInfo']);
+        $allowFieldStr =  Helper::convertArray($allowFields);
+
+        $orderField = $parsedTable['sortField'] ? "'{$parsedTable['sortField']}'" : "'created_at'";
         $repositoryStub = str_replace([
             '{%namespace%}', '{%name%}', '{%allowFields%}', '{%orderField%}'
         ], [
-            $repositoryNamespace, $modelName, $allowFields, $orderField
+            $repositoryNamespace, $modelName, $allowFieldStr, $orderField
         ], $this->getStub('repository'));
         $repositoryFilePath = $repositoryPath . '/' . $modelName . 'Repository.php';
         if ($this->fileSystem->exists($repositoryFilePath) && !$force) {
@@ -144,12 +149,15 @@ class ServiceCommand extends Command
         $this->info('repository创建成功!');
 
         //模型模板
-        $modelNamespace = "App\\" . config('serviceloader.model_prefix') . ($prefix ? "\\" . $prefix : '');
-        $fillable = $allowFields;
+        $modelNamespace = config('serviceloader.model_prefix') . ($prefix ? "\\" . $prefix : '');
+        $fillable = Helper::convertArray(array_values(array_filter($allowFields, function($field){
+            return !in_array($field, ['id', 'created_at', 'updated_at']);
+        })));
+        $serviceClass = $serviceNamespace . "\\" . $modelName . 'Service';
         $modelStub = str_replace([
-            '{%namespace%}', '{%name%}', '{%fillable%}', '{%append%}', '{%function%}'
+            '{%namespace%}', '{%service%}', '{%name%}', '{%table%}', '{%fillable%}', '{%append%}', '{%function%}'
         ], [
-            $modelNamespace, $modelName, $fillable, $selectOptions['modelAppendAttr'], $selectOptions['modelAppendAttrFunc']
+            $modelNamespace, $serviceClass, $modelName, "'$table'", $fillable, $selectOptions['modelAppendAttr'], $selectOptions['modelAppendAttrFunc']
         ], $this->getStub('model'));
         $modelFilePath = $modelPath . '/' . $modelName . '.php';
         if ($this->fileSystem->exists($modelFilePath) && !$force){
@@ -161,6 +169,16 @@ class ServiceCommand extends Command
         //生成路由
         $this->makeRoute($prefix, $modelName);
         $this->info('路由创建成功!');
+
+        //创建菜单权限
+        (new CreateAuth($prefix, Helper::convertToUpper($table), $moduleName))->run();
+        $this->info('菜单和权限创建成功');
+
+        if (strtolower($moduleName) === 'admin' && $view) {
+            //创建视图
+            (new CreatePage(Helper::convertToUpper($table), $prefix, $parsedTable['fieldInfo']))->run();
+            $this->info('页面创建成功');
+        }
     }
 
 
@@ -169,9 +187,9 @@ class ServiceCommand extends Command
      * @param $classPrefix
      * @return string
      */
-    protected function appPath($classPrefix, $prefix = '')
+    protected function appPath($classPrefix, $module, $prefix = '')
     {
-        $path = app_path(str_replace("\\", '/', $classPrefix));
+        $path = app_path(str_replace(["App\\", "\\", '{:moduleName}'], ['', '/', $module], $classPrefix));
         if ($prefix) {
             $path .= '/' . $prefix;
         }
@@ -214,17 +232,17 @@ class ServiceCommand extends Command
      */
     protected function makeRoute($prefix, $modelName)
     {
-        $routeName = $this->convertToLower($modelName, '-');
+        $routeName = Helper::convertToLower($modelName, '-');
         $controllerPath = $prefix ? str_replace('/', "\\", $prefix) . "\\" : '';
         $data = "\r\n// " . $modelName;
         $data .= "\r\n" . sprintf("Route::resource('%s', '%s%s');", $routeName,
             $controllerPath, $modelName . 'Controller');
         $data .= "\r\n// " . $modelName . ' 批量操作';
-        $data .= "\r\n" . sprintf("Route::post('%s/multi', '%s%s');", $routeName,
-                $controllerPath, $modelName . 'Controller');
+        $data .= "\r\n" . sprintf("Route::post('%s/multi', '%s%s')->name('%s.multi');", $routeName,
+                $controllerPath, $modelName . 'Controller@multi', $routeName);
         $data .= "\r\n// " . $modelName . ' 批量删除';
-        $data .= "\r\n" . sprintf("Route::post('%s/multi-del', '%s%s');", $routeName,
-                $controllerPath, $modelName . 'Controller') . "\r\n";
+        $data .= "\r\n" . sprintf("Route::post('%s/multi-del', '%s%s')->name('%s.multidestroy');", $routeName,
+                $controllerPath, $modelName . 'Controller@multiDestroy', $routeName) . "\r\n";
         $this->fileSystem->append($this->routePath, $data);
     }
 
@@ -246,13 +264,13 @@ class ServiceCommand extends Command
             if (!empty($item['selectList'])) {
                 $appendAttr[] = $field . '_text';
 
-                $field = $this->convertToUpper($field);
+                $field = Helper::convertToUpper($field);
                 $options['modelAppendAttrFunc'][] = $this->modelAppendAttrFunction($field);
                 $options['serviceAttr'][] = $this->serviceAppendSelectAttr($field, $item['selectList']);
                 $options['serviceAttrFunc'][] = $this->serviceAppendFunction($field);
             }
         }
-        $options['modelAppendAttr'] = $this->convertArray($appendAttr);
+        $options['modelAppendAttr'] = Helper::convertArray($appendAttr);
         $options['modelAppendAttrFunc'] = join("\r\n\r\n\r\n", $options['modelAppendAttrFunc']);
         $options['serviceAttr'] = join("\r\n\r\n\r\n", $options['serviceAttr']);
         $options['serviceAttrFunc'] = join("\r\n\r\n\r\n", $options['serviceAttrFunc']);
@@ -270,7 +288,7 @@ class ServiceCommand extends Command
             'multiFields' => [],
             'rule' => [],
             'message' => [],
-            'sortField' => "''",
+            'sortField' => "",
             'fieldInfo' => []
         ];
         foreach ($tableInfo as $item) {
@@ -289,9 +307,11 @@ class ServiceCommand extends Command
             }
 
             $tableParsedResult['fieldInfo'][$item->COLUMN_NAME] = [
+                'field' => $parsedResult['field'],
                 'title' => $parsedResult['title'],
                 'type' => $parsedResult['type'],
                 'selectList' => $parsedResult['selectList'],
+                'rule' => $parsedResult['rule'],
             ];
         }
         return $tableParsedResult;
@@ -305,15 +325,14 @@ class ServiceCommand extends Command
     private function parseColumn($columnInfo)
     {
         $column = [
+            'field' => $columnInfo->COLUMN_NAME,
             'rule' => [],
             'message' => [],
-            'title' => '',
+            'title' => $columnInfo->COLUMN_COMMENT,
             'selectList' => [],
             'type' => 'text',
             'is_order_field' => $columnInfo->COLUMN_NAME === 'weigh',
         ];
-
-        $column['title'] = $columnInfo->COLUMN_COMMENT;
 
         switch ($columnInfo->DATA_TYPE) {
             case 'tinyint':
@@ -376,78 +395,16 @@ class ServiceCommand extends Command
             array_unshift($column['rule'], 'required');
             $column['message'][$columnInfo->COLUMN_NAME . '.required'] = $column['title'] . '不能为空';
         }
-        if (!$column['title']) {
-            $column['title'] = ucfirst($columnInfo->COLUMN_NAME);
+        $columnArr = explode('_', $column['field']);
+        $suffix = $columnArr[count($columnArr) - 1];
+        if (in_array($suffix, ['img', 'image', 'logo', 'avatar'])) {
+            $column['type'] = 'image';
+        }
+        if (in_array($suffix, ['imgs', 'images'])) {
+            $column['type'] = 'images';
         }
 
         return $column;
-    }
-
-    /**
-     * 驼峰转下划线小写
-     * @param $str
-     * @return string|string[]|null
-     */
-    private function convertToLower($str, $glue = '_')
-    {
-        return strtolower(preg_replace('/(?<=[a-z])([A-Z])/', $glue . '$1', $str));
-    }
-
-    /**
-     * 小写下划线转小驼峰
-     * @param $str
-     * @return string|string[]|null
-     */
-    private function convertToUpper($str)
-    {
-        $str = preg_replace_callback('/_+([a-z])/',function($matches){
-            return strtoupper($matches[1]);
-        }, $str);
-        return $str;
-    }
-
-    private function varToStr($var)
-    {
-        return str_replace(['array (', ')'], ['[', ']'], var_export($var, true));
-    }
-
-    /**
-     * 将数组转换成字符串形式
-     * @param $arr
-     * @param string $prefix
-     * @param int $timesSpace
-     * @param bool $first
-     * @return string
-     */
-    private function convertArray($arr, $prefix = "\r\n", $timesSpace = 1, $first = true)
-    {
-        if (empty($arr)) {
-            return '[]';
-        }
-        $space = "";
-        for ($i = 1; $i <= $timesSpace; $i ++) {
-            $space .= "    ";
-        }
-        $itemStr = '';
-        $keys = array_keys($arr);
-        $isIndexArr = false;
-        if ($keys[0] === 0 && $keys[count($arr) - 1] === count($arr) - 1) {
-            $isIndexArr = true;
-        }
-        foreach ($arr as $key => $value) {
-            $itemStr .= $prefix . "        " . ($first ? '' : "    ");
-            if (! $isIndexArr){
-                $itemStr .= "    '" . $key . "' => ";
-
-            }
-            if (is_array($value)) {
-                $itemStr .= $this->convertArray($value, $prefix . "    ", $timesSpace + 1, false);
-            } else {
-                $itemStr .= "'" . $value . "',";
-            }
-        }
-        return "[{$itemStr}
-{$space}]" . ($first ? '' : ',');
     }
 
     /**
@@ -458,8 +415,9 @@ class ServiceCommand extends Command
      */
     private function serviceAppendSelectAttr($attrName, $selectList)
     {
+        $content = Helper::convertArray($selectList);
         return <<<EOF
-    protected \${$attrName}Map = {$this->convertArray($selectList)};
+    protected \${$attrName}Map = {$content};
 EOF;
 
     }
@@ -489,7 +447,7 @@ EOF;
     private function modelAppendAttrFunction($attrName)
     {
         $attrName = ucfirst($attrName);
-        $fieldName = $this->convertToLower($attrName);
+        $fieldName = Helper::convertToLower($attrName);
         return <<<EOF
     public function get{$attrName}TextAttribute(\$value)
     {

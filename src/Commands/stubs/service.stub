@@ -4,9 +4,9 @@
 namespace {%namespace%};
 
 
-use App\Services\BaseService;
+use Jmhc\Admin\Service;
 
-class {%name%}Service extends BaseService
+class {%name%}Service extends Service
 {
     protected $multiFields = {%multiFields%};
 

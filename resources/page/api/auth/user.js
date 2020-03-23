@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const apiName = 'users'
+const apiName = 'admin-users'
 
 /**
  * 列表查询
@@ -57,6 +57,18 @@ export function del(id) {
 export function assignRole(data) {
   return request({
     url: 'assign-role',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 更新个人信息
+ * @param data
+ */
+export function updateInfo(data) {
+  return request({
+    url: 'update-info',
     method: 'post',
     data
   })

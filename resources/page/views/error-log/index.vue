@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import ErrorA from '@/components/ErrorTestA'
-import ErrorB from '@/components/ErrorTestB'
+import ErrorA from './components/ErrorTestA'
+import ErrorB from './components/ErrorTestB'
 
 export default {
   name: 'ErrorLog',
