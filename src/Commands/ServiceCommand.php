@@ -173,6 +173,8 @@ class ServiceCommand extends Command
         //创建菜单权限
         (new CreateAuth($prefix, Helper::convertToUpper($table), $moduleName))->run();
         $this->info('菜单和权限创建成功');
+        // 清除缓存
+        $this->call('cache:clear');
 
         if (strtolower($moduleName) === 'admin' && $view) {
             //创建视图

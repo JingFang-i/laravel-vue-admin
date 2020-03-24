@@ -3,8 +3,8 @@
 namespace Jmhc\Admin;
 
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Routing\Route;
 use Jmhc\Admin\Commands\ImportSql;
+use Jmhc\Admin\Commands\ResetAdmin;
 use Jmhc\Admin\Commands\ServiceCommand;
 use Illuminate\Support\ServiceProvider;
 use Jmhc\Admin\Contracts\ApiResponseInterface;
@@ -95,6 +95,7 @@ class AdminServiceProvider extends ServiceProvider
         $this->commands([
             ServiceCommand::class,
             ImportSql::class,
+            ResetAdmin::class,
         ]);
     }
 

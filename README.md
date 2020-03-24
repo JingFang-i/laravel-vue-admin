@@ -119,7 +119,19 @@ php artisan migrate
 ```bash
 php artisan admin:generate test --model=Test
 ```
-在routes/admin.php中会生成对应的路由，需要给它们加上service中间件，建议放在group下面，就不用每一个都写一个->middleware('service')，可以参考vendor/frey/laravel-vue-admin/routes/route.php路由配置
+在routes/admin.php中会生成对应的路由，需要给它们加上service中间件，建议放在group下面，就不用每一个都写一个->middleware('service')，可以参考vendor/frey/laravel-vue-admin/routes/route.php路由配置，例：
+```php
+Route::middleware(['service'])->group(function() {
+    // Test
+    Route::resource('test', 'TestController');
+    // Test 批量操作
+    Route::post('test/multi', 'TestController@multi')->name('test.multi');
+    // Test 批量删除
+    Route::post('test/multi-del', 'TestController@multiDestroy')->name('test.multidestroy');
+
+});
+
+```
 
 permission中间件为权限验证中间件，使用时需要传入守卫名称，如permission:admin，每一个路由都是一个操作，他们的标识符为路由名称。资源路由默认以“接口名称.index”形式作为路由名称。
 
@@ -136,6 +148,7 @@ VUE_APP_ASSETS_URL=http://yourdomain.com/
 ```
 运行：
 ```bash
+npm install
 npm run dev
 ```
 代理配置在根目录下的vue.config.js中，可以运行npm run build:prod编译，需要在routes/web.php 中修改路由，
