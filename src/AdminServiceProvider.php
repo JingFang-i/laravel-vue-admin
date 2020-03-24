@@ -45,8 +45,8 @@ class AdminServiceProvider extends ServiceProvider
         // 注册宏命令
         $this->registerDataResponseMacro($responseFactory, $apiResponse);
         $this->registerMsgResponseMacro($responseFactory, $apiResponse);
-        // 加载语言
-        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'frey');
+//        // 加载语言
+//        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'frey');
         // 加载路由
         $this->loadRoutesFrom(__DIR__ . '/../routes/route.php');
 
@@ -72,9 +72,10 @@ class AdminServiceProvider extends ServiceProvider
     protected function publishResources()
     {
         $this->publishes([
-            __DIR__ . '/../config/serviceloader.php.stub' => config_path('serviceloader.php'),
+            __DIR__ . '/../config/admin.php.stub' => config_path('admin.php'),
             __DIR__ . '/../config/upload.php.stub' => config_path('upload.php'),
             __DIR__ . '/../config/permission.php.stub' => config_path('permission.php'),
+            __DIR__ . '/../routes/RouteServiceProvider.php.stub' => app_path('Providers/RouteServiceProvider.php'),
             __DIR__ . '/../resources/page' => resource_path('page'),
             __DIR__ . '/../resources/build' => base_path('build'),
             __DIR__ . '/../resources/plop-templates' => resource_path('plop-templates'),

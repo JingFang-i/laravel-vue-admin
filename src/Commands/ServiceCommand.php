@@ -71,22 +71,22 @@ class ServiceCommand extends Command
         $modelName = $modelNameArr[count($modelNameArr) - 1];
         $this->modelName = $modelName;
 
-        $controllerPath = $this->appPath(config('serviceloader.controller_prefix'), $moduleName, $prefix);
-        $modelPath = $this->appPath(config('serviceloader.model_prefix'), $moduleName, $prefix);
-        $servicePath = $this->appPath(config('serviceloader.service_prefix'), $moduleName, $prefix);
-        $repositoryPath = $this->appPath(config('serviceloader.repository_prefix'), $moduleName, $prefix);
+        $controllerPath = $this->appPath(config('admin.controller_prefix'), $moduleName, $prefix);
+        $modelPath = $this->appPath(config('admin.model_prefix'), $moduleName, $prefix);
+        $servicePath = $this->appPath(config('admin.service_prefix'), $moduleName, $prefix);
+        $repositoryPath = $this->appPath(config('admin.repository_prefix'), $moduleName, $prefix);
 
         if (!$this->fileSystem->exists($controllerPath)) {
-            $this->fileSystem->makeDirectory($controllerPath);
+            $this->fileSystem->makeDirectory($controllerPath, 0755, true);
         }
         if (!$this->fileSystem->exists($modelPath)) {
-            $this->fileSystem->makeDirectory($modelPath);
+            $this->fileSystem->makeDirectory($modelPath, 0755, true);
         }
         if (!$this->fileSystem->exists($servicePath)) {
-            $this->fileSystem->makeDirectory($servicePath);
+            $this->fileSystem->makeDirectory($servicePath, 0755, true);
         }
         if (!$this->fileSystem->exists($repositoryPath)) {
-            $this->fileSystem->makeDirectory($repositoryPath);
+            $this->fileSystem->makeDirectory($repositoryPath, 0755, true);
         }
 
         $tableName = config('database.connections.mysql.prefix') . $table;
@@ -95,10 +95,10 @@ class ServiceCommand extends Command
         $parsedTable = $this->parseTableInfo($tableInfo);
         $selectOptions = $this->makeSelectStr($parsedTable['fieldInfo']);
 
-        $controllerNamespace = config('serviceloader.controller_prefix') . ($prefix ? "\\" . $prefix : '');
+        $controllerNamespace = config('admin.controller_prefix') . ($prefix ? "\\" . $prefix : '');
         //控制器模板
         $controllerStub = str_replace([
-            '{%namespace%}', '{%module%}', '{%name%}'
+            '{%namespace%}', '{%name%}'
         ], [
             $controllerNamespace, $moduleName, $modelName
         ], $this->getStub('controller'));
@@ -112,7 +112,7 @@ class ServiceCommand extends Command
         $this->info('controller创建成功!');
 
         //服务模板
-        $serviceNamespace = config('serviceloader.service_prefix') . ($prefix ? "\\" . $prefix : '');
+        $serviceNamespace = config('admin.service_prefix') . ($prefix ? "\\" . $prefix : '');
         $multiFields = Helper::convertArray($parsedTable['multiFields']);
         $rule = Helper::convertArray($parsedTable['rule'], "\r\n", 2);
         $message = Helper::convertArray($parsedTable['message'], "\r\n", 2);
@@ -130,7 +130,7 @@ class ServiceCommand extends Command
         $this->info('service创建成功!');
 
         //仓储模板
-        $repositoryNamespace = config('serviceloader.repository_prefix') . ($prefix ? "\\" . $prefix : '');
+        $repositoryNamespace = config('admin.repository_prefix') . ($prefix ? "\\" . $prefix : '');
         $allowFields = array_keys($parsedTable['fieldInfo']);
         $allowFieldStr =  Helper::convertArray($allowFields);
 
@@ -149,7 +149,7 @@ class ServiceCommand extends Command
         $this->info('repository创建成功!');
 
         //模型模板
-        $modelNamespace = config('serviceloader.model_prefix') . ($prefix ? "\\" . $prefix : '');
+        $modelNamespace = config('admin.model_prefix') . ($prefix ? "\\" . $prefix : '');
         $fillable = Helper::convertArray(array_values(array_filter($allowFields, function($field){
             return !in_array($field, ['id', 'created_at', 'updated_at']);
         })));

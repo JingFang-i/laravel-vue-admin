@@ -272,7 +272,7 @@ abstract class Repository implements RepositoryInterface
      */
     public static function instance()
     {
-        $modelName = explode(config('serviceloader.repository_prefix') . "\\", static::class)[1];
+        $modelName = explode(config('admin.repository_prefix') . "\\", static::class)[1];
         $modelName = substr($modelName, 0, -10); //去掉Repository后缀
         return (new ServiceBindFactory($modelName))->getRepository(false);
     }

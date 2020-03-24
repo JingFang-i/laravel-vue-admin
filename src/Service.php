@@ -92,7 +92,7 @@ abstract class Service implements ServiceInterface
      */
     public static function instance()
     {
-        $modelName = explode(config('serviceloader.service_prefix') . "\\", static::class)[1];
+        $modelName = explode(config('admin.service_prefix') . "\\", static::class)[1];
         $modelName = substr($modelName, 0, -7); //去掉Service后缀
         return (new ServiceBindFactory($modelName))->getService(false);
     }

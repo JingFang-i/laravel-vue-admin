@@ -4,5 +4,5 @@ return [
     'service_prefix'     => "App\\Services",
     'model_prefix'       => "App\\Models",
     'repository_prefix'  => "App\\Repositories",
-    'controller_prefix'  => "App\\Http\\{:moduleName}\\Controllers\\v1",
+    'controller_prefix'  => "App\\Http\\{:moduleName}\\Controllers",
 ];

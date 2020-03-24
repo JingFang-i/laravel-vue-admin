@@ -77,7 +77,7 @@ class CreatePage
     {
         $fields = [
             'field' => $info['field'],
-            'label' => $info['title'] ? $info['title'] : trans('frey::default.' . $info['field']),
+            'label' => $info['title'] ? $info['title'] : ucfirst($info['field']),
             'type' => $info['type'],
         ];
         if (!empty($info['selectList'])) {

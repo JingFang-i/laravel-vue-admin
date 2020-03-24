@@ -23,9 +23,9 @@ class ServiceBindFactory
         $namespace = Route::current()->getAction('namespace');
         if ($namespace === "Jmhc\\Admin\\Controllers") {
             config([
-                'serviceloader.model_prefix' => "Jmhc\\Admin\\Models",
-                'serviceloader.repository_prefix' => "Jmhc\\Admin\\Repositories",
-                'serviceloader.service_prefix' => "Jmhc\\Admin\\Services",
+                'admin.model_prefix' => "Jmhc\\Admin\\Models",
+                'admin.repository_prefix' => "Jmhc\\Admin\\Repositories",
+                'admin.service_prefix' => "Jmhc\\Admin\\Services",
             ]);
         }
         $this->buildClassName();
@@ -104,11 +104,11 @@ class ServiceBindFactory
      */
     private function buildClassName(): void
     {
-        $this->modelClassName = config('serviceloader.model_prefix') .
+        $this->modelClassName = config('admin.model_prefix') .
             "\\" . $this->serviceName;
-        $this->repositoryClassName = config('serviceloader.repository_prefix')
+        $this->repositoryClassName = config('admin.repository_prefix')
             . "\\" . $this->serviceName . 'Repository';
-        $this->serviceClassName = config('serviceloader.service_prefix')
+        $this->serviceClassName = config('admin.service_prefix')
             . "\\" . $this->serviceName . 'Service';
     }
 

@@ -3,7 +3,7 @@
 
 namespace {%namespace%};
 
-use App\Http\{%module%}\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use Jmhc\Admin\Traits\HasResourceRoutes;
 
 class {%name%}Controller extends Controller

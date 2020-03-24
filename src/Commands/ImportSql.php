@@ -23,7 +23,7 @@ class ImportSql extends Command
     protected $description = '导入sql';
 
 
-    protected $sqlFileName = ['admin', 'areas'];
+    protected $sqlFileName = ['admin'];
 
 
     public function handle()

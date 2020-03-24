@@ -39,7 +39,7 @@ module.exports = {
     // before: require('./mock/mock-server.js'),
     proxy: {
       '/admin': {
-        target: 'http://local.admin.com/admin', // 线上服务器
+        target: 'http://local.admin.com/admin',
         ws: false,
         changeOrigin: true,
         pathRewrite: {
