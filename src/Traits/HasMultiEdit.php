@@ -34,15 +34,22 @@ trait HasMultiEdit
         if (empty($updateData)) {
             return $this->response->error('没有可更新的字段');
         }
+        $methodExists = method_exists($this, 'afterUpdate');
         if (count($ids) === 1) {
             $this->repository->update($ids[0], $updateData);
+            if ($methodExists) {
+                $this->afterUpdate($ids[0], $updateData);
+            }
         } else {
-
             $rows = $this->repository->whereIn('id', $ids)->get();
             foreach ($rows as $row) {
                 $row->fill($updateData)->save();
+                if ($methodExists){
+                    $this->afterUpdate($row->id, $updateData);
+                }
             }
         }
+
         return $this->response->success();
     }
 }

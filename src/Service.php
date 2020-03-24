@@ -4,6 +4,8 @@
 namespace Jmhc\Admin;
 
 use Jmhc\Admin\Factories\ServiceBindFactory;
+use Jmhc\Admin\Traits\HasMultiDestroy;
+use Jmhc\Admin\Traits\HasMultiEdit;
 use Jmhc\Admin\Traits\HasResourceActions;
 use Jmhc\Admin\Traits\HasValidate;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -13,7 +15,7 @@ use Jmhc\Admin\Contracts\Service as ServiceInterface;
 
 abstract class Service implements ServiceInterface
 {
-    use HasResourceActions, HasValidate;
+    use HasResourceActions, HasValidate, HasMultiEdit, HasMultiDestroy;
 
     protected $repository; //仓储实例，主要用于数据处理
     protected $validator; //表单验证请求

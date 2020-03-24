@@ -49,3 +49,15 @@ export function del(id) {
     method: 'delete'
   })
 }
+
+/**
+ * 批量更新
+ * @param data
+ */
+export function multiUpdate(data) {
+  return request({
+    url: apiName + '/multi',
+    method: 'post',
+    data
+  })
+}

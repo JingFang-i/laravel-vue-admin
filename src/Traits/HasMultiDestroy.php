@@ -21,7 +21,12 @@ trait HasMultiDestroy
         if (is_string($params['ids'])) {
             $params['ids'] = explode(',', $params['ids']);
         }
-        if($this->repository->multiDestroy($params['ids'])) {
+        if($this->repository->multiDestroy($params['ids'])){
+            if (method_exists($this, 'afterDestroy')) {
+                foreach ($params['ids'] as $id) {
+                    $this->afterDestroy($id);
+                }
+            }
             return $this->response->success();
         } else {
             return $this->response->error('没有任何记录被删除');

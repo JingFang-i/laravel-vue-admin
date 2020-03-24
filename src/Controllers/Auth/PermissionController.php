@@ -88,4 +88,5 @@ class PermissionController extends Controller
     {
         return $this->service->getAuth();
     }
+
 }

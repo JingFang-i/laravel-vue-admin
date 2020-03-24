@@ -65,7 +65,7 @@ export default {
     update,
     show,
     detail(id) {
-      this.$router.push({ path: '/system/album-picture-list', query: { id: id }})
+      this.$router.push({ path: '/system/album-detail', query: { id: id }})
     }
   }
 }

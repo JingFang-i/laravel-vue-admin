@@ -44,6 +44,9 @@ abstract class Repository implements RepositoryInterface
         if ($where !== false) {
             $this->model = $this->model->where($where);
         }
+        $pageSize = array_key_exists('page_size', $params) ? $params['page_size'] : self::PER_PAGE;
+        $pageSize = $pageSize > 500 ? 500 : $pageSize;
+
         return $this->model->select($this->allowFields)
             ->when($with, function ($query, $with) {
                 return $query->with($with);
@@ -54,7 +57,7 @@ abstract class Repository implements RepositoryInterface
             ->when($this->orderField, function ($query, $orderField) {
                 return $query->orderBy($orderField, $this->orderType);
             })
-            ->paginate(self::PER_PAGE);
+            ->paginate($pageSize);
     }
 
     /**

@@ -24,19 +24,20 @@ class UploadService
             return $response->error('文件不存在!');
         }
         $files = $request->file('file');
+        $albumId = $request->input('album_id', 0);
         $responseData = [];
         if (is_array($files) && count($files) > 0) {
             foreach ($files as $file) {
                 if ($res = $this->validateFile($file) !== true) {
                     return $response->error($res);
                 }
-                $responseData[] = $this->storeFile($file);
+                $responseData[] = $this->storeFile($file, $albumId);
             }
         } else {
             if ($res = $this->validateFile($files) !== true) {
                 return $response->error($res);
             }
-            $responseData = $this->storeFile($files);
+            $responseData = $this->storeFile($files, $albumId);
         }
         if (empty($responseData)) {
             return $response->error('上传失败');
@@ -51,15 +52,14 @@ class UploadService
      * @param $file
      * @param $userType
      * @param $adminId
-     * @param $albumId
      * @return array
      */
-    protected function storeFile(UploadedFile $file)
+    protected function storeFile(UploadedFile $file, $albumId)
     {
         $filename = $file->store(config('upload.path'));
         if ($filename) {
             $filename = 'storage/' . $filename;
-            $this->saveFileInfo($file, $filename);
+            $this->saveFileInfo($file, $filename, $albumId);
             return [
                 'url' => asset($filename),
                 'filename' => $filename,
@@ -100,9 +100,10 @@ class UploadService
      * @param $adminId
      * @return mixed
      */
-    protected function saveFileInfo(UploadedFile $file, $filename)
+    protected function saveFileInfo(UploadedFile $file, $filename, $albumId)
     {
         $data = [
+            'album_id' => intval($albumId),
             'name' => $file->getClientOriginalName(),
             'admin_id' => UserGuard::getUser()->id,
             'path' => $filename,

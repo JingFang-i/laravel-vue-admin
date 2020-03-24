@@ -52,7 +52,7 @@ export function del(id) {
 
 /**
  * 批量删除
- * @param {Array} ids
+ * @param data
  */
 export function multiDel(data) {
   return request({
@@ -64,7 +64,7 @@ export function multiDel(data) {
 
 /**
  * 批量更新
- * @param {Object} {ids: 要更新的id数组, data: 要更新的数据}
+ * @param data
  */
 export function multiUpdate(data) {
   return request({

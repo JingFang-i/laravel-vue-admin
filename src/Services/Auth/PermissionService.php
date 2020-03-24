@@ -11,7 +11,7 @@ use Spatie\Permission\Models\Role;
 
 class PermissionService extends Service
 {
-    protected $multiFields = ['is_menu'];
+    protected $multiFields = ['is_menu', 'is_hidden'];
     protected $allPermissions = [];
     protected $exceptAttribute = ['created_at', 'updated_at', 'id', 'children'];
 
@@ -103,7 +103,7 @@ class PermissionService extends Service
      * 删除操作后置
      * @param Model $model
      */
-    protected function afterDestroy(int $id): void
+    protected function afterDestroy(?int $id): void
     {
         $this->repository->updateCache();
     }

@@ -155,7 +155,6 @@
                 :src="getImgUrl(scope.row[item.field])"
                 fit="cover"
                 :preview-src-list="[getImgUrl(scope.row[item.field])]"
-                lazy
               />
               <el-image
                 v-if="item.type === 'images'"
@@ -163,7 +162,6 @@
                 :src="getImgUrl(scope.row[item.field].split(',')[0])||getImgUrl(scope.row[item.field])"
                 fit="cover"
                 :preview-src-list="scope.row[item.field].split(',').map(item => getImgUrl(item))"
-                lazy
               />
               <el-avatar
                 v-if="item.type === 'avatar'"
@@ -236,8 +234,8 @@
                 @command="operateCommand"
               >
                 <el-button type="primary" size="mini">
-                  <i class="el-icon-more" />
-                  <i class="el-icon-arrow-down el-icon--right" />
+                  <i class="el-icon-more"></i>
+                  <i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <template v-for="(item, index) in operatesButtons">

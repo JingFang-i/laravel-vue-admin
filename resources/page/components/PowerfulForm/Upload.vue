@@ -5,7 +5,7 @@
       <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过10M</div>
       <div class="image-preview-list">
         <div v-for="(item, index) in previewImgs" :key="index" class="image-preview-item">
-          <img :src="item" :alt="'上传图片_' + (index + 1)" :title="item" />
+          <img :src="item" :alt="'上传图片_' + (index + 1)" :title="item">
           <span><i class="el-icon-delete" @click="removeImg(index)"></i></span>
         </div>
       </div>
@@ -31,7 +31,7 @@
           >{{ operate.text }}</el-button>
         </div>
         <div>
-          <el-select v-model="pictureId" placeholder="请选择相册" class="photoSelect" value="">
+          <el-select v-model="albumId" placeholder="请选择相册" class="photoSelect" value="">
             <el-option label="全部" value="0" />
             <el-option v-for="(i, k) in albums" :key="k" :label="i.name" :value="i.id" />
           </el-select>
@@ -45,6 +45,7 @@
           :multiple="multiple"
           name="file"
           :headers="headers"
+          :data="params"
           :limit="limit"
           :accept="accept"
           :on-remove="onRemove"
@@ -65,15 +66,16 @@
       </div>
       <div v-else-if="change==='photos'" class="content photos">
         <div class="list">
-          <empty v-if="attachments.length === 0"></empty>
-          <el-row :gutter="2">
+          <empty v-if="attachments.length === 0" />
+          <el-row :gutter="5">
             <el-checkbox-group v-model="checkedImageIndex">
               <el-col v-for="(item, key) in attachments" :key="key" :span="6" style="margin-top: 5px">
                 <el-card :body-style="{ padding: '0px' }">
                   <el-image
                     :src="getImgUrl(item.path)"
                     fit="cover"
-                    lazy>
+                    lazy
+                  >
                     <div slot="error" class="image-slot">
                       <i class="el-icon-picture-outline"></i>
                     </div>
@@ -99,25 +101,26 @@
       </div>
       <div v-else class="content photos">
         <div class="search">
-          <el-input v-model="state2" placeholder="请输入图片名字" />
+          <el-input v-model="keywords" placeholder="请输入图片名字" />
           <el-button
             type="primary"
             style="margin:0 10px 0 0;border-radius:5px"
             :plain="true"
             size="mini"
-            @click="photoslist(null,state2)"
+            @click="photoslist()"
           >搜索</el-button>
         </div>
         <div class="list">
-          <empty v-if="attachments.length === 0"></empty>
+          <empty v-if="attachments.length === 0" />
           <el-row :gutter="2">
             <el-checkbox-group v-model="checkedImageIndex">
               <el-col v-for="(item, key) in attachments" :key="key" :span="6" style="margin-top: 5px">
                 <el-card :body-style="{ padding: '0px' }">
                   <el-image
                     :src="getImgUrl(item.path)"
-                    fit="cover"
-                    lazy>
+                    fit="contain"
+                    lazy
+                  >
                     <div slot="error" class="image-slot">
                       <i class="el-icon-picture-outline"></i>
                     </div>
@@ -187,8 +190,8 @@ export default {
       attachments: [], // 图片列表
       previewImgs: [], // 预览图片
       checkedImageIndex: [], // 选中的图片索引
-      pictureId: '0', // 相册名字
-      state2: '', // 输入的图片名字
+      albumId: '0', // 相册id
+      keywords: '', // 输入的图片名字
       pageSize: 10,
       pageTotal: 0,
       currentPage: 1,
@@ -209,6 +212,7 @@ export default {
           definition: 'search'
         }
       ],
+      params: { album_id: 0 },
       headers: { Authorization: 'Bearer ' + getToken() },
       imageSize: 10485760, // 10M
       uploadUrl: process.env.VUE_APP_BASE_API + '/upload',
@@ -218,8 +222,9 @@ export default {
     }
   },
   watch: {
-    pictureId: function(value) {
-      this.photoslist(value)
+    albumId: function(value) {
+      this.photoslist()
+      this.params.album_id = value
     },
     files: function(value) {
       this.previewImgs = value.split(',').map(url => url ? getImgUrl(url) : '').filter(url => url)
@@ -271,7 +276,7 @@ export default {
       this.filePathLists = files
     },
     onSuccess(response) {
-      if (response.code === 2000) {
+      if (response.code === 200) {
         this.filePathLists.push(response.data.filename)
       }
     },
@@ -302,15 +307,16 @@ export default {
         .catch(err => this.$message.error(err))
     },
     // 相册图片
-    photoslist(id, state) {
+    photoslist() {
       const params = {
-        filter: id ? { album_id: id } : { name: state },
+        filter: { album_id: this.albumId, name: this.keywords },
         operate: { album_id: '=', name: 'like' },
         page: this.currentPage,
         page_size: this.pageSize
       }
       accessoryLists(params)
         .then(res => {
+          this.pageTotal = res.data.meta.pagination.total
           this.attachments = res.data.data
         })
         .catch(err => this.$message.error(err))
@@ -320,7 +326,7 @@ export default {
       this.change = type
       if (this.change === 'photos') {
         this.attachments = []
-        this.photoslist(this.pictureId)
+        this.photoslist()
       }
     },
     removeImg(key) {
@@ -453,6 +459,8 @@ export default {
       overflow: auto;
       height: 360px;
       /deep/.el-image {
+        width: 100%;
+        height: 100%;
         margin: 0;
         padding: 0;
         img {

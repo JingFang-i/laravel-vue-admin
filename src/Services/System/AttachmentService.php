@@ -10,5 +10,5 @@ use Jmhc\Admin\Traits\HasMultiEdit;
 
 class AttachmentService extends Service
 {
-    use HasMultiDestroy, HasMultiEdit;
+
 }
