@@ -57,8 +57,12 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
-
       if (res.code === 420) {
+        store.dispatch('user/resetToken').then(() => {
+          location.reload()
+        })
+      }
+      if (res.code === 421) {
         // to re-login
         MessageBox.confirm('您已经被登出了,您可以退出此页面或者重新登录', '确定退出', {
           confirmButtonText: '重新登录',

@@ -99,6 +99,13 @@ php artisan admin:generate table_name --model=TableName --module=Admin --view --
 * --view 此参数存在表示生成视图文件，在resources/page/view下
 * --force 此参数存在则表示强制覆盖
 
+##### 重置管理员密码
+```php
+php artisan admin:password account password
+// 如
+php artisan admin:password admin 123456
+```
+
 ##### 测试运行
 
 需要在数据库中创建一个数据表，如test，数据迁移如下：
