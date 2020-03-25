@@ -10,7 +10,7 @@ const state = {
   device: 'desktop',
   size: Cookies.get('size') || 'medium',
   name: 'Laravel Vue Admin',
-  logo: '@/assets/images/logo.png'
+  logo: require('@/assets/images/logo.png')
 }
 
 const mutations = {

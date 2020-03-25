@@ -156,6 +156,23 @@ permission中间件为权限验证中间件，使用时需要传入守卫名称�
 
 浏览器访问: http://yourdomain.php/admin/test 就可以看到效果了。
 
+##### 文件系统设置
+在.env里面配置文件系统驱动
+```dotenv
+FILESYSTEM_DRIVER=public
+```
+然后运行命令
+```bash
+php artisan storage:link
+```
+
+##### 其他配置
+jwt默认生命周期为1小时，也就是60分钟，如果想要调整，需要在.env中配置
+```dotenv
+# 单位为分钟
+JWT_TTL=1440
+```
+
 ### 前端
 
 前端视图页面放在resources/page里面，需要在根目录中的.env中加入如下配置：

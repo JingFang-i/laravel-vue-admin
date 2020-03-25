@@ -54,7 +54,9 @@ const actions = {
 
         commit('SET_ID', id)
         commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        if (avatar) {
+          commit('SET_AVATAR', avatar)
+        }
         resolve(data)
       }).catch(error => {
         reject(error)

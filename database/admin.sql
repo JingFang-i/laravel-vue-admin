@@ -41,7 +41,7 @@ CREATE TABLE `admin_users` (
   `id` int(10) UNSIGNED NOT NULL,
   `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户名',
   `name` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '姓名',
-  `avatar` char(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '头像',
+  `avatar` char(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '头像',
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -52,7 +52,7 @@ CREATE TABLE `admin_users` (
 --
 
 INSERT INTO `admin_users` (`id`, `username`, `name`, `avatar`, `password`, `created_at`, `updated_at`) VALUES
-(1, 'admin', '超级管理员', 'storage/upload/20200323/XZWqjRXhIdmLH3s7gVNtiDfTGJB5Zxd3aF6aWiyX.png', '$2y$10$/X5jaQ3MR.AIpFctXmpZi.GRyWtFLKwcfi4ypNdD41tMUsYDiegZa', '2019-09-09 10:09:51', '2020-03-23 11:05:44');
+(1, 'admin', '超级管理员', '', '$2y$10$/X5jaQ3MR.AIpFctXmpZi.GRyWtFLKwcfi4ypNdD41tMUsYDiegZa', '2019-09-09 10:09:51', '2020-03-23 11:05:44');
 
 -- --------------------------------------------------------
 

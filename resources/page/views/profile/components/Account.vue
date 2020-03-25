@@ -101,4 +101,10 @@ export default {
     margin-left: 50px;
     border-radius: 50px;
   }
+  .avatar-uploader-icon {
+    margin-left: 50px;
+    padding: 50px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+  }
 </style>

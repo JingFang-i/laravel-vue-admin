@@ -20,8 +20,7 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <svg-icon v-if="!avatar" icon-class="avatar" />
-          <img v-else :src="getImgUrl(avatar)" class="user-avatar">
+          <img :src="avatar ? getImgUrl(avatar) : require('@/assets/images/avatar.jpeg')" class="user-avatar" alt="头像">
           <i class="el-icon-caret-bottom"></i>
         </div>
         <el-dropdown-menu slot="dropdown">
