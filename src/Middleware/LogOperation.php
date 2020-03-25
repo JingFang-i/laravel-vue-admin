@@ -31,7 +31,7 @@ class LogOperation
     {
         $user = UserGuard::getUser();
         if ($user) {
-            $permission = Permission::where('name', Route::current()->getName())->select('pid', 'title')->first();
+            $permission = Permission::where('name', Route::currentRouteName())->select('pid', 'title')->first();
             if ($permission) {
                 if ($permission->pid) {
                     $parentTitle = Permission::where('id', $permission->pid)->value('title');

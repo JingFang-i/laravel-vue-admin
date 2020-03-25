@@ -22,4 +22,9 @@ class AdminLog extends Model
     protected $casts = [
         'content' => 'json',
     ];
+
+    public function getIpAttribute($value)
+    {
+        return long2ip($value);
+    }
 }
