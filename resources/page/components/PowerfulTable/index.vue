@@ -396,7 +396,7 @@ export default {
     },
     quickSearchPlaceholder: {
       type: String,
-      default: '快速查询'
+      default: '根据ID快速查询'
     },
     defaultExpandAll: {
       type: Boolean,
