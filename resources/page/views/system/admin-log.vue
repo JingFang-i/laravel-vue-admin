@@ -8,14 +8,14 @@
     :update="update"
     :del="del"
     :add="add"
-    :delete-batch="multiDel"
+    :delete-batch="multiDestroy"
     :update-batch="multiUpdate"
     :permission-rules="permissionRules"
   />
 </template>
 <script>
 import PowerfulTable from '@/components/PowerfulTable'
-import { lists, update, del, add, multiUpdate, multiDel } from '@/api/system/admin-log'
+import { lists, update, del, add, multiUpdate, multiDestroy } from '@/api/system/admin-log'
 export default {
   components: {
     PowerfulTable
@@ -47,7 +47,7 @@ export default {
     del,
     add,
     multiUpdate,
-    multiDel
+    multiDestroy
   }
 }
 </script>

@@ -1,35 +1,30 @@
 <template>
   <div class="empty-block">
-    <el-image :src="src" alt="sad" fit="contain" />
+    <img :src="src" alt="sad"/>
     <span>没有找到相关数据</span>
   </div>
 </template>
 <script>
-export default {
-  data() {
-    return {
-      src: require('@/assets/images/sad.gif')
+  export default {
+    data() {
+      return {
+        src: require('@/assets/images/sad.gif')
+      }
     }
   }
-}
 </script>
 <style lang="scss" scoped>
 
   .empty-block {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     width: 100%;
-    height: 200px;
     color: #aaa;
     text-align: center;
-    .el-image {
-      height: 100%;
+    img {
+      object-fit: contain;
+      height: 35px;
     }
-    span {
-      height: 100%;
-      line-height: 200px;
-    }
-
   }
 </style>

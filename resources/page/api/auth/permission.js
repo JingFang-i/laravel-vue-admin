@@ -61,3 +61,14 @@ export function multiUpdate(data) {
     data
   })
 }
+
+/**
+ * 批量删除
+ */
+export function multiDestroy(data) {
+  return request({
+    url: apiName + '/multi-del',
+    method: 'post',
+    data
+  })
+}

@@ -13,18 +13,29 @@ export function lists(params) {
     params
   })
 }
+
 /**
- * 附件删除
- * @param {object} params id数组
+ * 批量更新
+ * @param data
  */
-export function deletes(data) {
+export function multiUpdate(data) {
+  return request({
+    url: apiName + '/multi',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 批量删除
+ */
+export function multiDestroy(data) {
   return request({
     url: apiName + '/multi-del',
     method: 'post',
     data
   })
 }
-
 
 /**
  * 删除资源

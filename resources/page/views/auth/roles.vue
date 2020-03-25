@@ -9,6 +9,8 @@
     :del="del"
     :add="add"
     :buttons="buttons"
+    :update-batch="multiUpdate"
+    :delete-batch="multiDestroy"
     :default-expand-all="true"
     :permission-rules="permissionRules"
   >
@@ -31,7 +33,7 @@
 <script>
 import PowerfulTable from '@/components/PowerfulTable'
 import PowerfulForm from '@/components/PowerfulForm'
-import { lists, update, del, add, assignPermission } from '@/api/auth/role'
+import { lists, update, del, add, assignPermission, multiUpdate, multiDestroy } from '@/api/auth/role'
 import { lists as permissionLists } from '@/api/auth/permission'
 export default {
   components: {
@@ -101,6 +103,8 @@ export default {
     update,
     del,
     add,
+    multiUpdate,
+    multiDestroy,
     getAllPermissions() {
       const params = {
         is_select: 1

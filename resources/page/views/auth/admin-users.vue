@@ -10,6 +10,8 @@
       :update="update"
       :del="del"
       :add="add"
+      :update-batch="multiUpdate"
+      :delete-batch="multiDestroy"
       :need-refresh="refresh"
       :permission-rules="permissionRules"
     />
@@ -32,7 +34,7 @@
 <script>
 import PowerfulTable from '@/components/PowerfulTable'
 import PowerfulForm from '@/components/PowerfulForm'
-import { lists, update, del, add, assignRole } from '@/api/auth/user'
+import { lists, update, del, add, assignRole, multiDestroy, multiUpdate } from '@/api/auth/user'
 import { lists as roleLists } from '@/api/auth/role'
 export default {
   components: {
@@ -138,6 +140,8 @@ export default {
     update,
     del,
     add,
+    multiDestroy,
+    multiUpdate,
     handleAssignRole(id) {
       const params = {
         admin_id: id

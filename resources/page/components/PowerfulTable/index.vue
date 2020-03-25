@@ -598,14 +598,16 @@ export default {
           this.$message.error('缺少操作方法，请先定义操作的方法')
           return
         }
-        methods(params)
-          .then(res => {
-            this.$message.success(
-              commond === 'delete' ? '删除成功' : '更新成功'
-            )
-            this.getData()
-          })
-          .catch(err => this.$message.error(err))
+        this.$confirm('确定要操作吗？').then(() => {
+          methods(params)
+            .then(res => {
+              this.$message.success(
+                      commond === 'delete' ? '删除成功' : '更新成功'
+              )
+              this.getData()
+            })
+            .catch(err => this.$message.error(err))
+        })
       }
     },
     // 改变switch开关

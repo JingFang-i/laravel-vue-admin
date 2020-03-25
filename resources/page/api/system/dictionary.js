@@ -49,3 +49,4 @@ export function del(id) {
     method: 'delete'
   })
 }
+

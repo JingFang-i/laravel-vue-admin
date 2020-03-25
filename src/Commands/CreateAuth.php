@@ -21,7 +21,7 @@ class CreateAuth
         'store'  => '添加',
         'delete' => '删除',
         'multi'  => '批量更新',
-        'multidestroy' => '批量删除',
+        'multi-del' => '批量删除',
     ];
 
     public function __construct($prefix, $name, $module)

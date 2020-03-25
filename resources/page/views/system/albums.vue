@@ -8,13 +8,14 @@
     :update="update"
     :del="del"
     :add="add"
+    :delete-batch="multiDestroy"
     :detail="detail"
     :permission-rules="permissionRules"
   />
 </template>
 <script>
 import PowerfulTable from '@/components/PowerfulTable'
-import { lists, add, del, update, show } from '@/api/system/pictures'
+import { lists, add, del, update, show, multiDestroy } from '@/api/system/pictures'
 export default {
   components: {
     PowerfulTable
@@ -64,6 +65,7 @@ export default {
     del,
     update,
     show,
+    multiDestroy,
     detail(id) {
       this.$router.push({ path: '/system/album-detail', query: { id: id }})
     }

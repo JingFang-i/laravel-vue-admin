@@ -77,18 +77,30 @@ php artisan jwt:secret
 ##### 配置中间件
 需要在app/Http/Kernel.php中增加如下中间件
 ```php
- // 在$middlewareGroups数组中的api下面增加
+ // 1. 一定要注释掉$middleware中将空字符串转换为null的中间件
+    protected $middleware = [
+        \App\Http\Middleware\TrustProxies::class,
+        \Fruitcake\Cors\HandleCors::class,
+        \App\Http\Middleware\CheckForMaintenanceMode::class,
+        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+        \App\Http\Middleware\TrimStrings::class,
+        //注释这一行↓
+//        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+    ];
+
+ // 2. 在$middlewareGroups数组中的api下面增加
    ...
 'api' => [
     \Jmhc\Admin\Middleware\LogOperation::class,
 ],
 ...
- //在$routeMiddleware增加如下中间件
+ // 3. 在$routeMiddleware增加如下中间件
 ...
     'service' => \Jmhc\Admin\Middleware\HasService::class,
     'permission' => \Jmhc\Admin\Middleware\CheckPermission::class,
 ...
 ```
+
 ### 命令
 ##### 一键生成命令
 ```bash

@@ -6,13 +6,13 @@
     :form-size="formSize"
     :resource="lists"
     :del="del"
-    :delete-batch="deletes"
+    :delete-batch="multiDestroy"
     :permission-rules="permissionRules"
   />
 </template>
 <script>
 import PowerfulTable from '@/components/PowerfulTable'
-import { lists, del, deletes } from '@/api/system/accessory'
+import { lists, del, multiDestroy } from '@/api/system/accessory'
 export default {
   components: {
     PowerfulTable
@@ -61,7 +61,7 @@ export default {
   methods: {
     lists,
     del,
-    deletes
+    multiDestroy
   }
 }
 </script>
