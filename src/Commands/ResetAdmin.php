@@ -14,7 +14,7 @@ class ResetAdmin extends Command
      *
      * @var string
      */
-    protected $signature = 'admin:password {account=admin} {password}';
+    protected $signature = 'admin:password {account} {password}';
 
     /**
      * The console command description.
