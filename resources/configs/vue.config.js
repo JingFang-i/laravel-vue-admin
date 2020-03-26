@@ -1,4 +1,7 @@
 'use strict'
+
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
 const path = require('path')
 const defaultSettings = require('./resources/page/settings.js')
 
@@ -6,7 +9,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Element Admin' // page title
+const name = defaultSettings.title || 'Laravel Vue Admin' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -24,9 +27,10 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/resources',
-  outputDir: '/resources',
-  assetsDir: 'static',
+  publicPath: 'static',
+  outputDir: 'public/static',
+  assetsDir: '',
+  indexPath: resolve('resources/views/index.blade.php'), // 输出到views目录下，可以通过php渲染
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
@@ -39,7 +43,7 @@ module.exports = {
     // before: require('./mock/mock-server.js'),
     proxy: {
       '/admin': {
-        target: 'http://local.admin.com/admin',
+        target: 'http://local.vueadmin.com/admin', // 本地服务器
         ws: false,
         changeOrigin: true,
         pathRewrite: {
@@ -48,17 +52,6 @@ module.exports = {
       }
     }
   },
-  // configureWebpack: config => {
-  //   // provide the app's title in webpack's name field, so that
-  //   // it can be accessed in index.html to inject the correct title.
-  //   config.entry = './resources/page/main.js';
-  //   config.name = name;
-  //   config.resolve = {
-  //     alias: {
-  //       '@': resolve('resources/page')
-  //     }
-  //   }
-  // },
   configureWebpack: {
     entry: './resources/page/main.js',
     name: name,
@@ -66,7 +59,16 @@ module.exports = {
       alias: {
         '@': resolve('resources/page')
       }
-    }
+    },
+    plugins: [
+      // 自定义模板
+      new HtmlWebpackPlugin({
+        title: name,
+        template: 'resources/index.html',
+        filename: resolve('resources/views/index.blade.php'),
+        inject: true
+      })
+    ]
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test
@@ -101,7 +103,7 @@ module.exports = {
       .end()
 
     config
-      // https://webpack.js.org/configuration/devtool/#development
+    // https://webpack.js.org/configuration/devtool/#development
       .when(process.env.NODE_ENV === 'development',
         config => config.devtool('cheap-source-map')
       )
@@ -113,34 +115,34 @@ module.exports = {
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
+              // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/
             }])
             .end()
           config
             .optimization.splitChunks({
-              chunks: 'all',
-              cacheGroups: {
-                libs: {
-                  name: 'chunk-libs',
-                  test: /[\\/]node_modules[\\/]/,
-                  priority: 10,
-                  chunks: 'initial' // only package third parties that are initially dependent
-                },
-                elementUI: {
-                  name: 'chunk-elementUI', // split elementUI into a single package
-                  priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
-                },
-                commons: {
-                  name: 'chunk-commons',
-                  test: resolve('resources/page/components'), // can customize your rules
-                  minChunks: 3, //  minimum common number
-                  priority: 5,
-                  reuseExistingChunk: true
-                }
+            chunks: 'all',
+            cacheGroups: {
+              libs: {
+                name: 'chunk-libs',
+                test: /[\\/]node_modules[\\/]/,
+                priority: 10,
+                chunks: 'initial' // only package third parties that are initially dependent
+              },
+              elementUI: {
+                name: 'chunk-elementUI', // split elementUI into a single package
+                priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+                test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+              },
+              commons: {
+                name: 'chunk-commons',
+                test: resolve('resources/page/components'), // can customize your rules
+                minChunks: 3, //  minimum common number
+                priority: 5,
+                reuseExistingChunk: true
               }
-            })
+            }
+          })
           config.optimization.runtimeChunk('single')
         }
       )
