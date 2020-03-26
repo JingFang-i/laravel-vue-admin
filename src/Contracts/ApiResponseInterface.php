@@ -4,9 +4,9 @@
 namespace Jmhc\Admin\Contracts;
 
 
-use Jmhc\Admin\Api\Result;
+use Jmhc\Admin\Response\Result;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use League\Fractal\TransformerAbstract;
 
