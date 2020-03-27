@@ -76,6 +76,7 @@ class AdminServiceProvider extends ServiceProvider
             __DIR__ . '/../config/upload.php.stub' => config_path('upload.php'),
             __DIR__ . '/../config/permission.php.stub' => config_path('permission.php'),
             __DIR__ . '/../routes/RouteServiceProvider.php.stub' => app_path('Providers/RouteServiceProvider.php'),
+            __DIR__ . '/../routes/admin.php' => base_path('routes/admin.php'),
             __DIR__ . '/../resources/page' => resource_path('page'),
             __DIR__ . '/../resources/build' => base_path('build'),
             __DIR__ . '/../resources/plop-templates' => resource_path('plop-templates'),
