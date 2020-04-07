@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Jmhc\Admin\UserGuard;
 
 class CheckPermission
 {
@@ -27,8 +28,9 @@ class CheckPermission
      */
     public function handle($request, Closure $next, $guard)
     {
-        $user = auth($guard)->user();
-        if ($user->hasRole(1)) {
+        UserGuard::setGuard($guard);
+        $user = UserGuard::getUser();
+        if ($user->hasRole('admin')) {
             return $next($request);
         }
         if (!$user->hasPermissionTo($request->route()->getName())) {

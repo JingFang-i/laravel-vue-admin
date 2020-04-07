@@ -25,19 +25,20 @@ class UserGuard
     }
 
     /**
+     * 设置守卫名称
+     * @param string $name
+     */
+    public static function setGuard(string $name)
+    {
+        self::$guard = $name;
+    }
+
+    /**
      * 获取守卫名称
      * @return string
      */
-    public static function getGuard()
+    public static function getGuard(): string
     {
-        if (empty(self::$guard)) {
-            $routePrefix = request()->route()->getPrefix();
-            if (strpos($routePrefix, 'admin') !== false) {
-                self::$guard = 'admin';
-            } else {
-                self::$guard = 'api';
-            }
-        }
         return self::$guard;
     }
 
