@@ -19,7 +19,7 @@ class PermissionRepository extends Repository
     public function allPermissions()
     {
         $user = UserGuard::getUser();
-        if ($user->hasRole(1)) {
+        if ($user->hasRole('admin')) {
             if (Cache::has(self::ALL_PERMISSION_CACHE_PREFIX)){
                 return Cache::get(self::ALL_PERMISSION_CACHE_PREFIX);
             } else {
