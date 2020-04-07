@@ -20,6 +20,7 @@ class PermissionService extends Service
         return [
             'title' => ['bail', 'required', 'max:10'],
             'name' => ['bail', 'required', 'string', 'max:255'],
+            'guard_name' => ['bail', 'required', 'string', 'max:255'],
             'component_path' => ['bail', 'string', 'nullable', 'max:255'],
             'view_route_name' => ['bail', 'string', 'nullable', 'max:50'],
             'is_menu' => ['bail', Rule::in(0, 1)],
@@ -33,6 +34,8 @@ class PermissionService extends Service
             'title.max' => '权限标题不能超过10个字',
             'name.required' => '权限名称不能为空',
             'name.max' => '权限名称最多只能为255个字符',
+            'guard_name.required' => '守卫名称不能为空',
+            'guard_name.max' => '守卫名称最多只能为255个字符',
             'component_path.max' => '组件路径不能超过255个字符',
             'component_path.required' => '菜单组件路径不能为空',
             'view_route_name.max' => '视图路由名称不能超过50个字符',
