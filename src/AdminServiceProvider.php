@@ -33,6 +33,7 @@ class AdminServiceProvider extends ServiceProvider
         'queryNull',
         'unauthenticated',
         'tokenInvalid',
+        'fatalError',
     ];
 
     /**
@@ -131,7 +132,7 @@ class AdminServiceProvider extends ServiceProvider
             return $responseFactory->make($apiResponse->success($data, $msg));
         });
         //error
-        $responseFactory->macro('error', function(string $msg = '', int $code = 5000) use ($responseFactory, $apiResponse){
+        $responseFactory->macro('error', function(string $msg = '', int $code = 400) use ($responseFactory, $apiResponse){
             return $responseFactory->make($apiResponse->error($msg, $code));
         });
         //other

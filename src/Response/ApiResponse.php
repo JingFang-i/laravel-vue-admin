@@ -110,4 +110,13 @@ class ApiResponse implements ApiResponseInterface
         return new Result(420);
     }
 
+    /**
+     * 致命错误
+     * @return Result
+     */
+    public function fatalError(string $msg)
+    {
+        return new Result(500, [], $msg);
+    }
+
 }
