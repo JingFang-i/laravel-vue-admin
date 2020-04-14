@@ -96,11 +96,12 @@ class ServiceCommand extends Command
         $selectOptions = $this->makeSelectStr($parsedTable['fieldInfo']);
 
         $controllerNamespace = config('admin.controller_prefix') . ($prefix ? "\\" . $prefix : '');
+        $controllerNamespace = str_replace('{:moduleName}', $moduleName, $controllerNamespace);
         //控制器模板
         $controllerStub = str_replace([
             '{%namespace%}', '{%name%}'
         ], [
-            $controllerNamespace, $moduleName, $modelName
+            $controllerNamespace, $modelName
         ], $this->getStub('controller'));
 
         $controllerFilePath = $controllerPath . '/' . $modelName . 'Controller.php';

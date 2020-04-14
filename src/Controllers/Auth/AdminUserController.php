@@ -4,9 +4,7 @@
 namespace Jmhc\Admin\Controllers\Auth;
 
 use Illuminate\Routing\Controller;
-use Jmhc\Admin\Models\Auth\AdminUser;
-use Jmhc\Admin\Repositories\Auth\AdminUserRepository;
-use Jmhc\Admin\Services\Auth\AdminUserService;
+use Jmhc\Admin\Contracts\Service;
 use Jmhc\Admin\Traits\HasResourceRoutes;
 
 class AdminUserController extends Controller
@@ -17,8 +15,8 @@ class AdminUserController extends Controller
      * 分配角色
      * @return mixed
      */
-    public function assignRole()
+    public function assignRole(Service $service)
     {
-        return $this->service->assignRole();
+        return $service->assignRole();
     }
 }

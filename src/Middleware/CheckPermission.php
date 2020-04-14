@@ -5,8 +5,6 @@ namespace Jmhc\Admin\Middleware;
 
 use Closure;
 use Illuminate\Routing\ResponseFactory;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Jmhc\Admin\UserGuard;
 
 class CheckPermission
