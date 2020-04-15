@@ -29,8 +29,9 @@ class CheckPermission
         if ($user->hasRole('admin')) {
             return $next($request);
         }
-        if (!$user->hasPermissionTo($request->route()->getName())) {
-            return $this->response->unauthenticated();
+        $name = $request->route()->getName();
+        if (empty($name) || !$user->hasPermissionTo($name)) {
+            return response()->unauthenticated();
         }
         return $next($request);
     }
