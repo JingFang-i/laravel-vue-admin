@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Repository
- * @package App\Repositories
  */
 abstract class Repository implements RepositoryInterface
 {

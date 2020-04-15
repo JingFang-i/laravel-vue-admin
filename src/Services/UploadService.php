@@ -5,7 +5,6 @@ namespace Jmhc\Admin\Services;
 
 use Jmhc\Admin\Repositories\System\AttachmentRepository;
 use Illuminate\Http\UploadedFile;
-use Jmhc\Admin\UserGuard;
 
 class UploadService
 {
@@ -105,7 +104,7 @@ class UploadService
         $data = [
             'album_id' => intval($albumId),
             'name' => $file->getClientOriginalName(),
-            'admin_id' => UserGuard::getUser()->id,
+            'admin_id' => auth()->id(),
             'path' => $filename,
             'mime_type' => $file->getMimeType(),
             'size' => $file->getSize(),

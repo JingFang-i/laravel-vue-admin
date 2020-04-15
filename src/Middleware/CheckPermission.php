@@ -5,7 +5,6 @@ namespace Jmhc\Admin\Middleware;
 
 use Closure;
 use Illuminate\Routing\ResponseFactory;
-use Jmhc\Admin\UserGuard;
 
 class CheckPermission
 {
@@ -26,8 +25,7 @@ class CheckPermission
      */
     public function handle($request, Closure $next, $guard)
     {
-        UserGuard::setGuard($guard);
-        $user = UserGuard::getUser();
+        $user = auth()->user();
         if ($user->hasRole('admin')) {
             return $next($request);
         }

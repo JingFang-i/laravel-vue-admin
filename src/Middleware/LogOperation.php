@@ -7,7 +7,6 @@ namespace Jmhc\Admin\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Route;
 use Jmhc\Admin\Models\System\AdminLog;
-use Jmhc\Admin\UserGuard;
 use Spatie\Permission\Models\Permission;
 
 class LogOperation
@@ -29,7 +28,7 @@ class LogOperation
      */
     public function handle($request, Closure $next)
     {
-        $user = UserGuard::getUser();
+        $user = auth()->user();
         if ($user) {
             $permission = Permission::where('name', Route::currentRouteName())->select('pid', 'title')->first();
             if ($permission) {

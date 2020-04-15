@@ -4,9 +4,8 @@
 namespace Jmhc\Admin\UEditor;
 
 
-use App\Models\System\Attachment;
+use Jmhc\Admin\Models\System\Attachment;
 use Illuminate\Http\Request;
-use Jmhc\Admin\UserGuard;
 
 class UEditor
 {
@@ -294,7 +293,7 @@ class UEditor
         $attachment = [
             'album_id' => 0,
             'name' => $fileInfo['original'],
-            'admin_id' => UserGuard::getUser()->id,
+            'admin_id' => auth()->id(),
             'path' => $fileInfo['url'],
             'mime_type' => $fileInfo['mime_type'],
             'size' => $fileInfo['size'],
