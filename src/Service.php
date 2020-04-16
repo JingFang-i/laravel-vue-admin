@@ -88,7 +88,7 @@ abstract class Service implements ServiceInterface
 
     /**
      * 获取服务实例
-     * @return \Jmhc\Admin\Contracts\Service
+     * @return \Jmhc\Admin\Contracts\Service|static:class
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public static function instance()

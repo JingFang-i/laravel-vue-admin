@@ -266,7 +266,7 @@ abstract class Repository implements RepositoryInterface
 
     /**
      * 实例化服务类
-     * @return \Jmhc\Admin\Contracts\Repository
+     * @return \Jmhc\Admin\Contracts\Repository|static::class
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public static function instance()
