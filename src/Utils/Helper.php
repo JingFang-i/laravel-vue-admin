@@ -102,4 +102,28 @@ class Helper
         return "[{$itemStr}
 {$space}]" . ($first ? '' : ',');
     }
+
+    /**
+     * 解析多个id参数
+     * @param $ids
+     * @return array
+     */
+    public static function parseIds($ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (!is_array($ids)) {
+            return [];
+        }
+        $ids = array_filter(array_map(function($id) {
+            return intval($id);
+        }, $ids), function($id) {
+            return !empty($id);
+        });
+        return $ids;
+    }
 }

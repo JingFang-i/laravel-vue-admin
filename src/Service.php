@@ -17,6 +17,9 @@ abstract class Service implements ServiceInterface
 {
     use HasResourceActions, HasValidate, HasMultiEdit, HasMultiDestroy;
 
+    /**
+     * @var Repository|\Illuminate\Database\Eloquent\Builder
+     */
     protected $repository; //仓储实例，主要用于数据处理
     protected $validator; //表单验证请求
     protected $transformer; //数据转换器
