@@ -31,7 +31,8 @@ abstract class Service implements ServiceInterface
      */
     protected $response; // 响应实例
 
-    protected $user; //当前登录的用户
+    protected $user; // 当前登录的用户
+    protected $guardName; // 当前守卫名称
 
     protected $errorMsg = ''; // 错误信息
 
@@ -41,7 +42,9 @@ abstract class Service implements ServiceInterface
         $this->request = request();
         $this->response = response();
 
-        $this->user = auth()->user();
+        $authManager = auth();
+        $this->user = $authManager->user();
+        $this->guardName = $authManager->getDefaultDriver();
     }
 
     /**
