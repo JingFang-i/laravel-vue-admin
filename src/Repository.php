@@ -277,6 +277,15 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
+     * 返回Model
+     * @return Model
+     */
+    public function model(): Model
+    {
+        return $this->model;
+    }
+
+    /**
      * 可直接调用model方法
      * @param $name
      * @param $arguments
