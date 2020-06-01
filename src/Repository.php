@@ -4,6 +4,7 @@
 namespace Jmhc\Admin;
 
 
+use Illuminate\Support\Str;
 use Jmhc\Admin\Contracts\Repository as RepositoryInterface;
 use Jmhc\Admin\Factories\ServiceBindFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -39,10 +40,23 @@ abstract class Repository implements RepositoryInterface
      */
     public function lists(array $params, array $with = [], array $extraWhere = [])
     {
-        $where = $this->buildWhereByParams($params);
-        if ($where !== false) {
+        list($normalFilters, $relationFilters, $operate) = $this->parseParams($params);
+
+        $where = $this->buildWhereByParams($normalFilters, $operate);
+        if ($where) {
             $this->model = $this->model->where($where);
         }
+        if ($relationFilters) {
+            foreach ($relationFilters as $relationName => $filter) {
+                $relationWhere = $this->buildWhereByParams($filter, $operate);
+                if ($relationWhere) {
+                    $this->model = $this->model->whereHas($relationName, function($query) use($relationWhere) {
+                        $query->where($relationWhere);
+                    });
+                }
+            }
+        }
+
         $pageSize = array_key_exists('page_size', $params) ? $params['page_size'] : self::PER_PAGE;
         $pageSize = $pageSize > 500 ? 500 : $pageSize;
 
@@ -157,19 +171,44 @@ abstract class Repository implements RepositoryInterface
         return $this->model->find($id);
     }
 
+
+    /**
+     * 解析参数
+     * @param array $params
+     * @return mixed
+     */
+    protected function parseParams(array $params)
+    {
+        $filter = $this->decodeParam('filter', $params);
+        $operate = $this->decodeParam('operate', $params);
+        if (empty($filter) || empty($operate)) {
+            return [[], [], []];
+        }
+        $normalFilters = $relationFilters = [];
+        foreach ($filter as $field => $value) {
+            if (strpos($field, '.')){
+                list($relationName, $name) = explode('.', $field);
+                $relationName = Str::camel($relationName);
+                if (!array_key_exists($relationName, $relationFilters)) {
+                    $relationFilters[$relationName]= [$name => $value];
+                } else {
+                    $relationFilters[$relationName][$name] = $value;
+                }
+            } else {
+                $normalFilters[$field] = $value;
+            }
+        }
+        return [$normalFilters, $relationFilters, $operate];
+    }
+
     /**
      * 通过参数构建where条件
      *
      * @param $params
      * @return bool|\Closure
      */
-    protected function buildWhereByParams($params)
+    protected function buildWhereByParams($filter, $operate)
     {
-        $filter = $this->decodeParam('filter', $params);
-        $operate = $this->decodeParam('operate', $params);
-        if (empty($filter) || empty($operate)) {
-            return false;
-        }
         $where = function($query) use ($filter, $operate) {
             foreach ($filter as $k => $v) {
                 $op = isset($operate[$k]) ? $operate[$k] : '=';
@@ -259,7 +298,7 @@ abstract class Repository implements RepositoryInterface
      */
     protected function decodeParam($name, $params)
     {
-        return isset($params[$name])
+        return array_key_exists($name, $params)
             ? json_decode($params[$name], true)
             : [];
     }
@@ -278,9 +317,9 @@ abstract class Repository implements RepositoryInterface
 
     /**
      * 返回Model
-     * @return Model
+     * @return
      */
-    public function model(): Model
+    public function model()
     {
         return $this->model;
     }
