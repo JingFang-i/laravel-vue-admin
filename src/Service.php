@@ -34,8 +34,8 @@ abstract class Service implements ServiceInterface
      */
     protected $response; // 响应实例
 
-    protected $user; // 当前登录的用户
-    protected $guardName; // 当前守卫名称
+    protected $user = null; // 当前登录的用户
+    protected $guardName = ''; // 当前守卫名称
 
     protected $errorMsg = ''; // 错误信息
 
@@ -44,10 +44,6 @@ abstract class Service implements ServiceInterface
         $this->repository = $repository;
         $this->request = request();
         $this->response = response();
-
-        $authManager = auth();
-        $this->user = $authManager->user();
-        $this->guardName = $authManager->getDefaultDriver();
     }
 
     /**
@@ -100,6 +96,26 @@ abstract class Service implements ServiceInterface
 
         $modelName = substr($serviceName, 0, -7); //去掉Service后缀
         return (new ServiceBindFactory($modelName))->getService(false);
+    }
+
+    public function guardName()
+    {
+        if (!$this->guardName) {
+            $this->guardName = auth()->getDefaultDriver();
+        }
+        return $this->guardName;
+    }
+
+    /**
+     * Get the currently authenticated user.
+     *
+     */
+    public function user()
+    {
+        if (is_null($this->user)) {
+            $this->user = auth()->user();
+        }
+        return $this->user;
     }
 
 
