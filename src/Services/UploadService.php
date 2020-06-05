@@ -3,7 +3,7 @@
 
 namespace Jmhc\Admin\Services;
 
-use Jmhc\Admin\Repositories\System\AttachmentRepository;
+use Jmhc\Admin\Models\System\Attachment;
 use Illuminate\Http\UploadedFile;
 
 class UploadService
@@ -110,7 +110,7 @@ class UploadService
             'size' => $file->getSize(),
         ];
 
-        return AttachmentRepository::instance()->store($data);
+        return Attachment::instance()->store($data);
     }
 
     /**
