@@ -5,6 +5,7 @@ namespace Jmhc\Admin\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Jmhc\Admin\Utils\Helper;
 
 class ServiceCommand extends Command
@@ -235,7 +236,7 @@ class ServiceCommand extends Command
      */
     protected function makeRoute($prefix, $modelName)
     {
-        $routeName = Helper::convertToLower($modelName, '-');
+        $routeName = Str::plural(Helper::convertToLower($modelName, '-'));
         $controllerPath = $prefix ? str_replace('/', "\\", $prefix) . "\\" : '';
         $data = "\r\n// " . $modelName;
         $data .= "\r\n" . sprintf("Route::resource('%s', '%s%s');", $routeName,
