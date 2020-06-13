@@ -3,6 +3,7 @@
 
 namespace Jmhc\Admin;
 
+
 use Jmhc\Admin\Factories\ServiceBindFactory;
 use Jmhc\Admin\Traits\HasMultiDestroy;
 use Jmhc\Admin\Traits\HasMultiEdit;
@@ -29,7 +30,6 @@ abstract class Service implements ServiceInterface
      */
     protected $request; // 请求实例
     /**
-     *
      * @var ResponseFactory
      */
     protected $response; // 响应实例
@@ -44,6 +44,7 @@ abstract class Service implements ServiceInterface
         $this->repository = $repository;
         $this->request = request();
         $this->response = response();
+
     }
 
     /**
@@ -88,7 +89,7 @@ abstract class Service implements ServiceInterface
     /**
      * 获取服务实例
      * @return \Jmhc\Admin\Contracts\Service|static:class
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Exception
      */
     public static function instance()
     {
@@ -108,7 +109,6 @@ abstract class Service implements ServiceInterface
 
     /**
      * Get the currently authenticated user.
-     *
      */
     public function user()
     {
