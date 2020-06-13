@@ -110,7 +110,7 @@ class UploadService
             'size' => $file->getSize(),
         ];
 
-        return Attachment::instance()->store($data);
+        return Attachment::create($data);
     }
 
     /**
