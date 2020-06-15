@@ -27,13 +27,15 @@ class UploadService
         $responseData = [];
         if (is_array($files) && count($files) > 0) {
             foreach ($files as $file) {
-                if ($res = $this->validateFile($file) !== true) {
+                $res = $this->validateFile($file);
+                if ($res !== true) {
                     return $response->error($res);
                 }
                 $responseData[] = $this->storeFile($file, $albumId);
             }
         } else {
-            if ($res = $this->validateFile($files) !== true) {
+            $res = $this->validateFile($files);
+            if ($res !== true) {
                 return $response->error($res);
             }
             $responseData = $this->storeFile($files, $albumId);
