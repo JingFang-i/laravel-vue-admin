@@ -53,10 +53,10 @@ class AdminUserService extends Service
      */
     public function index()
     {
-        if ($this->user->hasRole(1)) {
+        if ($this->user()->hasRole('admin')) {
             $lists = $this->repository->lists($this->request->query(), ['roles:id,name']);
         } else {
-            $roleIds = array_column(RoleRepository::instance()->getUserAllRoles(intval($this->user->id)), 'id');
+            $roleIds = array_column(RoleRepository::instance()->getUserAllRoles(intval($this->user()->id)), 'id');
             $lists = $this->repository->getAdminUserByRoleIds($roleIds, ['roles:id,name']);
         }
         return $this->response->paginator($lists);
@@ -99,10 +99,10 @@ class AdminUserService extends Service
     public function updateSelf()
     {
         $data = $this->request->input();
-        if (!$this->validate($data, $this->user->id)) {
+        if (!$this->validate($data, $this->user()->id)) {
             return $this->response->error($this->errorMsg);
         }
-        if ($this->user->fill($data)->save()) {
+        if ($this->user()->fill($data)->save()) {
             return $this->response->success();
         } else {
             return $this->response->error('修改失败');

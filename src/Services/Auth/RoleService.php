@@ -83,10 +83,10 @@ class RoleService extends Service
     {
         //如果当前用户是超级管理员，则可以获取所有角色
         //如果是其他用户，则只获取其下面的角色
-        if ($this->user->hasRole(1)) {
+        if ($this->user()->hasRole('admin')) {
             $allRole = $this->repository->all()->toArray();
         } else {
-            $allRole = $this->repository->getUserAllRoles($this->user->id);
+            $allRole = $this->repository->getUserAllRoles($this->user()->id);
         }
         if ($this->request->has('is_select')) {
             $allRole = array_map(function($item) {
@@ -108,7 +108,7 @@ class RoleService extends Service
      */
     protected function beforeStore(array $data): array
     {
-        $data['parent_id'] = $this->user->id;
+        $data['parent_id'] = $this->user()->id;
         return $data;
     }
 

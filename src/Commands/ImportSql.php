@@ -23,7 +23,7 @@ class ImportSql extends Command
     protected $description = '导入sql';
 
 
-    protected $sqlFileName = ['admin'];
+    protected $sqlFileName = ['admin', 'areas'];
 
 
     public function handle()
@@ -36,7 +36,9 @@ class ImportSql extends Command
     {
         foreach ($this->getSql() as $sqlPath) {
             $sql = file_get_contents($sqlPath);
-            DB::unprepared($sql);
+            $pdo = DB::connection()->getPdo();
+            $pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, 0);
+            $pdo->exec($sql);
         }
     }
 
