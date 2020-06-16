@@ -835,7 +835,7 @@ export default {
   .search {
     float: right;
     margin: 10px 0 10px 0;
-    /deep/.photoSelect {
+    ::v-deep.photoSelect {
       input {
         width: 200px;
         height: 28px;
@@ -843,7 +843,7 @@ export default {
     }
   }
   .el-form-item {
-    /deep/.el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
+    ::v-deep.el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
       width: 100%;
     }
   }

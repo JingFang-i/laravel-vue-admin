@@ -84,7 +84,7 @@ export default {
 </script>
 <style lang="scss" scope>
 .key-value-table {
-  /deep/ {
+  ::v-deep {
     .el-table__header-wrapper {
       border-radius: 10px 10px 0px 0px;
     }

@@ -43,7 +43,7 @@ export default {
   .form-box {
     width: 100%;
     padding: 5px 50px;
-    /deep/ .el-form-item {
+    ::v-deep .el-form-item {
       margin: 0 10px;
     }
   }

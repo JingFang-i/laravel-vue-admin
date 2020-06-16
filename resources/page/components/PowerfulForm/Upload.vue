@@ -349,7 +349,7 @@ export default {
 <style lang='scss' scoped>
 .wrap {
   padding: 0 !important;
-  /deep/.el-dialog__wrapper {
+  ::v-deep.el-dialog__wrapper {
     .el-dialog {
       width: 933px !important;
       .el-dialog__body {
@@ -409,7 +409,7 @@ export default {
     padding: 20px;
     margin-top: 28px;
     border-radius: 10px;
-    /deep/.el-upload--picture-card {
+    ::v-deep.el-upload--picture-card {
       width: 267px;
       height: 147px;
       line-height: 0px !important;
@@ -426,7 +426,7 @@ export default {
   .bottons-group {
     display: flex;
     justify-content: space-between;
-    /deep/.photoSelect {
+    ::v-deep.photoSelect {
       .el-input {
         width: 150px;
         height: 28px;
@@ -449,7 +449,7 @@ export default {
       padding-bottom: 20px;
       margin-bottom: 20px;
       border-bottom: 1px solid #e9e9e9;
-      /deep/.el-input {
+      ::v-deep.el-input {
         width: 342px;
       }
     }
@@ -458,7 +458,7 @@ export default {
       flex-wrap: wrap;
       overflow: auto;
       height: 360px;
-      /deep/.el-image {
+      ::v-deep.el-image {
         width: 100%;
         height: 100%;
         margin: 0;
