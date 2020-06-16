@@ -17,7 +17,7 @@ composer require frey/laravel-vue-admin
 ```php
 'providers' => [
 
-    ...
+    //...
 
     Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
     Spatie\Permission\PermissionServiceProvider::class,
@@ -30,12 +30,12 @@ composer require frey/laravel-vue-admin
 php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
 
 // 这一行命令会覆盖routes/api.php和 RouteServiceProvider.php
-php artisan vendor:publish --provider="Jmhc\Admin\AdminServiceProvider" --force
+php artisan vendor:publish --tag=public --force
 ```
 ##### 数据库配置
 
 在数据库中新好数据库，在.env中进行配置
-```php
+```dotenv
 ...
 DB_DATABASE=laravel
 DB_USERNAME=root
@@ -112,7 +112,7 @@ php artisan admin:generate table_name --model=TableName --module=Admin --view --
 * --force 此参数存在则表示强制覆盖
 
 ##### 重置管理员密码
-```php
+```bash
 php artisan admin:password account password
 // 如
 php artisan admin:password admin 123456
