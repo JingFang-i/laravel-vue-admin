@@ -68,4 +68,14 @@ trait HasResourceRoutes
     {
         return $service->multiDestroy();
     }
+
+    /**
+     * 排序
+     * @param Service $service
+     * @return mixed
+     */
+    public  function sort(Service $service)
+    {
+        return $service->sort();
+    }
 }

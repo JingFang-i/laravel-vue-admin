@@ -83,6 +83,9 @@ class CreatePage
         if (!empty($info['selectList'])) {
             $fields['selectList'] = $info['selectList'];
         }
+        if (in_array($info['field'], ['id', 'weigh', 'created_at', 'updated_at'])) {
+            $fields['editable'] = false;
+        }
         return $fields;
     }
 
@@ -112,6 +115,7 @@ class CreatePage
             $prefix = Helper::convertToLower($this->prefix, '-');
             $viewDir = resource_path('page/views/' . $prefix);
             $viewPath = $viewDir . '/' . $name . '.vue';
+            $name = $prefix . '/' . $name;
         } else {
             $viewDir = resource_path('page/views/' . $name);
             $viewPath = $viewDir . '/index.vue';

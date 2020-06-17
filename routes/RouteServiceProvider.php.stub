@@ -27,6 +27,11 @@ class RouteServiceProvider extends ServiceProvider
         //
         Route::pattern('id', '[0-9]+');
 
+        $registrar = new \Jmhc\Admin\Routing\ResourceRegistrar($this->app['router']);
+        $this->app->bind(\Illuminate\Routing\ResourceRegistrar::class, function() use ($registrar) {
+            return $registrar;
+        });
+
         parent::boot();
     }
 

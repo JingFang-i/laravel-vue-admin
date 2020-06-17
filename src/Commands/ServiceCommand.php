@@ -241,12 +241,6 @@ class ServiceCommand extends Command
         $data = "\r\n// " . $modelName;
         $data .= "\r\n" . sprintf("Route::resource('%s', '%s%s');", $routeName,
             $controllerPath, $modelName . 'Controller');
-        $data .= "\r\n// " . $modelName . ' 批量操作';
-        $data .= "\r\n" . sprintf("Route::post('%s/multi', '%s%s')->name('%s.multi');", $routeName,
-                $controllerPath, $modelName . 'Controller@multi', $routeName);
-        $data .= "\r\n// " . $modelName . ' 批量删除';
-        $data .= "\r\n" . sprintf("Route::post('%s/multi-del', '%s%s')->name('%s.multidestroy');", $routeName,
-                $controllerPath, $modelName . 'Controller@multiDestroy', $routeName) . "\r\n";
         $this->fileSystem->append($this->routePath, $data);
     }
 

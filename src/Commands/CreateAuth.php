@@ -22,6 +22,7 @@ class CreateAuth
         'delete' => '删除',
         'multi'  => '批量更新',
         'multi-del' => '批量删除',
+        'sort' => '排序',
     ];
 
     public function __construct($prefix, $name, $module)
@@ -34,16 +35,17 @@ class CreateAuth
     public function run()
     {
         $lowerName = Helper::convertToLower($this->name, '-');
-        $pid = 0;
+        $pid = $this->insertParent();
         if ($this->prefix) {
-            $pid = $this->insertParent();
             $componentPath = '/' . Helper::convertToLower($this->prefix, '-') . '/' . $lowerName;
+            $routePath = $lowerName;
         } else {
             $componentPath = '/' . $lowerName . '/index';
+            $routePath = 'index';
         }
         // 插入数据
         $title = ucfirst(Helper::convertToLower($this->name, ''));
-        $authId = $this->_createData($title, $this->name, $lowerName, $componentPath, $lowerName, $pid);
+        $authId = $this->_createData($title, $this->name, $lowerName, $componentPath, $routePath, $pid);
         $this->_createPermissions($authId, $lowerName);
     }
 
@@ -53,9 +55,16 @@ class CreateAuth
      */
     protected function insertParent()
     {
-        $title = ucfirst(Helper::convertToLower($this->prefix, ''));
-        $rule = Helper::convertToLower($this->prefix, '-');
-        $routePath = '/' . $rule;
+        if ($this->prefix) {
+            $title = ucfirst(Helper::convertToLower($this->prefix, ''));
+            $rule = Helper::convertToLower($this->prefix, '-');
+            $routePath = '/' . $rule;
+        } else {
+            $lowerName = Helper::convertToLower($this->name, '-');
+            $title = ucfirst(Helper::convertToLower($this->name, ''));
+            $rule = $lowerName . '-home';
+            $routePath = '/' . $lowerName;
+        }
         return $this->_createData($title, '', $rule, '', $routePath);
     }
 

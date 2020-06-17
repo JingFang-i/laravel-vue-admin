@@ -15,7 +15,7 @@
 </template>
 <script>
 import PowerfulTable from '@/components/PowerfulTable'
-import { lists, update, del, add, multiUpdate, multiDel } from '@/api/system/{%name%}'
+import { lists, update, del, add, multiUpdate, multiDel } from '@/api/{%name%}'
 export default {
   components: {
     PowerfulTable
@@ -32,7 +32,8 @@ export default {
         add: '{%name%}.store',
         del: '{%name%}.delete',
         updateBatch: '{%name%}.multi',
-        deleteBatch: '{%name%}.multi-del'
+        deleteBatch: '{%name%}.multi-del',
+        sort: '{%name%}.sort'
       },
     }
   },
