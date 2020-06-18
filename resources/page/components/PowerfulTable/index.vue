@@ -78,7 +78,7 @@
       <el-button type="primary" size="mini" icon="el-icon-box" @click="moreQuery">高级查询</el-button>
 
       <el-button
-        v-if="operates.includes('add') && checkPermission(permissionRules.add)"
+        v-if="operations.includes('add') && checkPermission(permissionRules.add)"
         type="primary"
         size="mini"
         icon="el-icon-plus"
@@ -188,10 +188,10 @@
             </template>
           </el-table-column>
         </template>
-        <el-table-column v-if="operates.length!==0" label="操作" width="250">
+        <el-table-column v-if="operations.length!==0" label="操作" width="250">
           <template slot-scope="scope">
             <div class="r-nw-fs-c">
-              <template v-for="(operate, key) in operatesButtons">
+              <template v-for="(operate, key) in operationButtons">
                 <el-button
                   v-if="key < 2 && operate.name === 'drag'"
                   type="primary"
@@ -229,7 +229,7 @@
                 </el-popover>
               </template>
               <el-dropdown
-                v-if="operatesButtons.length > 2"
+                v-if="operationButtons.length > 2"
                 trigger="click"
                 style="float:left;"
                 @command="operateCommand"
@@ -239,7 +239,7 @@
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <template v-for="(item, index) in operatesButtons">
+                  <template v-for="(item, index) in operationButtons">
                     <el-dropdown-item
                       v-if="index > 1"
                       :key="index"
@@ -262,7 +262,7 @@
     >
       <slot name="form" :fields="fields" :rules="rules" :row="editRow">
         <powerful-form
-          v-if="operates.indexOf('edit') !== -1"
+          v-if="operations.indexOf('edit') !== -1"
           :fields="fields"
           :rules="rules"
           :row="editRow"
@@ -348,7 +348,7 @@
         type: Function,
         default: null
       },
-      operates: {
+      operations: {
         type: Array,
         default: () => []
       },
@@ -527,9 +527,9 @@
           ? 'prev, pager, next, jumper'
           : 'prev, pager, next'
       },
-      operatesButtons() {
+      operationButtons() {
         return this.defaultOperateButtons.filter(item => {
-          return this.operates.includes(item.name)
+          return this.operations.includes(item.name)
         }).concat(this.buttons).filter(item => {
           return this.checkPermission(this.permissionRules[item.name])
         })
@@ -783,9 +783,11 @@
 
         this.tableLoading = false
         this.refreshLoading = false
-        this.$nextTick(() => {
-          this.setSort()
-        })
+        if (this.operations.includes('drag')) {
+          this.$nextTick(() => {
+            this.setSort()
+          })
+        }
       },
       // 提交表单
       submit(row) {

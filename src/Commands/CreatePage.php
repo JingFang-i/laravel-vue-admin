@@ -27,13 +27,17 @@ class CreatePage
     public function run()
     {
         $fieldRule = $rules = [];
+        $operations = ['add', 'edit', 'delete'];
         foreach ($this->fieldInfo as $field => $info) {
             $rules[$field] = $this->_createRule($info['title'], $info['rule']);
             $fieldRule[] = $this->_createFields($info);
+            if ($field === 'weigh') {
+                array_unshift($operations, 'drag');
+            }
         }
 
         $this->_createApiPage();
-        $this->_createViewPage($fieldRule, $rules);
+        $this->_createViewPage($fieldRule, $rules, $operations);
     }
 
     private function _createRule($title, $rules)
@@ -108,7 +112,7 @@ class CreatePage
         $this->filesystem->put($apiPath, $template);
     }
 
-    private function _createViewPage($fieldRule, $rules)
+    private function _createViewPage($fieldRule, $rules, $operations)
     {
         $name = Helper::convertToLower($this->name, '-');
         if ($this->prefix) {
@@ -125,10 +129,12 @@ class CreatePage
         }
         $fieldRule = json_encode($fieldRule, JSON_UNESCAPED_UNICODE);
         $rules = json_encode($rules, JSON_UNESCAPED_UNICODE);
+        $operations = json_encode($operations, JSON_UNESCAPED_UNICODE);
+
         $template = $this->filesystem->get(__DIR__ . '/stubs/page.stub');
         $template = str_replace(
-            ['{%name%}', '{%rule%}', '{%fields%}'],
-            [$name, $rules, $fieldRule], $template);
+            ['{%name%}', '{%operations%}',  '{%rule%}', '{%fields%}'],
+            [$name, $operations, $rules, $fieldRule], $template);
         $this->filesystem->put($viewPath, $template);
     }
 
