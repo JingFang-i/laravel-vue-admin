@@ -62,7 +62,7 @@ class CreateAuth
         } else {
             $lowerName = Helper::convertToLower($this->name, '-');
             $title = ucfirst(Helper::convertToLower($this->name, ''));
-            $rule = $lowerName . '-home';
+            $rule = $lowerName . '-root';
             $routePath = '/' . $lowerName;
         }
         return $this->_createData($title, '', $rule, '', $routePath);
