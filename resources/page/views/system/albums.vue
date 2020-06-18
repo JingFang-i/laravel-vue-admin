@@ -1,7 +1,7 @@
 <template>
   <powerful-table
     :fields="fields"
-    :operates="operates"
+    :operations="operations"
     :rules="rules"
     :form-size="formSize"
     :resource="lists"
@@ -45,7 +45,7 @@ export default {
         }
       ],
       // 操作按钮
-      operates: ['add', 'detail', 'edit', 'delete'],
+      operations: ['add', 'detail', 'edit', 'del'],
       rules: {},
       formSize: '30%', // 编辑的尺寸
       permissionRules: {
@@ -53,7 +53,7 @@ export default {
         detail: 'albums.show',
         edit: 'albums.update',
         add: 'albums.store',
-        delete: 'albums.delete',
+        del: 'albums.delete',
         updateBatch: 'albums.multi',
         deleteBatch: 'albums.multi-del'
       }

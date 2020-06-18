@@ -33,8 +33,6 @@
             v-model="editRow[item.field]"
             active-color="#13ce66"
             inactive-color="#ff4949"
-            :active-text="item.selectList ? ('yes' in item ? item.selectList[item.yes] : item.selectList[1]) : '是'"
-            :inactive-text="item.selectList ? ('no' in item ? item.selectList[item.no] : item.selectList[0]) : '否'"
             :active-value="'yes' in item ? item.yes : 1"
             :inactive-value="'no' in item ? item.no : 0"
           />

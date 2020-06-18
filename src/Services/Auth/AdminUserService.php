@@ -6,6 +6,7 @@ namespace Jmhc\Admin\Services\Auth;
 use Jmhc\Admin\Repositories\Auth\RoleRepository;
 use Jmhc\Admin\Service;
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Role;
 
 class AdminUserService extends Service
 {
@@ -14,10 +15,10 @@ class AdminUserService extends Service
     {
         $required = is_null($id);
         $rule = [
-            'username' => ['bail', Rule::requiredIf($required), 'string', 'max:50',
-                'regex:/^[a-zA-Z0-9_\-@\.]{5,20}$/'],
-            'name' => ['bail', Rule::requiredIf($required), 'string', 'max:15'],
-            'password' => ['bail', Rule::requiredIf($required), 'string', 'confirmed'
+            'username' => ['bail', Rule::requiredIf($required), 'string', 'max:15', 'min:4',
+                'regex:/[a-zA-Z0-9_\-@\.]+$/'],
+            'name' => ['bail', Rule::requiredIf($required), 'max:15'],
+            'password' => ['bail', Rule::requiredIf($required), 'confirmed'
 //                , 'regex:/^.*(?=.{6,})(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^\.&*\?]).*$/'],
             , 'min:6', 'max:12'],
             'avatar' => ['bail', 'string', 'max:128'],
@@ -34,8 +35,10 @@ class AdminUserService extends Service
     {
         return [
             'username.required' => '用户名不能为空',
-            'username.max' => '用户名不能超过50个字符',
+            'username.max' => '用户名不能超过15个字符',
             'username.regex' => '用户名只能为数字字母或者_-@.符号',
+            'username.unique' => '用户名已存在',
+            'username.min' => '用户名至少4位',
             'name.required' => '姓名不能为空',
             'name.max' => '姓名最大长度为15个字符',
             'password.required' => '密码不能为空',
@@ -56,7 +59,7 @@ class AdminUserService extends Service
         if ($this->user()->hasRole('admin')) {
             $lists = $this->repository->lists($this->request->query(), ['roles:id,name']);
         } else {
-            $roleIds = array_column(RoleRepository::instance()->getUserAllRoles(intval($this->user()->id)), 'id');
+            $roleIds = array_column((new RoleRepository(new Role()))->getUserAllRoles(intval($this->user()->id)), 'id');
             $lists = $this->repository->getAdminUserByRoleIds($roleIds, ['roles:id,name']);
         }
         return $this->response->paginator($lists);
@@ -99,6 +102,9 @@ class AdminUserService extends Service
     public function updateSelf()
     {
         $data = $this->request->input();
+        if (array_key_exists('password', $data) && !$data['password']) {
+            unset($data['password']);
+        }
         if (!$this->validate($data, $this->user()->id)) {
             return $this->response->error($this->errorMsg);
         }

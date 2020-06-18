@@ -193,8 +193,9 @@
             <div class="r-nw-fs-c">
               <template v-for="(operate, key) in operationButtons">
                 <el-button
-                  v-if="key < 2 && operate.name === 'drag'"
+                  v-if="key < 2 && operate.name === 'sort'"
                   type="primary"
+                  style="margin: 0 5px 0 0;float:left;"
                   size="mini">
                   <svg-icon class="drag-handler" icon-class="drag" />
                 </el-button>
@@ -429,7 +430,7 @@
         },
         defaultOperateButtons: [
           {
-            name: 'drag',
+            name: 'sort',
           },
           {
             name: 'detail',
@@ -450,7 +451,7 @@
             }
           },
           {
-            name: 'delete',
+            name: 'del',
             text: '删除',
             icon: 'el-icon-delete-solid',
             type: 'danger',
@@ -726,6 +727,7 @@
         }
       },
       // 快速查询 默认为ID查询
+      // 快速查询 默认为ID查询
       quickSearch() {
         if (this.keywords) {
           this.queryParams.filter[this.quickSearchField] = this.keywords
@@ -763,9 +765,7 @@
           }
           this._initPopoverStatus(this.rows.length)
           this.throttle = true
-        } catch (err){
-          this.$message.error('发生错误')
-        }
+        } catch (err){console.log(err)}
         // .then(res => {
         //   if (res.data instanceof Array) {
         //     this.rows = res.data
@@ -783,7 +783,7 @@
 
         this.tableLoading = false
         this.refreshLoading = false
-        if (this.operations.includes('drag')) {
+        if (this.operations.includes('sort')) {
           this.$nextTick(() => {
             this.setSort()
           })
@@ -800,7 +800,7 @@
             this.getData()
             this.editRow = {}
           })
-          .catch()
+          .catch(err => console.log(err))
       },
       setSort() {
         const el = this.$refs.multipleTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
@@ -817,8 +817,9 @@
               new_id: this.rows[evt.newIndex].id,
             }
             this.sort(params).then(res => {
+              this.refresh();
               this.$message.success('更新成功')
-            }).catch()
+            }).catch(err => console.log(err))
           }
         })
       }

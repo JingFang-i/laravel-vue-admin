@@ -2,7 +2,7 @@
   <div>
     <powerful-table
       :fields="fields"
-      :operates="operates"
+      :operations="operations"
       :rules="rules"
       :form-size="formSize"
       :buttons="buttons"
@@ -97,12 +97,12 @@ export default {
         detail: 'admin-users.show',
         edit: 'admin-users.update',
         add: 'admin-users.store',
-        delete: 'admin-users.delete',
+        del: 'admin-users.delete',
         updateBatch: 'admin-users.multi',
         deleteBatch: 'admin-users.multi-del',
         assignRole: 'admin-users.assign-role'
       },
-      operates: ['add', 'edit', 'delete'],
+      operations: ['add', 'edit', 'del'],
       rules: {},
       formSize: '30%',
       visibleAssignRoleForm: false,

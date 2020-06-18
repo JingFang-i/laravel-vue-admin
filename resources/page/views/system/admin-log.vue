@@ -1,7 +1,7 @@
 <template>
   <powerful-table
     :fields="fields"
-    :operates="operates"
+    :operations="operations"
     :rules="rules"
     :form-size="formSize"
     :resource="lists"
@@ -22,7 +22,7 @@ export default {
   },
   data() {
     return {
-      operates: ['delete'],
+      operations: ['del'],
       rules: { 'id': [{ 'required': true, 'message': '不能为空', 'trigger': 'blur' }], 'admin_id': [{ 'required': true, 'message': '管理员ID不能为空', 'trigger': 'blur' }, { 'type': 'number', 'message': '管理员ID必须为一个数字', 'trigger': 'blur' }], 'name': [{ 'required': true, 'message': '姓名不能为空', 'trigger': 'blur' }, { 'max': '20', 'message': '姓名长度不能超过20', 'trigger': 'blur' }], 'title': [{ 'max': '255', 'message': '标题长度不能超过255', 'trigger': 'blur' }], 'ip': [{ 'type': 'number', 'message': 'IP必须为一个数字', 'trigger': 'blur' }], 'content': [], 'created_at': [], 'updated_at': [] },
       formSize: '30%',
       permissionRules: {
@@ -30,7 +30,7 @@ export default {
         detail: 'admin-log.show',
         edit: 'admin-log.update',
         add: 'admin-log.store',
-        delete: 'admin-log.delete',
+        del: 'admin-log.delete',
         updateBatch: 'admin-log.multi',
         deleteBatch: 'admin-log.multi-del'
       }

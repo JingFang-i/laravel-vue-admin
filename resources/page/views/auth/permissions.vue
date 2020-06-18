@@ -1,7 +1,7 @@
 <template>
   <powerful-table
     :fields="fields"
-    :operates="operates"
+    :operations="operations"
     :rules="rules"
     :form-size="formSize"
     :resource="lists"
@@ -39,7 +39,7 @@ export default {
         { field: 'created_at', label: '创建时间', type: 'date', operate: 'range', editable: false, searchable: false},
         { field: 'updated_at', label: '更新时间', type: 'date', operate: 'range', editable: false, searchable: false }
       ],
-      operates: ['add', 'edit', 'delete'],
+      operations: ['add', 'edit', 'del'],
       rules: {},
       formSize: '35%',
       deletePopover: false,
@@ -48,7 +48,7 @@ export default {
         detail: 'permissions.show',
         edit: 'permissions.update',
         add: 'permissions.store',
-        delete: 'permissions.delete',
+        del: 'permissions.delete',
         updateBatch: 'permissions.multi',
         deleteBatch: 'permissions.multi-del'
       }

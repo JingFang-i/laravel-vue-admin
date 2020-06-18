@@ -86,7 +86,7 @@ class AdminServiceProvider extends ServiceProvider
             __DIR__ . '/../exception/Handler.php.stub' => app_path('Exceptions/Handler.php'),
             __DIR__ . '/UEditor/config.json' => resource_path('ueditor/config.json'),
             __DIR__ . '/../resources/plugins' => public_path('plugins'),
-        ], 'admin');
+        ], 'freyadmin');
     }
 
     /**

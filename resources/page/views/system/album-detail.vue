@@ -10,7 +10,7 @@
     <div class="content">
       <div class="bottons-group">
         <el-button
-          v-for="(operate, key) in operatesButtons"
+          v-for="(operate, key) in operationsButtons"
           :key="key"
           type="primary"
           style="margin:0 10px 0 0;border-radius:5px"
@@ -67,7 +67,7 @@ export default {
       pageSize: 10,
       pageTotal: 0,
       currentPage: 1,
-      operatesButtons: [
+      operationsButtons: [
         {
           name: 'select_all',
           text: '全选',

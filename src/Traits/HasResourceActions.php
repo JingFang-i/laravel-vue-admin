@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 trait HasResourceActions
 {
 
-    protected $exceptAttribute = [
+    protected $exceptAttributes = [
         'created_at', 'updated_at', 'deleted_at'
     ];
 
@@ -60,7 +60,7 @@ trait HasResourceActions
      */
     public function update(int $id)
     {
-        $formData = $this->request->except($this->exceptAttribute);
+        $formData = $this->request->except($this->exceptAttributes);
         $formData = $this->beforeUpdate($id, $formData);
         if (!is_null($this->validator)) {
             $formData = $this->validator->validated();
@@ -106,6 +106,31 @@ trait HasResourceActions
         } else {
             return $this->response->error();
         }
+    }
+
+    /**
+     * 排序
+     * @return mixed
+     */
+    public function sort()
+    {
+        $oldId = intval($this->request->input('old_id'));
+        $newId = intval($this->request->input('new_id'));
+
+        $oldRow = $this->repository->find($oldId);
+        $newRow = $this->repository->find($newId);
+
+        if (empty($oldRow) || empty($newRow)) {
+            return $this->response->error('记录不存在');
+        }
+
+        $oldWeigh = $oldRow->weigh;
+        $oldRow->weigh = $newRow->weigh;
+        $newRow->weigh = $oldWeigh;
+
+        $oldRow->save();
+        $newRow->save();
+        return $this->response->success();
     }
 
     /**

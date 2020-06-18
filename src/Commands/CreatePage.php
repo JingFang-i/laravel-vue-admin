@@ -12,7 +12,7 @@ class CreatePage
     protected $name = '';
     protected $prefix = '';
     protected $fieldInfo = [];
-    protected $defaultLable = [];
+    protected $fieldMap = [];
 
     protected $filesystem = null ;
 
@@ -22,17 +22,20 @@ class CreatePage
         $this->prefix = $prefix;
         $this->fieldInfo = $fieldInfo;
         $this->filesystem = new Filesystem();
+        $this->fieldMap = require __DIR__ . '/fieldmap.php';
     }
 
     public function run()
     {
         $fieldRule = $rules = [];
-        $operations = ['add', 'edit', 'delete'];
+        $operations = ['add', 'edit', 'del'];
         foreach ($this->fieldInfo as $field => $info) {
-            $rules[$field] = $this->_createRule($info['title'], $info['rule']);
+            if (!in_array($field, ['id', 'created_at', 'updated_at', 'weigh'])) {
+                $rules[$field] = $this->_createRule($info['title'], $info['rule']);
+            }
             $fieldRule[] = $this->_createFields($info);
             if ($field === 'weigh') {
-                array_unshift($operations, 'drag');
+                array_unshift($operations, 'sort');
             }
         }
 
@@ -81,7 +84,8 @@ class CreatePage
     {
         $fields = [
             'field' => $info['field'],
-            'label' => $info['title'] ? $info['title'] : ucfirst($info['field']),
+            'label' => $info['title'] ? $info['title'] : (array_key_exists($info['field'], $this->fieldMap) ?
+                $this->fieldMap[$info['field']] : ucfirst($info['field'])),
             'type' => $info['type'],
         ];
         if (!empty($info['selectList'])) {

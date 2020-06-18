@@ -1,7 +1,7 @@
 <template>
   <powerful-table
     :fields="fields"
-    :operates="operates"
+    :operations="operations"
     :rules="rules"
     :form-size="formSize"
     :resource="lists"
@@ -44,11 +44,12 @@ export default {
     return {
       fields: [
         { field: 'id', label: 'ID', searchable: true, editable: false },
+        { field: 'parent_id', label: '父级', type: 'custom-select',  selectList: lists, visible: false},
         { field: 'name', label: '角色名称', operate: 'like' },
         { field: 'created_at', label: '创建时间', type: 'date', operate: 'range', editable: false },
         { field: 'updated_at', label: '更新时间', type: 'date', operate: 'range', editable: false }
       ],
-      operates: ['add', 'edit', 'delete'],
+      operations: ['add', 'edit', 'del'],
       rules: {},
       formSize: '30%',
       visibleAssignAuthForm: false,
@@ -67,7 +68,7 @@ export default {
         detail: 'roles.show',
         edit: 'roles.update',
         add: 'roles.store',
-        delete: 'roles.delete',
+        del: 'roles.delete',
         updateBatch: 'roles.multi',
         deleteBatch: 'roles.multi-del',
         assignPermission: 'roles.assign-permission'

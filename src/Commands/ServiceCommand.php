@@ -336,6 +336,7 @@ class ServiceCommand extends Command
             case 'tinyint':
             case 'mediumint':
             case 'int':
+            case 'bigint':
                 $column['rule'][] = 'numeric';
                 $column['message'][$columnInfo->COLUMN_NAME . '.numeric'] = $columnInfo->COLUMN_COMMENT . '必须为一个数字';
                 $column['type'] = 'number';
@@ -355,7 +356,7 @@ class ServiceCommand extends Command
                             }
                             if (count($selectList) === 2) {
                                 $selectKeys = array_keys($selectList);
-                                if ($selectKeys[0] == 0 && $selectList[1] == 1) {
+                                if ($selectKeys[0] == 0 && $selectKeys[1] == 1) {
                                     $column['type'] = 'switch';
                                 }
                             }

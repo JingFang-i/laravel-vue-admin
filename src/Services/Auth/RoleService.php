@@ -15,6 +15,7 @@ class RoleService extends Service
     {
         return [
             'name' => ['bail', 'required', 'string', 'max:255'],
+            'parent_id' => ['bail', 'required', 'integer'],
         ];
     }
 
@@ -23,6 +24,8 @@ class RoleService extends Service
         return [
             'name.required' => '请输入角色名称',
             'name.max' => '角色名称不能超过255个字符',
+            'parent_id.required' => '请选择父级',
+            'parent_id.integer' => '父级格式不正确',
         ];
     }
 
@@ -102,14 +105,57 @@ class RoleService extends Service
     }
 
     /**
-     * 处理输入的值
-     * @param $data
-     * @return array
+     * 新增
      */
-    protected function beforeStore(array $data): array
+    public function store()
     {
-        $data['parent_id'] = $this->user()->id;
-        return $data;
+        $formData = $this->request->all();
+        $formData = $this->beforeStore($formData);
+        if (!$this->validate($formData)) {
+            return $this->response->error($this->errorMsg);
+        }
+        $exists = $this->repository->where('guard_name', $this->guardName())
+            ->where('name', $formData['name'])
+            ->exists();
+        if ($exists) {
+            return $this->response->error('该角色已存在');
+        }
+        $model = $this->repository->store($formData);
+        if ($model) {
+            $this->afterStore($model);
+            return $this->response->success(['id' => $model->id]);
+        } else {
+            return $this->response->error();
+        }
+    }
+
+    /**
+     * 更新
+     */
+    public function update(int $id)
+    {
+        if ($id == 1) {
+            return $this->response->error('此角色不允许修改');
+        }
+        if ($this->user()->hasRole($id) && !$this->user()->hasRole('admin')) {
+            return $this->response->error('您不能修改该角色');
+        }
+        $formData = $this->request->except($this->exceptAttributes);
+        if (!$this->validate($formData, $id)) {
+            return $this->response->error($this->errorMsg);
+        }
+        $exists = $this->repository->where('guard_name', $this->guardName())
+            ->where('name', $formData['name'])
+            ->where('id', '<>', $id)
+            ->exists();
+        if ($exists) {
+            return $this->response->error('该角色已存在');
+        }
+        if ($this->repository->update($id, $formData)) {
+            return $this->response->success();
+        } else {
+            return $this->response->error();
+        }
     }
 
     /**
@@ -123,6 +169,9 @@ class RoleService extends Service
         if ($id == 1) {
             $this->errorMsg = '该角色不能删除';
             return false;
+        }
+        if ($this->user()->hasRole($id) && !$this->user()->hasRole('admin')) {
+            return $this->response->error('您不能删除该角色');
         }
         $userIds = DB::table('model_has_roles')->where('role_id', $id)->pluck('model_id');
 

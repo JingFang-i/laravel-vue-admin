@@ -1,7 +1,7 @@
 <template>
   <powerful-table
     :fields="fields"
-    :operates="operates"
+    :operations="operations"
     :rules="rules"
     :form-size="formSize"
     :resource="lists"
@@ -19,7 +19,7 @@ export default {
   },
   data() {
     return {
-      operates: ['delete'],
+      operations: ['del'],
       rules: {},
       formSize: '30%',
       permissionRules: {
@@ -27,7 +27,7 @@ export default {
         detail: 'attachments.show',
         edit: 'attachments.update',
         add: 'attachments.store',
-        delete: 'attachments.delete',
+        del: 'attachments.delete',
         updateBatch: 'attachments.multi',
         deleteBatch: 'attachments.multi-del'
       }
