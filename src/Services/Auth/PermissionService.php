@@ -13,7 +13,7 @@ class PermissionService extends Service
 {
     protected $multiFields = ['is_menu', 'is_hidden'];
     protected $allPermissions = [];
-    protected $exceptAttribute = ['created_at', 'updated_at', 'id', 'children'];
+    protected $exceptAttributes = ['created_at', 'updated_at', 'id', 'children'];
 
     protected function rules($data, $id): array
     {
