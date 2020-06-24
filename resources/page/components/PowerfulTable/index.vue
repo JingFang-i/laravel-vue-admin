@@ -3,7 +3,7 @@
     <el-collapse-transition>
       <search-box v-if="showSearchBox" class="search-box" @search="doSearch">
         <el-form class="form-box r-w-fs-c" label-position="left" size="mini" label-width="auto">
-          <el-row type="flex">
+          <el-row>
             <template v-for="(item, key) in fields">
               <el-col v-if="item.searchable !== false" :key="key" :lg="6" :md="8" :sm="12" :xs="24" style="margin-top: 3px;">
                 <el-form-item :label="item.label">
