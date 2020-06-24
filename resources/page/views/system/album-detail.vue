@@ -52,7 +52,7 @@
 import { getImgUrl } from '@/utils/helper'
 import {
   lists as accessoryLists,
-  deletes as accessoryDelete
+  del as accessoryDelete
 } from '@/api/system/accessory'
 import Empty from '@/components/Empty'
 
