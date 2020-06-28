@@ -119,11 +119,12 @@ class CreatePage
     private function _createViewPage($fieldRule, $rules, $operations)
     {
         $name = Helper::convertToLower($this->name, '-');
+        $path = $name;
         if ($this->prefix) {
             $prefix = Helper::convertToLower($this->prefix, '-');
             $viewDir = resource_path('page/views/' . $prefix);
             $viewPath = $viewDir . '/' . $name . '.vue';
-            $name = $prefix . '/' . $name;
+            $path = $prefix . '/' . $name;
         } else {
             $viewDir = resource_path('page/views/' . $name);
             $viewPath = $viewDir . '/index.vue';
@@ -137,8 +138,8 @@ class CreatePage
 
         $template = $this->filesystem->get(__DIR__ . '/stubs/page.stub');
         $template = str_replace(
-            ['{%name%}', '{%operations%}',  '{%rule%}', '{%fields%}'],
-            [$name, $operations, $rules, $fieldRule], $template);
+            ['{%path%}', '{%name%}', '{%operations%}',  '{%rule%}', '{%fields%}'],
+            [$path, $name, $operations, $rules, $fieldRule], $template);
         $this->filesystem->put($viewPath, $template);
     }
 

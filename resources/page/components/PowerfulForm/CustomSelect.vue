@@ -42,7 +42,7 @@ export default {
       default: 'id'
     },
     selected: {
-      type: [String, Number],
+      type: [String, Number, Array],
       default: ''
     },
     multiple: {

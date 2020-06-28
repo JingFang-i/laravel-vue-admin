@@ -812,6 +812,9 @@
             dataTransfer.setData('Text', '')
           },
           onEnd: evt => {
+            if (evt.oldIndex === evt.newIndex) {
+              return false;
+            }
             const params = {
               old_id: this.rows[evt.oldIndex].id,
               new_id: this.rows[evt.newIndex].id,

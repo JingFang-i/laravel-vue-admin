@@ -3,7 +3,9 @@
     <el-form ref="form" :rules="formRules" class="c-fs-fs" :model="editRow" :validate-on-rule-change="false" :status-icon="true" label-width="25%">
       <template v-for="(item, index) in fields">
         <el-form-item
-          v-if="item.editable !== false"
+          v-if="typeof item.editable === 'function'
+              ? item.editable.call(this, editRow)
+              : item.editable !== false"
           :key="index"
           :label="item.label"
           :prop="item.field"

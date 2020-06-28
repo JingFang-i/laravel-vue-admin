@@ -11,11 +11,12 @@
     :delete-batch="multiDel"
     :update-batch="multiUpdate"
     :permission-rules="permissionRules"
+    :sort="sort"
   />
 </template>
 <script>
 import PowerfulTable from '@/components/PowerfulTable'
-import { lists, update, del, add, multiUpdate, multiDel, sort } from '@/api/{%name%}'
+import { lists, update, del, add, multiUpdate, multiDel, sort } from '@/api/{%path%}'
 export default {
   components: {
     PowerfulTable
