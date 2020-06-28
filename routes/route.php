@@ -16,13 +16,13 @@ Route::prefix('admin')->namespace('Jmhc\Admin\Controllers')->middleware('api')->
         // 更新个人信息
         Route::post('update-info', 'Auth\AuthController@updateInfo')->name('admin-users.update-self');
         //角色
-        Route::apiResource('roles', 'Auth\RoleController');
+        Route::resource('roles', 'Auth\RoleController');
         Route::post('roles/multi', 'Auth\RoleController@multi')->name('roles.multi');
         Route::post('roles/multi-del', 'Auth\RoleController@multiDestroy')->name('roles.multidestroy');
         //角色分配权限
         Route::post('assign-permission', 'Auth\RoleController@assignPermission')->name('roles.assign-permission');
         //权限
-        Route::apiResource('permissions', 'Auth\PermissionController');
+        Route::resource('permissions', 'Auth\PermissionController');
         Route::post('permissions/multi', 'Auth\PermissionController@multi')->name('permissions.multi');
         Route::post('permissions/multi-del', 'Auth\PermissionController@multiDestroy')->name('permissions.multidestroy');
 
@@ -46,7 +46,7 @@ Route::prefix('admin')->namespace('Jmhc\Admin\Controllers')->middleware('api')->
     // 需要验证权限且需要自动加载服务的路由
     Route::middleware(['auth:admin', 'service', 'permission:admin'])->group(function() {
         //管理员
-        Route::apiResource('admin-users', 'Auth\AdminUserController');
+        Route::resource('admin-users', 'Auth\AdminUserController');
         Route::post('admin-users/multi', 'Auth\AdminUserController@multi')->name('admin-users.multi');
         Route::post('admin-users/multi-del', 'Auth\AdminUserController@multiDestroy')->name('admin-users.multidestroy');
         //分配角色
@@ -54,20 +54,22 @@ Route::prefix('admin')->namespace('Jmhc\Admin\Controllers')->middleware('api')->
 
         // *** 系统设置 ***
         // 字典设置
-        Route::apiResource('dictionary', 'System\DictionaryController');
+        Route::resource('dictionary', 'System\DictionaryController');
+        // 获取字典值
+        Route::get('dict', 'System\DictionaryController@getDict');
         // 系统配置
-        Route::apiResource('configs', 'System\ConfigController');
+        Route::resource('configs', 'System\ConfigController');
         Route::post('configs/update-group', 'System\ConfigController@updateGroup')->name('configs.update-group');
 
         // 相册
-        Route::apiResource('albums', 'System\AlbumController');
+        Route::resource('albums', 'System\AlbumController');
         // 图片管理
-        Route::apiResource('attachments', 'System\AttachmentController');
+        Route::resource('attachments', 'System\AttachmentController');
         Route::post('attachments/multi', 'System\AttachmentController@multi')->name('attachments.multi');
         Route::post('attachments/multi-del', 'System\AttachmentController@multiDestroy')->name('attachments.multidestroy');
 
         // AdminLog
-        Route::apiResource('admin-log', 'System\AdminLogController');
+        Route::resource('admin-log', 'System\AdminLogController');
         // AdminLog 批量操作
         Route::post('admin-log/multi', 'System\AdminLogController@multi')->name('admin-log.multi');
         // AdminLog 批量删除

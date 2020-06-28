@@ -50,3 +50,18 @@ export function del(id) {
   })
 }
 
+/**
+ *　获取字典值
+ * @param name {String}
+ */
+export function dict (name) {
+  return request({
+    url: 'dict',
+    method: 'get',
+    params: {
+      name: name
+    }
+  })
+}
+
+
