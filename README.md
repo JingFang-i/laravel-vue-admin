@@ -1,4 +1,5 @@
 ## Laravel-Vue-Admin
+![image](https://s1.ax1x.com/2020/06/29/NfET2j.png)
 Laravel-Vue-Admin主要优势在于前后端分离，具有一键生成功能，页面公共组件强大。后端接口逻辑部分，也就是Service通过Laravel容器进行管理，发挥出Laravel的优势。后端不必再做许多重复的工作，为喜欢Vue的后端php工程师提供便利。laravel-vue-admin参考了许多类似的项目，使用起来都很方便。例如Larave-Admin、FastAdmin，都能快速开发后台。而Laravel-vue-admin也主要是因我个人开发习惯才产生的想法。
 
 ### Laravel-vue-Admin中项目文档
@@ -27,10 +28,8 @@ composer require frey/laravel-vue-admin
 ##### 发布资源
 
 ```bash
-php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
-
-// 这一行命令会覆盖routes/api.php和 RouteServiceProvider.php
-php artisan vendor:publish --tag=public --force
+php artisan vendor:publish
+// 选择发布Tymon\JWTAuth\Providers\LaravelServiceProvider和Jmhc\Admin\AdminServiceProvider
 ```
 ##### 数据库配置
 
