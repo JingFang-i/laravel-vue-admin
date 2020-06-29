@@ -19,15 +19,15 @@ export default {
     },
     labelName: {
       type: String,
-      default: () => 'name'
+      default: 'name'
     },
     selected: {
       type: String,
-      default: () => ''
+      default: ''
     },
     multiple: {
       type: Boolean,
-      default: () => false
+      default: false
     }
   },
   data() {

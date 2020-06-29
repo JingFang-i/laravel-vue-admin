@@ -40,6 +40,17 @@ export function update(id, data) {
 }
 
 /**
+ * 查询资源详情
+ * @param {Integer} id 资源ID
+ */
+export function show(id) {
+  return request({
+    url: apiName + '/' + id,
+    method: 'get'
+  })
+}
+
+/**
  * 删除资源
  * @param {Integer} id 资源ID
  */
