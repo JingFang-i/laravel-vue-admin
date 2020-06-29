@@ -11,10 +11,10 @@ export default {
   props: {
     status: {
       type: Number,
-      default: () => null
+      default: null
     },
     statusList: {
-      type: Object,
+      type: [Object, Array],
       default: () => ({})
     }
   },

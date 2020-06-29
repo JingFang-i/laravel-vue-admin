@@ -2,17 +2,37 @@
   <div class="app-container">
     <el-collapse-transition>
       <search-box v-if="showSearchBox" class="search-box" @search="doSearch">
-        <el-form class="form-box r-w-fs-c" label-position="left" size="mini" label-width="auto">
+        <el-form
+          class="form-box r-w-fs-c"
+          label-position="left"
+          size="mini"
+          label-width="auto"
+        >
           <el-row>
             <template v-for="(item, key) in fields">
-              <el-col v-if="item.searchable !== false" :key="key" :lg="6" :md="8" :sm="12" :xs="24" style="margin-top: 3px;">
+              <el-col
+                v-if="item.searchable !== false"
+                :key="key"
+                :lg="6"
+                :md="8"
+                :sm="12"
+                :xs="24"
+                style="margin-top: 8px;"
+              >
                 <el-form-item :label="item.label">
                   <el-select
-                    v-if="['select', 'switch', 'radio'].indexOf(item.type) !== -1"
+                    v-if="
+                      ['select', 'switch', 'radio'].indexOf(item.type) !== -1
+                    "
                     v-model="searchForm[item.field]"
                     :placeholder="item.placeholder"
                   >
-                    <el-option v-for="(i, k) in item.selectList" :key="k" :label="i" :value="k" />
+                    <el-option
+                      v-for="(i, k) in item.selectList"
+                      :key="k"
+                      :label="i"
+                      :value="k"
+                    />
                   </el-select>
                   <!-- <el-date-picker
                     v-if="item.type === 'date'"
@@ -47,7 +67,16 @@
                     :selected.sync="searchForm[item.field]"
                   />
                   <el-input
-                    v-else-if="['date', 'select', 'custom-select', 'group-select', 'switch', 'radio'].indexOf(item.type) === -1"
+                    v-else-if="
+                      [
+                        'date',
+                        'select',
+                        'custom-select',
+                        'group-select',
+                        'switch',
+                        'radio'
+                      ].indexOf(item.type) === -1
+                    "
                     v-model="searchForm[item.field]"
                     :placeholder="item.placeholder"
                   />
@@ -65,7 +94,32 @@
         :loading="refreshLoading"
         icon="el-icon-refresh"
         @click="refresh"
-      >刷新</el-button>
+      >刷新</el-button
+      >
+      <el-dropdown
+        v-if="!disableBatch"
+        trigger="click"
+        split-button
+        type="primary"
+        size="mini"
+        @command="handleCommand"
+      >
+        批量操作
+        <el-dropdown-menu slot="dropdown">
+          <template v-for="(o, k) in batchOperations">
+            <el-dropdown-item :key="k" :command="o"
+            ><i :class="o.icon ? o.icon : 'el-icon-magic-stick'"></i
+            >{{ o.label }}</el-dropdown-item
+            >
+          </template>
+          <el-dropdown-item
+            v-if="deleteBatch && checkPermission(permissionRules.deleteBatch)"
+            command="delete"
+          ><i class="el-icon-delete"></i>批量删除</el-dropdown-item
+          >
+        </el-dropdown-menu>
+      </el-dropdown>
+      <slot name="tools"></slot>
     </div>
     <div class="search r-w-fs-c">
       <el-input
@@ -75,15 +129,24 @@
         style="width:200px;margin:5px 20px 5px 0"
       />
       <!--      <el-button type="primary" size="mini" icon="el-icon-search" @click="quickSearch"></el-button>-->
-      <el-button type="primary" size="mini" icon="el-icon-box" @click="moreQuery">高级查询</el-button>
+      <el-button
+        type="primary"
+        size="mini"
+        icon="el-icon-box"
+        @click="moreQuery"
+      >高级查询</el-button
+      >
 
       <el-button
-        v-if="operations.includes('add') && checkPermission(permissionRules.add)"
+        v-if="
+          operations.includes('add') && checkPermission(permissionRules.add)
+        "
         type="primary"
         size="mini"
         icon="el-icon-plus"
         @click="handleAdd"
-      >新增</el-button>
+      >新增</el-button
+      >
     </div>
     <div class="page-header">
       <slot />
@@ -99,6 +162,7 @@
         :show-overflow-tooltip="true"
         row-key="id"
         border
+        resizable
         highlight-current-row
         :default-expand-all="defaultExpandAll"
         @selection-change="handleSelectionChange"
@@ -106,16 +170,22 @@
         <el-table-column type="selection" width="55" align="center" />
         <template v-for="(item, index) in fields">
           <el-table-column
-            v-if="item.visible !== false && (!('type' in item) || columnType.indexOf(item.type) !== -1)"
+            v-if="
+              item.visible !== false &&
+                (!('type' in item) || columnType.indexOf(item.type) !== -1) &&
+                typeof item.formatter !== 'function'
+            "
             :key="index"
             :prop="item.field"
             :label="item.label"
-            :width="item.width ? item.width : (item.field === 'id' ? 100 : null)"
+            :width="item.width ? item.width : item.field === 'id' ? 100 : null"
             :align="item.align ? item.align : 'center'"
             header-align="center"
           />
           <el-table-column
-            v-else-if="item.visible !== false && typeof item.formatter === 'function'"
+            v-else-if="
+              item.visible !== false && typeof item.formatter === 'function'
+            "
             :key="index"
             :prop="item.field"
             :label="item.label"
@@ -147,48 +217,74 @@
                 inactive-color="#ff4949"
                 :active-value="1"
                 :inactive-value="0"
-                @change="toggle(scope.row.id, item.field, scope.row[item.field])"
+                @change="
+                  toggle(scope.row.id, item.field, scope.row[item.field])
+                "
               />
               <el-image
                 v-if="item.type === 'image'"
                 style="width: 80px; height: 80px"
                 :src="getImgUrl(scope.row[item.field])"
-                fit="cover"
+                fit="contain"
                 :preview-src-list="[getImgUrl(scope.row[item.field])]"
               />
               <el-image
                 v-if="item.type === 'images'"
                 style="width: 80px; height: 80px"
-                :src="getImgUrl(scope.row[item.field].split(',')[0])||getImgUrl(scope.row[item.field])"
-                fit="cover"
-                :preview-src-list="scope.row[item.field].split(',').map(item => getImgUrl(item))"
+                :src="
+                  getImgUrl(scope.row[item.field].split(',')[0]) ||
+                    getImgUrl(scope.row[item.field])
+                "
+                fit="contain"
+                :preview-src-list="
+                  scope.row[item.field].split(',').map(item => getImgUrl(item))
+                "
               />
               <el-avatar
                 v-if="item.type === 'avatar'"
                 :size="60"
                 :src="getImgUrl(scope.row[item.field])"
               >
-                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" alt="">
+                <img
+                  src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
+                  alt=""
+                />
               </el-avatar>
               <span
                 v-if="item.type === 'price'"
                 :style="item.style"
                 :class="item.class"
-              >¥{{ scope.row[item.field] }}</span>
+              >¥{{ scope.row[item.field] }}</span
+              >
               <status-tag
                 v-if="item.type === 'status'"
                 :status-list="item.selectList"
                 :status="scope.row[item.field]"
               />
-              <pre v-if="item.type === 'code'" style="overflow:auto;"><code>{{ JSON.stringify(scope.row[item.field], null, 4).replace(/\"/g, "") }}</code></pre>
               <span
-                v-if="selectType.indexOf(item.type) !== -1"
-              >{{ item.field + '_text' in scope.row ? scope.row[item.field + '_text'] : scope.row[item.field] }}</span>
-              <el-link v-if="item.type === 'url'" type="success">{{ scope.row[item.field] }}</el-link>
+                v-if="item.type === 'html'"
+                v-html="item.template(scope.row)"
+              ></span>
+              <pre
+                v-if="item.type === 'code'"
+                style="overflow:auto;"
+              ><code>{{ JSON.stringify(scope.row[item.field], null, 4).replace(/\"/g, "") }}</code></pre>
+              <span v-if="selectType.indexOf(item.type) !== -1">{{
+                item.field + '_text' in scope.row
+                  ? scope.row[item.field + '_text']
+                  : scope.row[item.field]
+              }}</span>
+              <el-link v-if="item.type === 'url'" type="success">{{
+                scope.row[item.field]
+                }}</el-link>
             </template>
           </el-table-column>
         </template>
-        <el-table-column v-if="operations.length!==0" label="操作" width="250">
+        <el-table-column
+          v-if="operations.length !== 0"
+          label="操作"
+          width="250"
+        >
           <template slot-scope="scope">
             <div class="r-nw-fs-c">
               <template v-for="(operate, key) in operationButtons">
@@ -196,7 +292,8 @@
                   v-if="key < 2 && operate.name === 'sort'"
                   type="primary"
                   style="margin: 0 5px 0 0;float:left;"
-                  size="mini">
+                  size="mini"
+                >
                   <svg-icon class="drag-handler" icon-class="drag" />
                 </el-button>
                 <el-button
@@ -206,7 +303,9 @@
                   :size="'size' in operate ? operate.size : 'mini'"
                   :type="'type' in operate ? operate.type : 'primary'"
                   :icon="operate.icon"
-                  @click="operate.handle(scope.row.id, scope.row, operate.popover)"
+                  @click="
+                    operate.handle(scope.row.id, scope.row, operate.popover)
+                  "
                 >
                   {{ operate.text }}
                 </el-button>
@@ -216,17 +315,34 @@
                   placement="bottom"
                   style="float: left;margin-right: 5px;"
                 >
-                  <p>{{ operate.popoverOptions.content ? operate.popoverOptions.content : '确定要操作吗？' }}</p>
+                  <p>
+                    {{
+                    operate.popoverOptions.content
+                    ? operate.popoverOptions.content
+                    : '确定要操作吗？'
+                    }}
+                  </p>
                   <div style="text-align: right; margin: 0">
-                    <el-button size="mini" type="text" @click="cancelPopover('operate_' + scope.$index)">取消</el-button>
-                    <el-button type="primary" size="mini" @click="operate.handle(scope.row.id, scope.row, true)">确定</el-button>
+                    <el-button
+                      size="mini"
+                      type="text"
+                      @click="cancelPopover('operate_' + scope.$index)"
+                    >取消</el-button
+                    >
+                    <el-button
+                      type="primary"
+                      size="mini"
+                      @click="operate.handle(scope.row.id, scope.row, true)"
+                    >确定</el-button
+                    >
                   </div>
                   <el-button
                     slot="reference"
                     :icon="operate.icon"
                     :size="'size' in operate ? operate.size : 'mini'"
                     :type="'type' in operate ? operate.type : 'primary'"
-                  >{{ operate.text }}</el-button>
+                  >{{ operate.text }}</el-button
+                  >
                 </el-popover>
               </template>
               <el-dropdown
@@ -236,16 +352,21 @@
                 @command="operateCommand"
               >
                 <el-button type="primary" size="mini">
-                  <i class="el-icon-more"></i>
-                  <i class="el-icon-arrow-down el-icon--right"></i>
+                  <i class="el-icon-more" />
+                  <i class="el-icon-arrow-down el-icon--right" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <template v-for="(item, index) in operationButtons">
                     <el-dropdown-item
                       v-if="index > 1"
                       :key="index"
-                      :command="{id: scope.row.id, row: scope.row, handle: item.handle}"
-                    >{{ item.text }}</el-dropdown-item>
+                      :command="{
+                        id: scope.row.id,
+                        row: scope.row,
+                        handle: item.handle
+                      }"
+                    >{{ item.text }}</el-dropdown-item
+                    >
                   </template>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -257,6 +378,7 @@
     <el-drawer
       :title="formTitle"
       :size="size"
+      :append-to-body="true"
       :visible.sync="drawer"
       destroy-on-close
       class="my-drawer"
@@ -272,24 +394,11 @@
       </slot>
     </el-drawer>
     <div class="page-box r-w-sb-c">
-      <el-dropdown v-if="!disableBatch" trigger="click" @command="handleCommand">
-        <el-button type="primary" size="mini">
-          批量操作
-          <i class="el-icon-arrow-down el-icon--right" />
-        </el-button>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-if="deleteBatch && checkPermission(permissionRules.deleteBatch)" command="delete">批量删除</el-dropdown-item>
-          <!--          TODO 批量操作待完成-->
-          <template v-for="(o,k) in operation">
-            <el-dropdown-item :key="k" :command="o">{{ o.lable }}</el-dropdown-item>
-          </template>
-        </el-dropdown-menu>
-      </el-dropdown>
       <el-pagination
         background
         hide-on-single-page
         :pager-count="pagerCount"
-        :small="device!=='desktop'"
+        :small="device !== 'desktop'"
         :current-page.sync="currentPage"
         :page-size="pageSize"
         :layout="layout"
@@ -386,7 +495,7 @@
         default: null
       },
       // 批量操作
-      operation: {
+      batchOperations: {
         type: Array,
         default: () => []
       },
@@ -419,18 +528,26 @@
       permissionRules: {
         type: Object,
         default: () => ({})
+      },
+      addHandle: {
+        type: Function,
+        default: null
+      },
+      queryParams: {
+        type: Object,
+        default: () => {
+          return {
+            filter: {},
+            operate: {}
+          }
+        }
       }
     },
     data() {
       return {
-        // 数据
-        queryParams: {
-          filter: {},
-          operate: {}
-        },
         defaultOperateButtons: [
           {
-            name: 'sort',
+            name: 'sort'
           },
           {
             name: 'detail',
@@ -529,11 +646,29 @@
           : 'prev, pager, next'
       },
       operationButtons() {
-        return this.defaultOperateButtons.filter(item => {
-          return this.operations.includes(item.name)
-        }).concat(this.buttons).filter(item => {
-          return this.checkPermission(this.permissionRules[item.name])
+        let operations = this.defaultOperateButtons
+          .filter(item => {
+            return this.operations.includes(item.name)
+          })
+          .filter(item => {
+            return this.checkPermission(this.permissionRules[item.name])
+          })
+
+        let replaceOperations = []
+        this.buttons.forEach(button => {
+          operations.forEach((item, index) => {
+            if (item.name === button.name) {
+              replaceOperations.push(button.name)
+              operations.splice(index, 1, button)
+            }
+          })
         })
+        this.buttons.forEach(item => {
+          if (!replaceOperations.includes(item.name)) {
+            operations.push(item)
+          }
+        })
+        return operations
       },
       size() {
         return this.formSize
@@ -573,7 +708,9 @@
       window.onresize = () => {
         this.changeHeight()
       }
-      this.getData()
+      this.$nextTick(function() {
+        this.getData()
+      })
     },
     destroyed() {
       window.onresize = null
@@ -670,6 +807,7 @@
         this.seletedArr = e.map(item => {
           return item.id
         })
+        this.$emit('selection-change', e)
       },
       // 分页
       handleCurrentChange(e) {
@@ -678,9 +816,13 @@
       },
       // 新增
       handleAdd() {
-        this.formTitle = '新增'
-        this.drawer = true
-        this.editRow = {}
+        if (this.addHandle) {
+          this.addHandle()
+        } else {
+          this.formTitle = '新增'
+          this.drawer = true
+          this.editRow = {}
+        }
       },
       // 详情
       handleDetail(id) {
@@ -727,11 +869,12 @@
         }
       },
       // 快速查询 默认为ID查询
-      // 快速查询 默认为ID查询
       quickSearch() {
         if (this.keywords) {
           this.queryParams.filter[this.quickSearchField] = this.keywords
-          this.queryParams.operate[this.quickSearchField] = this.quickSearchOperate
+          this.queryParams.operate[
+            this.quickSearchField
+            ] = this.quickSearchOperate
         } else {
           this.queryParams.filter = {}
           this.queryParams.operate = {}
@@ -765,7 +908,7 @@
           }
           this._initPopoverStatus(this.rows.length)
           this.throttle = true
-        } catch (err){console.log(err)}
+        } catch (err) {}
         // .then(res => {
         //   if (res.data instanceof Array) {
         //     this.rows = res.data
@@ -800,10 +943,12 @@
             this.getData()
             this.editRow = {}
           })
-          .catch(err => console.log(err))
+          .catch()
       },
       setSort() {
-        const el = this.$refs.multipleTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
+        const el = this.$refs.multipleTable.$el.querySelectorAll(
+          '.el-table__body-wrapper > table > tbody'
+        )[0]
         this.sortable = Sortable.create(el, {
           ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
           setData: function(dataTransfer) {
@@ -813,23 +958,25 @@
           },
           onEnd: evt => {
             if (evt.oldIndex === evt.newIndex) {
-              return false;
+              return false
             }
             const params = {
               old_id: this.rows[evt.oldIndex].id,
-              new_id: this.rows[evt.newIndex].id,
+              new_id: this.rows[evt.newIndex].id
             }
-            this.sort(params).then(res => {
-              this.refresh();
-              this.$message.success('更新成功')
-            }).catch(err => console.log(err))
+            this.sort(params)
+              .then(res => {
+                this.refresh()
+                this.$message.success('更新成功')
+              })
+              .catch()
           }
         })
       }
     }
   }
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
   .app-container {
     .page-box {
       height: 110px;
@@ -850,7 +997,8 @@
       }
     }
     .el-form-item {
-      ::v-deep.el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
+      ::v-deep.el-date-editor--datetimerange.el-input,
+      .el-date-editor--datetimerange.el-input__inner {
         width: 100%;
       }
     }
