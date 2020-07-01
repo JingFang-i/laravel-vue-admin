@@ -29,6 +29,7 @@ export default {
         { field: 'icon', label: 'icon', type: 'icon', searchable: false },
         { field: 'pid', label: '父级', type: 'custom-select', selectList: lists, labelName: 'title', searchable: false, visible: false },
         { field: 'name', label: '规则', searchable: false },
+        { field: 'guard_name', label: '守卫名称' },
         { field: 'component_path', label: '组件路径', searchable: false },
         { field: 'view_route_name', label: '前端路由名称', searchable: false },
         { field: 'view_route_path', label: '前端路由路径', searchable: false },

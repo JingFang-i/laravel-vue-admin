@@ -127,6 +127,7 @@
         size="mini"
         :placeholder="quickSearchPlaceholder"
         style="width:200px;margin:5px 20px 5px 0"
+        :clearable="true"
       />
       <!--      <el-button type="primary" size="mini" icon="el-icon-search" @click="quickSearch"></el-button>-->
       <el-button
@@ -204,6 +205,10 @@
             header-align="center"
           >
             <template slot-scope="scope">
+              <span
+                v-if="item.template"
+                v-html="item.template(scope.row)"
+              ></span>
               <el-rate
                 v-if="item.type === 'rate'"
                 v-model="scope.row[item.field]"
@@ -261,12 +266,9 @@
                 :status-list="item.selectList"
                 :status="scope.row[item.field]"
               />
-              <span
-                v-if="item.type === 'html'"
-                v-html="item.template(scope.row)"
-              ></span>
+
               <pre
-                v-if="item.type === 'code'"
+                v-if="item.type === 'json'"
                 style="overflow:auto;"
               ><code>{{ JSON.stringify(scope.row[item.field], null, 4).replace(/\"/g, "") }}</code></pre>
               <span v-if="selectType.indexOf(item.type) !== -1">{{
@@ -274,6 +276,7 @@
                   ? scope.row[item.field + '_text']
                   : scope.row[item.field]
               }}</span>
+
               <el-link v-if="item.type === 'url'" type="success">{{
                 scope.row[item.field]
                 }}</el-link>
@@ -383,15 +386,18 @@
       destroy-on-close
       class="my-drawer"
     >
-      <slot name="form" :fields="fields" :rules="rules" :row="editRow">
-        <powerful-form
-          v-if="operations.indexOf('edit') !== -1"
-          :fields="fields"
-          :rules="rules"
-          :row="editRow"
-          @submit="submit"
-        />
-      </slot>
+      <powerful-form
+        v-if="operations.indexOf('edit') !== -1"
+        :fields="fields"
+        :rules="rules"
+        :row="editRow"
+        @submit="submit"
+        @change="rowChange"
+      >
+        <template v-slot:default="{ item, row }">
+          <slot name="form-item" :item="item" :row="row"></slot>
+        </template>
+      </powerful-form>
     </el-drawer>
     <div class="page-box r-w-sb-c">
       <el-pagination
@@ -505,7 +511,7 @@
         default: 'id'
       },
       // 快速查询操作
-      quickSearchOperate: {
+      quickSearchOperation: {
         type: String,
         default: '='
       },
@@ -542,6 +548,7 @@
           }
         }
       }
+      // 表单侦听回调数组, 表单联动控制
     },
     data() {
       return {
@@ -617,8 +624,9 @@
         },
         searchForm: {},
         rows: [],
+        callbacks: [],
         editRow: {},
-        columnType: ['text', 'date', 'textarea', 'icon', 'number'],
+        columnType: ['text', 'date', 'datetime', 'textarea', 'icon', 'number'],
         selectType: ['select', 'custom-select', 'group-select'],
         total: 0,
         pageSize: 10,
@@ -629,6 +637,7 @@
         colors: ['#CA3024', '#CA3024', '#CA3024'], // 评分颜色
         seletedArr: [], // 选中的行数,
         changeRow: [], // 需要改变的变量值
+        formType: 1, // 表单是新增还是编辑 1=新增　2=编辑
         sortable: null,
         throttle: false,
         showSearchBox: false,
@@ -703,6 +712,9 @@
         }
       }
     },
+    created() {
+      this.initEditRow()
+    },
     mounted() {
       this.changeHeight()
       window.onresize = () => {
@@ -725,6 +737,14 @@
       },
       cancelPopover(key) {
         this.$set(this.popoverStatus, key, false)
+      },
+      // 当表单值改变时, 调用回调方法
+      rowChange({ changedValues, editRow }) {
+        changedValues.forEach(item => {
+          if (this.callbacks[item.field]) {
+            this.callbacks[item.field].call(this, item.value, editRow)
+          }
+        })
       },
       // 批量操作
       handleCommand(commond) {
@@ -816,13 +836,30 @@
       },
       // 新增
       handleAdd() {
+        this.formType = 1
         if (this.addHandle) {
           this.addHandle()
         } else {
           this.formTitle = '新增'
           this.drawer = true
-          this.editRow = {}
         }
+      },
+      initEditRow() {
+        let expectFields = ['id', 'created_at', 'updated_at', 'deleted_at']
+        let editRow = {}
+        this.fields.forEach(item => {
+          if (item.callback && typeof item.callback === 'function') {
+            this.callbacks[item.field] = item.callback
+          }
+          if (!expectFields.includes(item.field)) {
+            if (item.default) {
+              editRow[item.field] = item.default
+            } else {
+              editRow[item.field] = ''
+            }
+          }
+        })
+        this.editRow = editRow
       },
       // 详情
       handleDetail(id) {
@@ -837,6 +874,7 @@
       // 编辑
       handleEdit(id, row) {
         this.formTitle = '编辑'
+        this.formType = 2
 
         if (this.queryRow) {
           this.queryRow(id).then(res => {
@@ -874,7 +912,7 @@
           this.queryParams.filter[this.quickSearchField] = this.keywords
           this.queryParams.operate[
             this.quickSearchField
-            ] = this.quickSearchOperate
+            ] = this.quickSearchOperation
         } else {
           this.queryParams.filter = {}
           this.queryParams.operate = {}
@@ -909,20 +947,6 @@
           this._initPopoverStatus(this.rows.length)
           this.throttle = true
         } catch (err) {}
-        // .then(res => {
-        //   if (res.data instanceof Array) {
-        //     this.rows = res.data
-        //   } else {
-        //     this.rows = res.data.data
-        //     this.total = res.data.meta.pagination.total
-        //     this.pageSize = res.data.meta.pagination.per_page
-        //   }
-        // })
-        // .catch(err => {)
-        // .finally(() => {
-        //  this.tableLoading = false
-        //   this.refreshLoading = false
-        // })
 
         this.tableLoading = false
         this.refreshLoading = false

@@ -10,11 +10,16 @@
       label-width="25%"
     >
       <template v-for="(item, index) in fields">
+        <el-input
+          v-if="item.type === 'hidden'"
+          type="hidden"
+          v-model="editRow[item.field]"
+        ></el-input>
         <el-form-item
           v-if="
             typeof item.editable === 'function'
               ? item.editable.call(this, editRow)
-              : item.editable !== false
+              : item.editable !== false && item.type !== 'hidden'
           "
           :key="index"
           :label="item.label"
@@ -32,7 +37,6 @@
             v-if="'type' in item && item.type === 'select'"
             v-model="editRow[item.field]"
             :placeholder="item.placeholder"
-            @change="selectChange"
           >
             <el-option
               v-for="(i, k) in item.selectList"
@@ -45,6 +49,12 @@
             v-if="'type' in item && item.type === 'date'"
             v-model="editRow[item.field]"
             type="date"
+            :placeholder="item.placeholder"
+          />
+          <el-date-picker
+            v-if="'type' in item && item.type === 'datetime'"
+            v-model="editRow[item.field]"
+            type="datetime"
             :placeholder="item.placeholder"
           />
           <el-switch
@@ -71,12 +81,6 @@
             :multiple="'multiple' in item ? item.multiple : false"
             :selected.sync="editRow[item.field]"
           />
-          <!-- <el-cascader
-            v-if="item.type === 'cascader'"
-            v-model="editRow[item.field]"
-            :props="{multiple: 'multiple' in item ? item.multiple : false}"
-            :options="item.selectLists"
-          /> -->
           <cascader
             v-if="item.type === 'cascader'"
             :options="item.selectList"
@@ -113,7 +117,6 @@
             v-if="item.type === 'icon'"
             v-model="editRow[item.field]"
           ></svg-select>
-          <!-- <icon-picker v-if="item.type === 'icon'" v-model="editRow[item.field]" /> -->
           <el-input
             v-if="item.type === 'password'"
             v-model="editRow[item.field]"
@@ -133,26 +136,25 @@
             :multiple="true"
             :files.sync="editRow[item.field]"
           />
-          <ueditor v-if="item.type === 'editor'" :value.sync="item.value" />
+          <ueditor
+            v-if="item.type === 'editor'"
+            :value.sync="editRow[item.field]"
+          />
           <tinymce
             v-if="item.type === 'tinymce'"
-            :v-model="item.value"
+            :v-model="editRow[item.field]"
           ></tinymce>
           <el-input
             v-if="item.type === 'price'"
-            v-model="item.value"
             type="number"
+            v-model="editRow[item.field]"
           >
             <template slot="prepend"
             >¥</template
             >
           </el-input>
-          <el-input
-            v-if="item.type === 'hidden'"
-            type="hidden"
-            v-model="editRow[item.field]"
-            :value="editRow[item.field] ? editRow[item.field] : item.default"
-          ></el-input>
+
+          <slot :item="item" :row="editRow"></slot>
         </el-form-item>
       </template>
       <el-form-item style="width:90%">
@@ -200,7 +202,7 @@
       },
       row: {
         type: Object,
-        default: () => ({})
+        required: true
       },
       rules: {
         type: Object,
@@ -222,32 +224,49 @@
           initialFrameHeight: 300,
           // 初始容器宽度
           initialFrameWidth: '100%',
-          serverUrl:
-            process.env.VUE_APP_BASE_URL + '/ueditor?token=' + getToken(),
+          serverUrl: process.env.VUE_APP_BASE_URL + '/ueditor',
           // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
           UEDITOR_HOME_URL: '/plugins/ueditor/'
         }
       }
     },
     watch: {
-      row: {
+      editRowClone: {
         deep: true,
-        handler: function(value) {
-          this.editRow = Object.assign({}, this.row)
+        handler: function(val, oldVal) {
+          let changedValues = []
+          for (let [field, value] of Object.entries(val)) {
+            if (value !== oldVal[field]) {
+              changedValues.push({
+                field: field,
+                value: value
+              })
+            }
+          }
+          this.$emit('change', {
+            changedValues: changedValues,
+            editRow: this.editRow
+          })
         }
       }
     },
+    created() {
+      this.editRow = Object.assign({}, this.row)
+    },
     mounted() {
-      this.editRow = {}
       this.formRules = this.rules
       // 如果没有传入验证规则，则生成简单验证规则
       if (Object.keys(this.rules).length === 0) {
         this.generateRules()
       }
-      this.editRow = Object.assign({}, this.row)
+    },
+    computed: {
+      // 因为数据同源, 所以侦听到的结果一样, 所以这里需要用到计算属性
+      editRowClone() {
+        return Object.assign({}, this.editRow)
+      }
     },
     methods: {
-      selectChange(value) {},
       submit() {
         this.$refs['form'].validate(valid => {
           if (valid) {

@@ -2,7 +2,8 @@
   <el-select
     placeholder="请选择"
     :value="selected"
-    @change="change">
+    @change="change"
+    filterable>
     <el-option
       v-for="(svg, index) in svgList"
       :key="index"

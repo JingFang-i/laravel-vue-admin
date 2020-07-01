@@ -2,12 +2,12 @@
   <vue-ueditor-wrap
     v-model="content"
     :config="ueditorConfig"
+    @ready="ready"
   />
 </template>
 
 <script>
 import VueUeditorWrap from 'vue-ueditor-wrap'
-import { getToken } from '@/utils/auth'
 export default {
   name: 'Ueditor',
   components: {
@@ -29,7 +29,7 @@ export default {
         initialFrameHeight: 300,
         // 初始容器宽度
         initialFrameWidth: '100%',
-        serverUrl: process.env.VUE_APP_BASE_API + '/ueditor?token=' + getToken(),
+        serverUrl: process.env.VUE_APP_BASE_API + '/ueditor',
         // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
         UEDITOR_HOME_URL: '/plugins/ueditor/'
       }
@@ -40,8 +40,10 @@ export default {
       this.$emit('update:value', value)
     }
   },
-  mounted() {
-    this.content = this.value
+  methods: {
+    ready() {
+      this.content = this.value
+    }
   }
 }
 </script>
