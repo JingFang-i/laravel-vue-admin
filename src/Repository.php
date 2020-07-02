@@ -57,7 +57,7 @@ abstract class Repository implements RepositoryInterface
             }
         }
 
-        $pageSize = array_key_exists('page_size', $params) ? $params['page_size'] : self::PER_PAGE;
+        $pageSize = isset($params['page_size']) ? $params['page_size'] : self::PER_PAGE;
         $pageSize = $pageSize > 500 ? 500 : $pageSize;
 
         return $this->model->select($this->allowFields)
@@ -189,7 +189,7 @@ abstract class Repository implements RepositoryInterface
             if (strpos($field, '.')){
                 list($relationName, $name) = explode('.', $field);
                 $relationName = Str::camel($relationName);
-                if (!array_key_exists($relationName, $relationFilters)) {
+                if (!isset($relationFilters[$relationName])) {
                     $relationFilters[$relationName]= [$name => $value];
                 } else {
                     $relationFilters[$relationName][$name] = $value;
@@ -298,7 +298,7 @@ abstract class Repository implements RepositoryInterface
      */
     protected function decodeParam($name, $params)
     {
-        return array_key_exists($name, $params)
+        return isset($params[$name])
             ? json_decode($params[$name], true)
             : [];
     }

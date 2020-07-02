@@ -40,7 +40,7 @@ class ConfigService extends Service
         $regroupConfigs = [];
 
         foreach ($configs as $config) {
-            if (!array_key_exists($config['group'], $regroupConfigs)) {
+            if (!isset($regroupConfigs[$config['group']])) {
                 $regroupConfigs[$config['group']] = [$config];
             } else {
                 $regroupConfigs[$config['group']][] = $config;

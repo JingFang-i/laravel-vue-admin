@@ -16,7 +16,7 @@ trait HasMultiEdit
     public function multi()
     {
         $params = $this->request->only(['ids', 'data']);
-        if (!array_key_exists('ids', $params)) {
+        if (!isset($params['ids'])) {
             return $this->response->error('缺少需要更新记录的ID');
         }
         $ids = $params['ids'];

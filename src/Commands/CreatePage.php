@@ -84,7 +84,7 @@ class CreatePage
     {
         $fields = [
             'field' => $info['field'],
-            'label' => $info['title'] ? $info['title'] : (array_key_exists($info['field'], $this->fieldMap) ?
+            'label' => $info['title'] ? $info['title'] : (isset($this->fieldMap[$info['field']]) ?
                 $this->fieldMap[$info['field']] : ucfirst($info['field'])),
             'type' => $info['type'],
         ];

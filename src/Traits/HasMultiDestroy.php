@@ -15,7 +15,7 @@ trait HasMultiDestroy
     public function multiDestroy()
     {
         $params = $this->request->only(['ids']);
-        if (!array_key_exists('ids', $params)) {
+        if (!isset($params['ids'])) {
             return $this->response->error('缺少需要删除记录的ID');
         }
         if (is_string($params['ids'])) {

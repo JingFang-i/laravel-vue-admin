@@ -432,7 +432,7 @@ EOF;
         return <<<EOF
     public function get{$attrNameFunc}(\$value)
     {
-        return array_key_exists(\$value, \$this->{$attrName}Map) ? \$this->{$attrName}Map[\$value] : '无';
+        return isset(\$this->{$attrName}Map[\$value]) ? \$this->{$attrName}Map[\$value] : '无';
     }
 EOF;
 

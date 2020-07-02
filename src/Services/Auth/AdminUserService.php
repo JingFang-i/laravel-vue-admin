@@ -102,7 +102,7 @@ class AdminUserService extends Service
     public function updateSelf()
     {
         $data = $this->request->input();
-        if (array_key_exists('password', $data) && !$data['password']) {
+        if (isset($data['password']) && !$data['password']) {
             unset($data['password']);
         }
         if (!$this->validate($data, $this->user()->id)) {

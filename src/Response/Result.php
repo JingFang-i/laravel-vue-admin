@@ -31,7 +31,7 @@ class Result implements Jsonable, Arrayable
         $this->data = $data;
         $this->codeStatus = $codeStatus;
         if (!$message) {
-            $this->message = array_key_exists($codeStatus, $this->code) ? $this->code[$codeStatus] : null;
+            $this->message = isset($this->code[$codeStatus]) ? $this->code[$codeStatus] : null;
         } else {
             $this->message = $message;
         }
