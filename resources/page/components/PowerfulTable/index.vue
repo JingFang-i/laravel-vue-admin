@@ -21,9 +21,7 @@
               >
                 <el-form-item :label="item.label">
                   <el-select
-                    v-if="
-                      ['select', 'switch', 'radio'].indexOf(item.type) !== -1
-                    "
+                    v-if="['select', 'switch', 'radio'].includes(item.type)"
                     v-model="searchForm[item.field]"
                     :placeholder="item.placeholder"
                   >
@@ -49,6 +47,8 @@
                     range-separator="至"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    :format="datetimeFormat"
+                    :value-format="datetimeFormat"
                     align="left"
                   />
                   <custom-select
@@ -75,7 +75,7 @@
                         'group-select',
                         'switch',
                         'radio'
-                      ].indexOf(item.type) === -1
+                      ].includes(item.type)
                     "
                     v-model="searchForm[item.field]"
                     :placeholder="item.placeholder"
@@ -173,7 +173,7 @@
           <el-table-column
             v-if="
               item.visible !== false &&
-                (!('type' in item) || columnType.indexOf(item.type) !== -1) &&
+                (!('type' in item) || columnType.includes(item.type)) &&
                 typeof item.formatter !== 'function'
             "
             :key="index"
@@ -271,7 +271,7 @@
                 v-if="item.type === 'json'"
                 style="overflow:auto;"
               ><code>{{ JSON.stringify(scope.row[item.field], null, 4).replace(/\"/g, "") }}</code></pre>
-              <span v-if="selectType.indexOf(item.type) !== -1">{{
+              <span v-if="selectType.includes(item.type)">{{
                 item.field + '_text' in scope.row
                   ? scope.row[item.field + '_text']
                   : scope.row[item.field]
@@ -387,7 +387,7 @@
       class="my-drawer"
     >
       <powerful-form
-        v-if="operations.indexOf('edit') !== -1"
+        v-if="operations.includes('add') || operations.includes('edit')"
         :fields="fields"
         :rules="rules"
         :row="editRow"
@@ -591,6 +591,7 @@
         ],
         popoverStatus: {},
         currentPopover: '',
+        datetimeFormat: 'yyyy-MM-dd HH:mm:ss',
         pickerOptions: {
           shortcuts: [
             {
@@ -713,7 +714,7 @@
       }
     },
     created() {
-      this.initEditRow()
+      this.initEditRow(true)
     },
     mounted() {
       this.changeHeight()
@@ -843,13 +844,19 @@
           this.formTitle = '新增'
           this.drawer = true
         }
+        this.initEditRow(false)
       },
-      initEditRow() {
+      initEditRow(needResetCallbacks) {
         let expectFields = ['id', 'created_at', 'updated_at', 'deleted_at']
         let editRow = {}
         this.fields.forEach(item => {
-          if (item.callback && typeof item.callback === 'function') {
-            this.callbacks[item.field] = item.callback
+          if (typeof item.editable === 'function' || item.editable === false) {
+            return false
+          }
+          if (needResetCallbacks) {
+            if (item.callback && typeof item.callback === 'function') {
+              this.callbacks[item.field] = item.callback
+            }
           }
           if (!expectFields.includes(item.field)) {
             if (item.default) {

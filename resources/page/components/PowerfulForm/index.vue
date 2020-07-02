@@ -27,9 +27,7 @@
           style="width:80%"
         >
           <el-input
-            v-if="
-              !('type' in item) || ['text', 'url'].indexOf(item.type) !== -1
-            "
+            v-if="!('type' in item) || ['text', 'url'].includes(item.type)"
             v-model="editRow[item.field]"
             :maxlength="item.maxlength"
           />
@@ -49,12 +47,16 @@
             v-if="'type' in item && item.type === 'date'"
             v-model="editRow[item.field]"
             type="date"
+            :format="dateFormat"
+            :value-format="dateFormat"
             :placeholder="item.placeholder"
           />
           <el-date-picker
             v-if="'type' in item && item.type === 'datetime'"
             v-model="editRow[item.field]"
             type="datetime"
+            :format="datetimeFormat"
+            :value-format="datetimeFormat"
             :placeholder="item.placeholder"
           />
           <el-switch
@@ -217,6 +219,8 @@
       return {
         formRules: {},
         editRow: {},
+        dateFormat: 'yyyy-MM-dd',
+        datetimeFormat: 'yyyy-MM-dd HH:mm:ss',
         ueditorConfig: {
           // 编辑器不自动被内容撑高
           autoHeightEnabled: false,
