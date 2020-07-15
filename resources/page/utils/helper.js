@@ -1,14 +1,7 @@
 // 获取图片完整路径
 export function getImgUrl(src) {
-  if (!src) {
-    return '';
+  if (!src || src.indexOf('http') !== -1) {
+    return src
   }
-  const firstWord = src.substring(0, 1);
-  let prefix = process.env.VUE_APP_ASSETS_URL
-    ? process.env.VUE_APP_ASSETS_URL
-    : '/';
-  if (firstWord !== '/' || firstWord !== '\\') {
-    prefix += '/';
-  }
-  return prefix + src;
+  return process.env.VUE_APP_ASSETS_URL ? process.env.VUE_APP_ASSETS_URL + src : src
 }
