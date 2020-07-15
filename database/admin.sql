@@ -95,17 +95,6 @@ CREATE TABLE `attachments` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- 转存表中的数据 `attachments`
---
-
-INSERT INTO `attachments` (`id`, `album_id`, `name`, `admin_id`, `path`, `mime_type`, `size`, `created_at`, `updated_at`) VALUES
-(1, 0, '截图录屏_qq.exe_20200616152417.png', 1, 'storage/upload/20200616/dGcIMaJ4J7FcfsJInfgdGnNtarqIzC0WgUaqmrMY.png', 'image/png', 106232, '2020-06-16 00:35:16', '2020-06-16 00:35:16'),
-(2, 0, '截图录屏_选择区域_20200616142414.png', 1, 'storage/upload/20200616/TRhH24uNhBWlVy8pZrx4vxO43AwA0JywSftYLdj1.png', 'image/png', 81898, '2020-06-16 00:35:30', '2020-06-16 00:35:30'),
-(3, 0, '截图录屏_选择区域_20200616163609.png', 1, 'storage/upload/20200616/bTTZY1SFP99uXWtZU7VY0pZ7Mq5t2OdTVWX4N5N3.png', 'image/png', 6051, '2020-06-16 00:36:15', '2020-06-16 00:36:15'),
-(4, 0, '截图录屏_选择区域_20200616163609.png', 1, 'storage/upload/20200616/fank4RkCUJFEwCDTIxjsnsCmhx74NTWXGtVNKSBd.png', 'image/png', 6051, '2020-06-16 00:41:15', '2020-06-16 00:41:15'),
-(5, 0, '截图录屏_选择区域_20200616163609.png', 1, 'storage/upload/20200616/AL5g3Phy12a5GcOx3YBchaWRYqM6ZEvYf5YDgrvL.png', 'image/png', 6051, '2020-06-16 00:43:02', '2020-06-16 00:43:02');
-
 -- --------------------------------------------------------
 
 --
@@ -130,7 +119,7 @@ CREATE TABLE `configs` (
 --
 
 INSERT INTO `configs` (`id`, `group`, `title`, `name`, `type`, `value`, `rule`, `extend`, `created_at`, `updated_at`) VALUES
-(1, 'website', '站点名称', 'name', 'string', '新零售管理后台', 'required', '', '2020-03-16 05:36:41', '2020-06-16 00:45:17'),
+(1, 'website', '站点名称', 'name', 'string', 'LaravelVueAdmin', 'required', '', '2020-03-16 05:36:41', '2020-06-16 00:45:17'),
 (2, 'website', 'logo', 'logo', 'image', 'storage/upload/20200616/AL5g3Phy12a5GcOx3YBchaWRYqM6ZEvYf5YDgrvL.png', 'required', '', '2020-03-16 06:56:22', '2020-06-16 00:44:10');
 
 -- --------------------------------------------------------
