@@ -76,7 +76,7 @@ class UEditor
                 $result = $this->actionUpload($action);
                 $this->storeFileInfo($result);
                 $result['url'] = asset($result['url']);
-            break;
+                break;
 
             /* 列出图片 */
             case 'listimage':

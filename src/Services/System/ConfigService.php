@@ -95,6 +95,19 @@ class ConfigService extends Service
     }
 
     /**
+     * 获取组配置
+     * @param string $groupName
+     * @return mixed
+     */
+    public function getGroupConfig(string $groupName)
+    {
+        $configs = $this->repository->where('group', $groupName)
+            ->pluck('value', 'name')
+            ->toArray();
+        return $this->response->success($configs);
+    }
+
+    /**
      * 删除前置 TODO 配置删除功能待完成
      * @param int $id
      * @return bool

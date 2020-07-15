@@ -59,7 +59,7 @@ class UploadService
     {
         $filename = $file->store(config('upload.path'));
         if ($filename) {
-            $filename = 'storage/' . $filename;
+            $filename = '/storage/' . $filename;
             $this->saveFileInfo($file, $filename, $albumId);
             return [
                 'url' => asset($filename),

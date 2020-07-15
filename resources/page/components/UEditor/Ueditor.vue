@@ -1,9 +1,5 @@
 <template>
-  <vue-ueditor-wrap
-    v-model="content"
-    :config="ueditorConfig"
-    @ready="ready"
-  />
+  <vue-ueditor-wrap v-model="content" @ready="ready" :config="ueditorConfig" />
 </template>
 
 <script>
@@ -25,6 +21,7 @@ export default {
       ueditorConfig: {
         // 编辑器不自动被内容撑高
         autoHeightEnabled: false,
+        autoFloatEnabled: false,
         // 初始容器高度
         initialFrameHeight: 300,
         // 初始容器宽度
@@ -47,7 +44,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

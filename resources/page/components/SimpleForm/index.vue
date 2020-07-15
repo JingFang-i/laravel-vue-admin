@@ -1,10 +1,27 @@
 <template>
   <div class="edit-wrap">
-    <el-form ref="simpleForm" :model="editRow" :rules="formRules" label-width="80px">
+    <el-form
+      ref="simpleForm"
+      :model="editRow"
+      :rules="formRules"
+      label-width="80px"
+    >
       <template v-for="(item, key) in fields">
-        <el-form-item :key="key" :label="item.title" :prop="item.name" label-width="12%">
-          <el-input v-if="item.type === 'string'" v-model="editRow[item.name]" />
-          <el-input v-if="item.type === 'text'" v-model="editRow[item.name]" type="textarea" />
+        <el-form-item
+          :key="key"
+          :label="item.title"
+          :prop="item.name"
+          label-width="12%"
+        >
+          <el-input
+            v-if="item.type === 'string'"
+            v-model="editRow[item.name]"
+          />
+          <el-input
+            v-if="item.type === 'text'"
+            v-model="editRow[item.name]"
+            type="textarea"
+          />
           <ueditor
             v-if="item.type === 'editor'"
             :value.sync="editRow[item.name]"
@@ -21,13 +38,13 @@
             v-if="item.type === 'image'"
             :multiple="false"
             :limit="1"
-            :files.sync="editRow[item.name]"
+            v-model="editRow[item.name]"
           />
           <upload
             v-if="item.type === 'images'"
             :limit="'limit' in item ? item.limit : 5"
             :multiple="true"
-            :files.sync="editRow[item.name]"
+            v-model="editRow[item.name]"
           />
         </el-form-item>
       </template>
@@ -84,7 +101,7 @@ export default {
       handler: function(value) {
         this.editRow = Object.assign({}, this.row)
       }
-    },
+    }
   },
   mounted() {
     this.formRules = this.rules
@@ -118,6 +135,4 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

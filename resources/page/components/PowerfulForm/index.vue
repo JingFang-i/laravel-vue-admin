@@ -32,7 +32,10 @@
             :maxlength="item.maxlength"
           />
           <el-select
-            v-if="'type' in item && item.type === 'select'"
+            v-if="
+              'type' in item &&
+                (item.type === 'select' || item.type === 'status')
+            "
             v-model="editRow[item.field]"
             :placeholder="item.placeholder"
           >
@@ -81,14 +84,15 @@
             :label-name="'labelName' in item ? item.labelName : 'name'"
             :key-name="'keyName' in item ? item.keyName : 'id'"
             :multiple="'multiple' in item ? item.multiple : false"
-            :selected.sync="editRow[item.field]"
+            v-model="editRow[item.field]"
           />
           <cascader
             v-if="item.type === 'cascader'"
             :options="item.selectList"
             :props="item.props"
-            :value.sync="editRow[item.field]"
+            v-model="editRow[item.field]"
             :show-all-levels="item.showAllLevels"
+            :params="item.params"
           />
           <tree
             v-if="item.type === 'tree'"
@@ -130,14 +134,32 @@
             v-if="item.type === 'image' || item.type === 'avatar'"
             :multiple="false"
             :limit="1"
-            :files.sync="editRow[item.field]"
+            :tips="item.tips"
+            v-model="editRow[item.field]"
           />
           <upload
             v-if="item.type === 'images'"
             :limit="'limit' in item ? item.limit : 5"
             :multiple="true"
-            :files.sync="editRow[item.field]"
+            :tips="item.tips"
+            v-model="editRow[item.field]"
           />
+          <upload-file
+            v-if="item.type === 'file'"
+            :limit="1"
+            :multiple="false"
+            :tips="item.tips"
+            :accept="item.accept ? item.accept : ''"
+            v-model="editRow[item.field]"
+          ></upload-file>
+          <upload-file
+            v-if="item.type === 'files'"
+            :limit="'limit' in item ? item.limit : 5"
+            :multiple="true"
+            :tips="item.tips"
+            :accept="item.accept ? item.accept : ''"
+            v-model="editRow[item.field]"
+          ></upload-file>
           <ueditor
             v-if="item.type === 'editor'"
             :value.sync="editRow[item.field]"
@@ -152,7 +174,7 @@
             v-model="editRow[item.field]"
           >
             <template slot="prepend"
-            >¥</template
+              >¥</template
             >
           </el-input>
 
@@ -165,8 +187,8 @@
           type="primary"
           size="mini"
           @click="submit()"
-        >{{
-          buttonTitle ? buttonTitle : row.id ? '确定修改' : '确定添加'
+          >{{
+            buttonTitle ? buttonTitle : row.id ? '确定修改' : '确定添加'
           }}</el-button
         >
       </el-form-item>
@@ -174,135 +196,139 @@
   </div>
 </template>
 <script>
-  import Upload from './Upload'
-  import CustomSelect from './CustomSelect'
-  import GroupSelect from './GroupSelect'
-  import KeyValueTable from './KeyValueTable'
-  import Cascader from './Cascader'
-  import Tree from './Tree'
-  import Ueditor from '../UEditor/Ueditor'
-  import Tinymce from '../Tinymce'
-  import SvgSelect from '../SvgIcon/SvgSelect'
-  import { getToken } from '@/utils/auth'
+import Upload from './Upload'
+import UploadFile from './UploadFile'
+import CustomSelect from './CustomSelect'
+import GroupSelect from './GroupSelect'
+import KeyValueTable from './KeyValueTable'
+import Cascader from './Cascader'
+import Tree from './Tree'
+import Ueditor from '../UEditor/Ueditor'
+import Tinymce from '../Tinymce'
+import SvgSelect from '../SvgIcon/SvgSelect'
 
-  export default {
-    components: {
-      Upload,
-      CustomSelect,
-      GroupSelect,
-      KeyValueTable,
-      Cascader,
-      Tree,
-      SvgSelect,
-      Ueditor,
-      Tinymce
+export default {
+  components: {
+    Upload,
+    UploadFile,
+    CustomSelect,
+    GroupSelect,
+    KeyValueTable,
+    Cascader,
+    Tree,
+    SvgSelect,
+    Ueditor,
+    Tinymce
+  },
+  props: {
+    fields: {
+      type: Array,
+      required: true
     },
-    props: {
-      fields: {
-        type: Array,
-        required: true
-      },
-      row: {
-        type: Object,
-        required: true
-      },
-      rules: {
-        type: Object,
-        default: () => ({})
-      },
-      buttonTitle: {
-        type: String,
-        default: ''
+    row: {
+      type: Object,
+      required: true
+    },
+    rules: {
+      type: Object,
+      default: () => ({})
+    },
+    buttonTitle: {
+      type: String,
+      default: ''
+    }
+  },
+  data() {
+    return {
+      formRules: {},
+      editRow: this.row,
+      dateFormat: 'yyyy-MM-dd',
+      datetimeFormat: 'yyyy-MM-dd HH:mm:ss',
+      ueditorConfig: {
+        // 编辑器不自动被内容撑高
+        autoHeightEnabled: false,
+        // 初始容器高度
+        initialFrameHeight: 300,
+        // 初始容器宽度
+        initialFrameWidth: '100%',
+        serverUrl: process.env.VUE_APP_BASE_URL + '/ueditor',
+        // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
+        UEDITOR_HOME_URL: '/plugins/ueditor/'
       }
-    },
-    data() {
-      return {
-        formRules: {},
-        editRow: {},
-        dateFormat: 'yyyy-MM-dd',
-        datetimeFormat: 'yyyy-MM-dd HH:mm:ss',
-        ueditorConfig: {
-          // 编辑器不自动被内容撑高
-          autoHeightEnabled: false,
-          // 初始容器高度
-          initialFrameHeight: 300,
-          // 初始容器宽度
-          initialFrameWidth: '100%',
-          serverUrl: process.env.VUE_APP_BASE_URL + '/ueditor',
-          // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
-          UEDITOR_HOME_URL: '/plugins/ueditor/'
-        }
-      }
-    },
-    watch: {
-      editRowClone: {
-        deep: true,
-        handler: function(val, oldVal) {
-          let changedValues = []
-          for (let [field, value] of Object.entries(val)) {
-            if (value !== oldVal[field]) {
-              changedValues.push({
-                field: field,
-                value: value
-              })
-            }
-          }
-          this.$emit('change', {
-            changedValues: changedValues,
-            editRow: this.editRow
-          })
-        }
-      }
-    },
-    created() {
-      this.editRow = Object.assign({}, this.row)
-    },
-    mounted() {
-      this.formRules = this.rules
-      // 如果没有传入验证规则，则生成简单验证规则
-      if (Object.keys(this.rules).length === 0) {
-        this.generateRules()
-      }
-    },
-    computed: {
-      // 因为数据同源, 所以侦听到的结果一样, 所以这里需要用到计算属性
-      editRowClone() {
-        return Object.assign({}, this.editRow)
-      }
-    },
-    methods: {
-      submit() {
-        this.$refs['form'].validate(valid => {
-          if (valid) {
-            this.$emit('submit', this.editRow)
-            // this.$refs['form'].resetFields();
-          } else {
-            return false
-          }
-        })
-      },
-      // 当未定义rules时，可根据fields中的required属性生成验证规则
-      generateRules() {
-        const rules = {}
-        this.fields.forEach(item => {
-          if ('required' in item && item.required === true) {
-            rules[item.field] = []
-            rules[item.field].push({
-              required: true,
-              message: item.label + '不能为空!',
-              trigger: 'blur'
+    }
+  },
+  watch: {
+    editRowClone: {
+      deep: true,
+      handler: function(val, oldVal) {
+        let changedValues = []
+        for (let [field, value] of Object.entries(val)) {
+          if (value !== oldVal[field]) {
+            changedValues.push({
+              field: field,
+              value: value
             })
           }
+        }
+        this.$emit('change', {
+          changedValues: changedValues,
+          editRow: this.editRow
         })
-        this.formRules = rules
+      }
+    },
+    row: {
+      deep: true,
+      handler: function(value, oldVal) {
+        this.editRow = this.row
       }
     }
-  }
-</script>
-<style lang="scss" scoped>
-  .edit-wrap {
-    .button {
-      float: right;
+  },
+  mounted() {
+    this.formRules = this.rules
+    // 如果没有传入验证规则，则生成简单验证规则
+    if (Object.keys(this.rules).length === 0) {
+      this.generateRules()
+    }
+  },
+  computed: {
+    // 因为数据同源, 所以侦听到的结果一样, 所以这里需要用到计算属性
+    editRowClone() {
+      return Object.assign({}, this.editRow)
+    }
+  },
+  methods: {
+    submit() {
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          this.$emit('submit', this.editRow)
+          // this.$refs['form'].resetFields();
+        } else {
+          return false
+        }
+      })
+    },
+    // 当未定义rules时，可根据fields中的required属性生成验证规则
+    generateRules() {
+      const rules = {}
+      this.fields.forEach(item => {
+        if ('required' in item && item.required === true) {
+          rules[item.field] = []
+          rules[item.field].push({
+            required: true,
+            message: item.label + '不能为空!',
+            trigger: 'blur'
+          })
+        }
+      })
+      this.formRules = rules
     }
   }
+}
+</script>
+<style lang="scss" scoped>
+.edit-wrap {
+  .button {
+    float: right;
+  }
+}
 </style>

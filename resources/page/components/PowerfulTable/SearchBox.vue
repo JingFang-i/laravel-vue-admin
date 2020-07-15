@@ -5,30 +5,35 @@
       <i class="el-icon-search">&nbsp;&nbsp;筛选搜索</i>
     </div>
     <slot />
-    <el-button type="primary" size="mini" style="float: right" @click="doSearch">查询</el-button>
+    <el-button
+      type="primary"
+      size="mini"
+      style="float: right;margin: 0 10px 10px 0"
+      @click="doSearch"
+      >查询</el-button
+    >
+    <el-button
+      type="default"
+      size="mini"
+      style="float: right;margin-right: 5px;margin: 0 10px 10px 0"
+      @click="reset"
+      >重置</el-button
+    >
   </div>
 </template>
 <script>
 export default {
-  components: {},
-  data() {
-    return {}
-  },
-  computed: {
-    device() {
-      return this.$store.getters.device
-    }
-  },
-  mounted() {},
   methods: {
     doSearch() {
       this.$emit('search')
+    },
+    reset() {
+      this.$emit('reset')
     }
   }
 }
-
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .wrap {
   width: 100%;
   height: auto;

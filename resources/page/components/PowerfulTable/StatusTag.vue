@@ -1,8 +1,5 @@
 <template>
-  <el-tag
-    :type="type"
-    effect="dark"
-  >
+  <el-tag :type="type" effect="dark">
     {{ statusText }}
   </el-tag>
 </template>

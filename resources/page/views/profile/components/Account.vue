@@ -72,16 +72,17 @@
         this.form.avatar = res.data.filename
       },
       beforeAvatarUpload(file) {
-        const isImg = file.type.indexOf('image') !== false
+        const isImg = file.type.indexOf('image') !== -1
         const isLt2M = file.size / 1024 / 1024 < 2
-
         if (!isImg) {
           this.$message.error('上传头像图片只能是图片格式!')
+          return false
         }
         if (!isLt2M) {
           this.$message.error('上传头像图片大小不能超过 2MB!')
+          return false
         }
-        return isImg && isLt2M
+        return true
       },
       submit() {
         updateInfo(this.form).then(res => {

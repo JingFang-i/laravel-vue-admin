@@ -1,12 +1,21 @@
 <template>
-  <el-select v-model="currentSelected" :multiple="multiple" placeholder="请选择" @change="change">
+  <el-select
+    :value="selected"
+    :selected="selected"
+    :multiple="multiple"
+    placeholder="请选择"
+    @change="change"
+  >
     <template v-for="(item, key) in selectList">
       <el-option
         v-if="selectList instanceof Array"
         :key="key"
         :label="item[labelName]"
         :value="item[keyName]"
-        :class="{'text-bold': item.children instanceof Array && item.children.length > 0}"
+        :class="{
+          'text-bold':
+            item.children instanceof Array && item.children.length > 0
+        }"
       />
       <el-option
         v-if="!(selectList instanceof Array)"
@@ -18,7 +27,9 @@
         <template v-for="(v, k) in item.children">
           <el-option
             :key="key + '-' + k"
-            :label="(k !== item.children.length - 1 ? '├ ' : '└ ')+ v[labelName]"
+            :label="
+              (k !== item.children.length - 1 ? '├ ' : '└ ') + v[labelName]
+            "
             :value="v[keyName]"
           />
         </template>
@@ -28,6 +39,10 @@
 </template>
 <script>
 export default {
+  model: {
+    prop: 'selected',
+    event: 'change'
+  },
   props: {
     resource: {
       type: Function,
@@ -56,19 +71,15 @@ export default {
   },
   data() {
     return {
-      selectList: [],
-      currentSelected: ''
+      selectList: []
     }
   },
   mounted() {
     this.getLists()
-    this.$nextTick(function() {
-      this.currentSelected = this.selected ? this.selected : ''
-    })
   },
   methods: {
-    change() {
-      this.$emit('update:selected', this.currentSelected)
+    change(value) {
+      this.$emit('change', value)
     },
     getLists() {
       let params = {

@@ -40,4 +40,13 @@ class DictionaryService extends Service
         $dict = empty($dict) ? [] : $dict;
         return $this->response->success($dict);
     }
+
+    public function beforeDestroy(int $id): bool
+    {
+        if($id == 1) {
+            $this->setError('不能删除此项');
+            return false;
+        }
+        return true;
+    }
 }
