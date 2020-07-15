@@ -142,10 +142,6 @@ php artisan admin:generate test --model=Test
 Route::middleware(['service'])->group(function() {
     // Test
     Route::resource('test', 'TestController');
-    // Test 批量操作
-    Route::post('test/multi', 'TestController@multi')->name('test.multi');
-    // Test 批量删除
-    Route::post('test/multi-del', 'TestController@multiDestroy')->name('test.multidestroy');
 
 });
 
