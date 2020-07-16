@@ -177,8 +177,8 @@
           :max-height="maxHeight"
           :show-overflow-tooltip="true"
           row-key="id"
-          border
           resizable
+          :stripe="true"
           highlight-current-row
           :default-expand-all="defaultExpandAll"
           @selection-change="handleSelectionChange"
@@ -255,32 +255,32 @@
                 />
                 <el-image
                   v-if="item.type === 'image'"
-                  style="width: 80px; height: 80px"
-                  :src="getImgUrl(scope.row[item.field])"
+                  style="width: 50px; height: 50px"
+                  :src="scope.row[item.field] ? getImgUrl(scope.row[item.field]) : ''"
                   fit="contain"
                   :preview-src-list="[getImgUrl(scope.row[item.field])]"
                 />
                 <el-image
                   v-if="item.type === 'images'"
-                  style="width: 80px; height: 80px"
-                  :src="scope.row[item.field][0]"
+                  style="width: 50px; height: 50px"
+                  :src="scope.row[item.field] ? getImgUrl(scope.row[item.field][0]) : ''"
                   fit="contain"
                   :preview-src-list="
-                    scope.row[item.field] ? scope.row[item.field] : []
+                    scope.row[item.field] ? scope.row[item.field].map(path => getImgUrl(path)) : []
                   "
                 />
                 <el-link
                   v-if="item.type === 'file'"
                   type="info"
                   icon="el-icon-files"
-                  :href="getImgUrl(scope.row[item.field])"
+                  :href="scope.row[item.field] ? getImgUrl(scope.row[item.field]) : ''"
                   target="_blank"
                   >下载</el-link
                 >
                 <el-avatar
                   v-if="item.type === 'avatar'"
                   :size="60"
-                  :src="getImgUrl(scope.row[item.field])"
+                  :src="scope.row[item.field] ? getImgUrl(scope.row[item.field]) : ''"
                 >
                   <img
                     src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
