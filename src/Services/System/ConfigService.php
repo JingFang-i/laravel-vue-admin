@@ -10,6 +10,7 @@ class ConfigService extends Service
 
     const DISABLE_DELETE = ['name', 'logo']; //禁止删除
 
+
     protected function rules(array $data, $id): array
     {
         return [
@@ -64,6 +65,8 @@ class ConfigService extends Service
         }
         $model = $this->repository->store($formData);
         if ($model) {
+            // 更新
+            $this->repository->updateCachedConfig($model->group, $model->name, $model->value);
             return $this->response->success(['id' => $model->id]);
         } else {
             return $this->response->error();
@@ -78,10 +81,16 @@ class ConfigService extends Service
         $configs = $this->request->all();
         $names = array_keys($configs);
         $all = $this->repository->whereIn('name', $names)->get();
+        $groupName = '';
         foreach ($all as $item) {
+            if ($groupName === '') {
+                $groupName = $item->group;
+            }
             $item->value = $configs[$item->name];
             $item->save();
         }
+        $groupConfigs = $all->pluck('value', 'name')->toArray();
+        $this->repository->updateCachedGroupConfigs($groupName, $groupConfigs);
         return $this->response->success();
     }
 
@@ -91,7 +100,8 @@ class ConfigService extends Service
      */
     public function getWebsiteConfig()
     {
-        return $this->response->collection($this->repository->where('group', 'website')->pluck('value', 'name'));
+        $configs = $this->repository->getGroupConfigs('website');
+        return $this->response->success($configs);
     }
 
     /**
@@ -101,14 +111,18 @@ class ConfigService extends Service
      */
     public function getGroupConfig(string $groupName)
     {
-        $configs = $this->repository->where('group', $groupName)
-            ->pluck('value', 'name')
-            ->toArray();
+        $configs = $this->repository->getGroupConfigs($groupName);
+
         return $this->response->success($configs);
     }
 
+    public function getConfig(string $name)
+    {
+        return $this->response->success();
+    }
+
     /**
-     * 删除前置 TODO 配置删除功能待完成
+     * 删除前置
      * @param int $id
      * @return bool
      */

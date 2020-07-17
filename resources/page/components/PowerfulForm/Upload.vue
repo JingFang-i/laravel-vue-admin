@@ -346,7 +346,6 @@
       },
       // 确定按钮
       submit() {
-        console.log(this.filePathLists)
         if (this.filePathLists.length > this.limit) {
           Message.error('图片不能超过' + this.limit + '张')
           return false
