@@ -54,9 +54,9 @@ class ApiResponse implements ApiResponseInterface
      *
      * @return Result
      */
-    public function success(array $data = [], string $msg = '')
+    public function success(array $data = [], string $msg = '', int $code = 200)
     {
-        return new Result(200, $data, $msg);
+        return new Result($code, $data, $msg);
     }
 
     /**

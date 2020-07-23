@@ -32,9 +32,9 @@ router.beforeEach(async(to, from, next) => {
         // determine whether the user has obtained his permission roles through getInfo
         try {
           // get user info
-          store.dispatch('user/getInfo')
+          const userInfo = await store.dispatch('user/getInfo')
           // get website config
-          store.dispatch('app/getWebsiteConfig')
+          const websiteConfig = await store.dispatch('app/getWebsiteConfig')
 
           // generate accessible routes map based on roles
           const accessedRoutes = await store.dispatch('permission/generateRoutes')

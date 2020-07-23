@@ -128,8 +128,8 @@ class AdminServiceProvider extends ServiceProvider
     protected function registerMsgResponseMacro($responseFactory, $apiResponse)
     {
         //success
-        $responseFactory->macro('success', function($data = [], string $msg = '') use ($responseFactory, $apiResponse){
-            return $responseFactory->make($apiResponse->success($data, $msg));
+        $responseFactory->macro('success', function($data = [], string $msg = '', int $code = 200) use ($responseFactory, $apiResponse){
+            return $responseFactory->make($apiResponse->success($data, $msg, $code));
         });
         //error
         $responseFactory->macro('error', function(string $msg = '', int $code = 400) use ($responseFactory, $apiResponse){
