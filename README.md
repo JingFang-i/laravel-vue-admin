@@ -8,6 +8,9 @@ Laravel-Vue-Admin主要优势在于前后端分离，具有一键生成功能，
 * [laravel-permission](https://docs.spatie.be/laravel-permission/v3/introduction/)
 * [Fractal](https://fractal.thephpleague.com/)
 
+### 码云地址
+[gitee.com](https://gitee.com/jf_aa/laravel-vue-admin)
+
 ### 安装
 ```bash
 composer require frey/laravel-vue-admin
