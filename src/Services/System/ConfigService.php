@@ -116,11 +116,6 @@ class ConfigService extends Service
         return $this->response->success($configs);
     }
 
-    public function getConfig(string $name)
-    {
-        return $this->response->success();
-    }
-
     /**
      * 删除前置
      * @param int $id
