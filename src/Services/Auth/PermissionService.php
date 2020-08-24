@@ -112,6 +112,17 @@ class PermissionService extends Service
     }
 
     /**
+     * 保存前置
+     * @param array $data
+     * @return array
+     */
+    protected function beforeStore(array $data): array
+    {
+        $data['pid'] = isset($data['pid']) && $data['pid'] ? $data['pid'] : 0;
+        return $data;
+    }
+
+    /**
      * 过滤掉当前用户没有的权限 只返回最后一级
      *
      * @param $adminPermissions
