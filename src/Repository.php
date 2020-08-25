@@ -40,15 +40,15 @@ abstract class Repository implements RepositoryInterface
      */
     public function lists(array $params, array $with = [], array $extraWhere = [])
     {
-        list($normalFilters, $relationFilters, $operate) = $this->parseParams($params);
+        list($normalFilters, $relationFilters, $normalOperate, $relationOperate) = $this->parseParams($params);
 
-        $where = $this->buildWhereByParams($normalFilters, $operate);
+        $where = $this->buildWhereByParams($normalFilters, $normalOperate);
         if ($where) {
             $this->model = $this->model->where($where);
         }
         if ($relationFilters) {
             foreach ($relationFilters as $relationName => $filter) {
-                $relationWhere = $this->buildWhereByParams($filter, $operate);
+                $relationWhere = $this->buildWhereByParams($filter, $relationOperate[$relationName]);
                 if ($relationWhere) {
                     $this->model = $this->model->whereHas($relationName, function($query) use($relationWhere) {
                         $query->where($relationWhere);
@@ -182,23 +182,28 @@ abstract class Repository implements RepositoryInterface
         $filter = $this->decodeParam('filter', $params);
         $operate = $this->decodeParam('operate', $params);
         if (empty($filter) || empty($operate)) {
-            return [[], [], []];
+            return [[], [], [], []];
         }
-        $normalFilters = $relationFilters = [];
+        $normalFilters = $relationFilters = $normalOperate = $relationOperate = [];
         foreach ($filter as $field => $value) {
             if (strpos($field, '.')){
-                list($relationName, $name) = explode('.', $field);
+                $fieldArr = explode('.', $field);
+                $name = array_pop($fieldArr);
+                $relationName = join('.', $fieldArr);
                 $relationName = Str::camel($relationName);
-                if (!isset($relationFilters[$relationName])) {
-                    $relationFilters[$relationName]= [$name => $value];
+                if (!isset($relationName, $relationFilters)) {
+                    $relationFilters[$relationName] = [$name => $value];
+                    $relationOperate[$relationName] = [$name => isset($operate[$field]) ? $operate[$field] : '='];
                 } else {
                     $relationFilters[$relationName][$name] = $value;
+                    $relationOperate[$relationName][$name] = isset($operate[$field]) ? $operate[$field] : '=';
                 }
             } else {
                 $normalFilters[$field] = $value;
+                $normalOperate[$field] = isset($operate[$field]) ? $operate[$field] : '=';
             }
         }
-        return [$normalFilters, $relationFilters, $operate];
+        return [$normalFilters, $relationFilters, $normalOperate, $relationOperate];
     }
 
     /**
