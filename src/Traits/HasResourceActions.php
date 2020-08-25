@@ -13,6 +13,7 @@ trait HasResourceActions
         'created_at', 'updated_at', 'deleted_at'
     ];
 
+    protected $defaultWith = [];
 
     /**
      * 查看
@@ -22,7 +23,7 @@ trait HasResourceActions
     public function index()
     {
         if (! $this->request->has('is_select')) {
-            $lists = $this->repository->lists($this->request->query());
+            $lists = $this->repository->lists($this->request->query(), $this->defaultWith, $this->buildWhere());
             if (!is_null($this->transformer)) {
                 return $this->response->paginator($lists, $this->transformer);
             } else {
@@ -31,6 +32,11 @@ trait HasResourceActions
         } else {
             return $this->response->collection($this->repository->selectList());
         }
+    }
+
+    protected function buildWhere()
+    {
+        return [];
     }
 
     /**
