@@ -18,7 +18,7 @@ import Layout from '@/layout'
 /**
  * Filter asynchronous routing tables by recursion
  * @param routes asyncRoutes
- * @param roles
+ * @param isTop
  */
 export function formatAsyncRoutes(routes, isTop) {
   const res = []

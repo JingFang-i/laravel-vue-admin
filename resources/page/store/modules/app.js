@@ -65,6 +65,7 @@ const actions = {
         if (res.data.logo) {
           commit('SET_LOGO', getImgUrl(res.data.logo))
         }
+        resolve(res.data)
       })
     })
   }
