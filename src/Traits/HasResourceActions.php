@@ -45,13 +45,14 @@ trait HasResourceActions
     public function store()
     {
         $formData = $this->request->all();
-        $formData = $this->beforeStore($formData);
         if (!is_null($this->validator)) {
             $formData = $this->validator->validated();
         }
         if (!$this->validate($formData)) {
             return $this->response->error($this->errorMsg);
         }
+        $formData = $this->beforeStore($formData);
+
         $model = $this->repository->store($formData);
         if ($model) {
             $this->afterStore($model);
@@ -67,13 +68,14 @@ trait HasResourceActions
     public function update(int $id)
     {
         $formData = $this->request->except($this->exceptAttributes);
-        $formData = $this->beforeUpdate($id, $formData);
         if (!is_null($this->validator)) {
             $formData = $this->validator->validated();
         }
         if (!$this->validate($formData, $id)) {
             return $this->response->error($this->errorMsg);
         }
+        $formData = $this->beforeUpdate($id, $formData);
+
         if ($this->repository->update($id, $formData)) {
             $this->afterUpdate($id, $formData);
             return $this->response->success();
