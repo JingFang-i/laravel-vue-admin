@@ -14,7 +14,7 @@ class ResetAdmin extends Command
      *
      * @var string
      */
-    protected $signature = 'admin:password {account} {password}';
+    protected $signature = 'admin:password {table} {account} {password}';
 
     /**
      * The console command description.
@@ -26,12 +26,13 @@ class ResetAdmin extends Command
 
     public function handle()
     {
+        $table = $this->argument('table');
         $account = $this->argument('account');
         $password = $this->argument('password');
-        $adminExists = DB::table('admin_users')->where('username', $account)->exists();
+        $adminExists = DB::table($table)->where('username', $account)->exists();
         if ($adminExists) {
             $password = Hash::make($password);
-            DB::table('admin_users')->where('username', 'admin')
+            DB::table($table)->where('username', 'admin')
                 ->update(['password' => $password]);
             $this->info('密码更新成功');
         } else {

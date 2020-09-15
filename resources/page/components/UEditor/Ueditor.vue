@@ -39,7 +39,9 @@ export default {
   },
   methods: {
     ready() {
-      this.content = this.value
+      this.$nextTick(function() {
+        this.content = this.value
+      })
     }
   }
 }

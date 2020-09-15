@@ -8,8 +8,8 @@ use Jmhc\Admin\Utils\Helper;
 
 class CreateAuth
 {
-    const PERMISSION_TABLE_NAME = 'permissions';
 
+    private $permissionTableName;
     protected $prefix = '';
     protected $name = '';
     protected $module = 'admin';
@@ -27,6 +27,8 @@ class CreateAuth
 
     public function __construct($prefix, $name, $module)
     {
+        $this->permissionTableName = config('permission.table_names.permissions');
+
         $this->prefix = $prefix;
         $this->name = $name;
         $this->module = strtolower($module);
@@ -108,12 +110,12 @@ class CreateAuth
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ];
-        $permission = DB::table(self::PERMISSION_TABLE_NAME)->where('name', $data['name'])->first();
+        $permission = DB::table($this->permissionTableName)->where('name', $data['name'])->first();
         if (!empty($permission)) {
-            DB::table(self::PERMISSION_TABLE_NAME)->where('id', $permission->id)->update($data);
+            DB::table($this->permissionTableName)->where('id', $permission->id)->update($data);
             return $permission->id;
         } else {
-            return DB::table(self::PERMISSION_TABLE_NAME)->insertGetId($data);
+            return DB::table($this->permissionTableName)->insertGetId($data);
         }
 
     }
