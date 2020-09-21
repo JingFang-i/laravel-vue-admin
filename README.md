@@ -31,7 +31,7 @@ composer require frey/laravel-vue-admin
 ##### 发布资源
 
 ```bash
-php artisan vendor:publish
+php artisan vendor:publish --force
 // 选择发布Tymon\JWTAuth\Providers\LaravelServiceProvider和Jmhc\Admin\AdminServiceProvider
 ```
 ##### 数据库配置
