@@ -878,10 +878,13 @@
                     'operate' in item && item.operate ? item.operate : '='
           }
         })
+        this.currentPage = 1
         this.getData()
       },
       reset() {
+        this.currentPage = 1
         this.searchForm = {}
+        this.refresh()
       },
       moreQuery() {
         this.showSearchBox = !this.showSearchBox
@@ -937,7 +940,6 @@
       // 详情
       handleDetail(id) {
         if (this.detail) {
-          // this.detail.call(this, id)
           this.detail(id)
         } else {
           // TODO

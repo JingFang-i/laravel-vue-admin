@@ -3,9 +3,13 @@
 namespace Jmhc\Admin\Models\System;
 
 use Illuminate\Database\Eloquent\Model;
+use Jmhc\Admin\Traits\SerializeDate;
 
 class Attachment extends Model
 {
+
+    use SerializeDate;
+
     protected $fillable = [
         'album_id',
         'name',

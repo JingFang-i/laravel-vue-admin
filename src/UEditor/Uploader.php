@@ -1,5 +1,5 @@
 <?php
-namespace Jmhc\Admin\UEditor;
+namespace App\Services\UEditor;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -58,7 +58,7 @@ class Uploader
         $this->fileField = $fileField;
         $this->config = $config;
         $this->type = $type;
-        $this->storage = Storage::disk('public');
+        $this->storage = Storage::disk(config('filesystems.default'));
         if ($type == "remote") {
             $this->saveRemote();
         } else if($type == "base64") {
@@ -82,11 +82,14 @@ class Uploader
             $this->stateInfo = $this->getStateInfo('ERROR_FILE_NOT_FOUND');
             return;
         }
-        $this->fullName = '/storage/' . $file->store($path);
+        $this->fullName = $file->store($path);
         $this->oriName = $file->getClientOriginalName();
         $this->fileSize = $file->getSize();
         $this->fileName = $file->getFilename();
         $this->fileType = $file->getExtension();
+        if (config('filesystems.default') === 'public') {
+            $this->fullName = '/storage/' . $this->fullName;
+        }
 
         if (!$this->checkSize()) {
             $this->stateInfo = $this->getStateInfo("ERROR_SIZE_EXCEED");
@@ -117,9 +120,13 @@ class Uploader
         $this->oriName = $this->config['oriName'];
         $this->fileSize = strlen($img);
         $this->fileType = $this->getFileExt();
-        $this->fullName = '/storage/' . $path . '/' . $filename;
+        $this->fullName = $path . '/' . $filename;
         $this->fileName = $filename;
         $this->fileType = 'png';
+
+        if (config('filesystems.default') === 'public') {
+            $this->fullName = '/storage/' . $this->fullName;
+        }
 
         //检查文件大小是否超出限制
         if (!$this->checkSize()) {
@@ -189,13 +196,18 @@ class Uploader
         ob_end_clean();
         preg_match("/[\/]([^\/]*)[\.]?[^\.\/]*$/", $imgUrl, $m);
 
+        $path = $this->getFullPath();
         $filename = time() . mt_rand(100000, 999999) . '.png';
         $this->storage->put($path . '/' . $filename, $img);
         $this->oriName = $m ? $m[1]:"";
         $this->fileSize = strlen($img);
         $this->fileType = $this->getFileExt();
-        $this->fullName = '/storage/' . $path . '/' . $filename;
+        $this->fullName = $path . '/' . $filename;
         $this->fileName = $filename;
+
+        if (config('filesystems.default') === 'public') {
+            $this->fullName = '/storage/' . $this->fullName;
+        }
 
         //检查文件大小是否超出限制
         if (!$this->checkSize()) {

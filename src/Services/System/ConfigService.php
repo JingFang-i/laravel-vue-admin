@@ -14,7 +14,7 @@ class ConfigService extends Service
     protected function rules(array $data, $id): array
     {
         return [
-            'group' => 'bail|required|max:15',
+            'group' => 'bail|required|max:25',
             'title' => 'bail|required|max:50',
             'name' => 'bail|required|max:50',
             'type' => 'bail|required|in:string,text,editor,switch,image,images',
@@ -25,7 +25,7 @@ class ConfigService extends Service
     {
         return [
             'group.required' => '配置组不能为空',
-            'group.max' => '配置组不能超过15个字符',
+            'group.max' => '配置组不能超过25个字符',
             'title.required' => '配置名称不能为空',
             'title.max' => '配置名称不能超过50个字符',
             'name.required' => '标识符不能为空',
@@ -60,7 +60,11 @@ class ConfigService extends Service
         if (!$this->validate($formData)) {
             return $this->response->error($this->errorMsg);
         }
-        if ($this->repository->where('name', $formData['name'])->exists()) {
+        $exists = $this->repository
+            ->where('group', $formData['group'])
+            ->where('name', $formData['name'])
+            ->exists();
+        if ($exists) {
             return $this->response->error('该标识符已存在！');
         }
         $model = $this->repository->store($formData);
@@ -78,19 +82,20 @@ class ConfigService extends Service
      */
     public function updateGroup()
     {
-        $configs = $this->request->all();
-        $names = array_keys($configs);
-        $all = $this->repository->whereIn('name', $names)->get();
-        $groupName = '';
-        foreach ($all as $item) {
-            if ($groupName === '') {
-                $groupName = $item->group;
-            }
-            $item->value = $configs[$item->name];
-            $item->save();
+        $group = $this->request->input('group');
+        if (!$group) {
+            return $this->response->error('组名不能为空');
         }
-        $groupConfigs = $all->pluck('value', 'name')->toArray();
-        $this->repository->updateCachedGroupConfigs($groupName, $groupConfigs);
+        $formData = $this->request->input('rows');
+        $all = $this->repository->where('group', $group)->get();
+        foreach ($all as $item) {
+            if (isset($formData[$item->name])) {
+                $item->value = $formData[$item->name];
+                $item->save();
+            }
+        }
+        $groupConfigs = $all->where('group', $group)->pluck('value', 'name')->toArray();
+        $this->repository->updateCachedGroupConfigs($group, $groupConfigs);
         return $this->response->success();
     }
 

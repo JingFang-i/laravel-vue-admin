@@ -4,9 +4,13 @@ namespace Jmhc\Admin\Models\System;
 
 use Illuminate\Database\Eloquent\Model;
 use Jmhc\Admin\Services\System\AdminLogService;
+use Jmhc\Admin\Traits\SerializeDate;
 
 class AdminLog extends Model
 {
+
+    use SerializeDate;
+
     protected $table = 'admin_log';
 
     protected $fillable = [

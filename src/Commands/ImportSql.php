@@ -36,9 +36,7 @@ class ImportSql extends Command
     {
         foreach ($this->getSql() as $sqlPath) {
             $sql = file_get_contents($sqlPath);
-            $pdo = DB::connection()->getPdo();
-            $pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, 0);
-            $pdo->exec($sql);
+            DB::unprepared($sql);
         }
     }
 

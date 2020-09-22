@@ -3,10 +3,13 @@
 namespace {%namespace%};
 
 use Illuminate\Database\Eloquent\Model;
+use Jmhc\Admin\Traits\SerializeDate;
 use {%service%};
 
 class {%name%} extends Model
 {
+    use SerializeDate;
+
     protected $table = {%table%};
 
     protected $fillable = {%fillable%};

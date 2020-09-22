@@ -280,7 +280,7 @@ export default {
       this.init()
     }
   },
-  mounted() {
+  created() {
     this.init()
   },
   computed: {

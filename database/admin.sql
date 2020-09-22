@@ -103,7 +103,7 @@ CREATE TABLE `attachments` (
 
 CREATE TABLE `configs` (
   `id` int UNSIGNED NOT NULL,
-  `group` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '组名称',
+  `group` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '组名称',
   `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '标题',
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置名称',
   `type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置字段类型:string,text,editor,switch,',
@@ -347,7 +347,7 @@ ALTER TABLE `attachments`
 --
 ALTER TABLE `configs`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `name` (`name`);
+  ADD KEY `group` (`group`);
 
 --
 -- 表的索引 `dictionary`
@@ -391,7 +391,7 @@ ALTER TABLE `roles`
 -- 使用表AUTO_INCREMENT `attachments`
 --
 ALTER TABLE `attachments`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- 使用表AUTO_INCREMENT `permissions`

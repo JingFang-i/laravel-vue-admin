@@ -293,7 +293,7 @@ class UEditor
         $attachment = [
             'album_id' => 0,
             'name' => $fileInfo['original'],
-            'admin_id' => auth()->id(),
+            'admin_id' => auth()->id() ?: 0,
             'path' => $fileInfo['url'],
             'mime_type' => $fileInfo['mime_type'],
             'size' => $fileInfo['size'],

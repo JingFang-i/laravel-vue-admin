@@ -5,6 +5,8 @@ namespace Jmhc\Admin\Controllers;
 
 
 use Illuminate\Routing\Controller;
+use Illuminate\Routing\ResponseFactory;
+use Jmhc\Admin\Services\Uploader;
 use Jmhc\Admin\UEditor\UEditor;
 use Jmhc\Admin\Services\UploadService;
 use Illuminate\Support\Facades\Log;
@@ -16,9 +18,15 @@ class CommonController extends Controller
      * 上传
      * @return mixed
      */
-    public function upload()
+    public function upload(ResponseFactory $response)
     {
-        return (new UploadService())->upload();
+        $file = request()->file('file');
+        $uploader = new Uploader();
+        $fileInfo = $uploader->upload($file);
+        if ($fileInfo === false) {
+            return $response->error($uploader->getError());
+        }
+        return $response->success($fileInfo);
     }
 
     /**
