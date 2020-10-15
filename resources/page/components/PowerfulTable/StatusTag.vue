@@ -25,7 +25,7 @@ export default {
       if (this.statusType.hasOwnProperty(this.status)) {
         return this.statusType[this.status]
       } else {
-        return this.statusType[Math.floor(Math.random() * 5)]
+        return this.statusType[this.status % 5]
       }
     },
     statusText() {

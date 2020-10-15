@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\UEditor;
+namespace Jmhc\Admin\UEditor;
 use Illuminate\Support\Facades\Storage;
 
 /**
