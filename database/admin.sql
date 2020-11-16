@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： mysql
--- 生成日期： 2020-06-16 17:59:11
--- 服务器版本： 8.0.20
--- PHP 版本： 7.4.7
+-- 生成日期： 2020-11-16 13:32:15
+-- 服务器版本： 8.0.16
+-- PHP 版本： 7.4.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 数据库： `admin`
+-- 数据库： `jmhc_questionnaire`
 --
 
 -- --------------------------------------------------------
@@ -28,11 +28,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `admin_log` (
-  `id` bigint UNSIGNED NOT NULL,
-  `admin_id` int UNSIGNED NOT NULL COMMENT '管理员ID',
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `admin_id` int(10) UNSIGNED NOT NULL COMMENT '管理员ID',
   `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '姓名',
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '标题',
-  `ip` int UNSIGNED NOT NULL DEFAULT '0' COMMENT 'IP',
+  `ip` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'IP',
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT '操作内容',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -45,7 +45,7 @@ CREATE TABLE `admin_log` (
 --
 
 CREATE TABLE `admin_users` (
-  `id` int UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户名',
   `name` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '姓名',
   `avatar` char(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '头像',
@@ -68,10 +68,10 @@ INSERT INTO `admin_users` (`id`, `username`, `name`, `avatar`, `password`, `crea
 --
 
 CREATE TABLE `albums` (
-  `id` int UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '相册名称',
   `cover_image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '封面图',
-  `weigh` int UNSIGNED NOT NULL DEFAULT '1' COMMENT '权重',
+  `weigh` int(10) UNSIGNED NOT NULL DEFAULT '1' COMMENT '权重',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
@@ -84,13 +84,13 @@ CREATE TABLE `albums` (
 --
 
 CREATE TABLE `attachments` (
-  `id` bigint UNSIGNED NOT NULL,
-  `album_id` int UNSIGNED NOT NULL DEFAULT '0' COMMENT '相册ID',
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `album_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '相册ID',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '附件名称',
-  `admin_id` int NOT NULL DEFAULT '0' COMMENT '上传人ID',
+  `admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '上传人ID',
   `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '图片存储路径',
   `mime_type` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'mime-type',
-  `size` int NOT NULL DEFAULT '0' COMMENT '图片字节大小',
+  `size` int(11) NOT NULL DEFAULT '0' COMMENT '图片字节大小',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -102,7 +102,7 @@ CREATE TABLE `attachments` (
 --
 
 CREATE TABLE `configs` (
-  `id` int UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `group` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '组名称',
   `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '标题',
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置名称',
@@ -129,7 +129,7 @@ INSERT INTO `configs` (`id`, `group`, `title`, `name`, `type`, `value`, `rule`, 
 --
 
 CREATE TABLE `dictionary` (
-  `id` int UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `title` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典名称',
   `name` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典标识名',
   `describe` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '字典描述',
@@ -152,9 +152,9 @@ INSERT INTO `dictionary` (`id`, `title`, `name`, `describe`, `value`, `created_a
 --
 
 CREATE TABLE `model_has_permissions` (
-  `permission_id` int UNSIGNED NOT NULL,
-  `model_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `model_id` bigint UNSIGNED NOT NULL
+  `permission_id` bigint(20) UNSIGNED NOT NULL,
+  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_id` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -164,17 +164,10 @@ CREATE TABLE `model_has_permissions` (
 --
 
 CREATE TABLE `model_has_roles` (
-  `role_id` int UNSIGNED NOT NULL,
-  `model_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `model_id` bigint UNSIGNED NOT NULL
+  `role_id` bigint(20) UNSIGNED NOT NULL,
+  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_id` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- 转存表中的数据 `model_has_roles`
---
-
-INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
-(1, 'Jmhc\\Admin\\Models\\Auth\\AdminUser', 1);
 
 -- --------------------------------------------------------
 
@@ -183,10 +176,10 @@ INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
 --
 
 CREATE TABLE `permissions` (
-  `id` int UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL,
   `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '权限标题',
   `icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'icon',
-  `pid` int UNSIGNED NOT NULL DEFAULT '0' COMMENT '父级id',
+  `pid` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '父级id',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '规则',
   `component_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '组件路径',
   `view_route_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '视图路由名称',
@@ -195,7 +188,7 @@ CREATE TABLE `permissions` (
   `guard_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_menu` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否是菜单',
   `is_hidden` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否隐藏:0=否,1=是',
-  `weigh` int UNSIGNED NOT NULL DEFAULT '100',
+  `weigh` int(10) UNSIGNED NOT NULL DEFAULT '100',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -286,20 +279,13 @@ INSERT INTO `permissions` (`id`, `title`, `icon`, `pid`, `name`, `component_path
 --
 
 CREATE TABLE `roles` (
-  `id` int UNSIGNED NOT NULL,
-  `parent_id` int UNSIGNED NOT NULL DEFAULT '0' COMMENT '父级ID',
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `guard_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `parent_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '父级id',
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- 转存表中的数据 `roles`
---
-
-INSERT INTO `roles` (`id`, `parent_id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-(1, 0, 'admin', 'admin', '2019-09-10 00:00:00', '2019-09-10 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -308,8 +294,8 @@ INSERT INTO `roles` (`id`, `parent_id`, `name`, `guard_name`, `created_at`, `upd
 --
 
 CREATE TABLE `role_has_permissions` (
-  `permission_id` int UNSIGNED NOT NULL,
-  `role_id` int UNSIGNED NOT NULL
+  `permission_id` bigint(20) UNSIGNED NOT NULL,
+  `role_id` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -380,30 +366,89 @@ ALTER TABLE `permissions`
 -- 表的索引 `roles`
 --
 ALTER TABLE `roles`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `parent_id` (`parent_id`);
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 表的索引 `role_has_permissions`
+--
+ALTER TABLE `role_has_permissions`
+  ADD PRIMARY KEY (`permission_id`,`role_id`),
+  ADD KEY `role_has_permissions_role_id_foreign` (`role_id`);
 
 --
 -- 在导出的表使用AUTO_INCREMENT
 --
 
 --
+-- 使用表AUTO_INCREMENT `admin_log`
+--
+ALTER TABLE `admin_log`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `admin_users`
+--
+ALTER TABLE `admin_users`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `albums`
+--
+ALTER TABLE `albums`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- 使用表AUTO_INCREMENT `attachments`
 --
 ALTER TABLE `attachments`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `configs`
+--
+ALTER TABLE `configs`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `dictionary`
+--
+ALTER TABLE `dictionary`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用表AUTO_INCREMENT `permissions`
 --
 ALTER TABLE `permissions`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
 -- 使用表AUTO_INCREMENT `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- 限制导出的表
+--
+
+--
+-- 限制表 `model_has_permissions`
+--
+ALTER TABLE `model_has_permissions`
+  ADD CONSTRAINT `model_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE;
+
+--
+-- 限制表 `model_has_roles`
+--
+ALTER TABLE `model_has_roles`
+  ADD CONSTRAINT `model_has_roles_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
+
+--
+-- 限制表 `role_has_permissions`
+--
+ALTER TABLE `role_has_permissions`
+  ADD CONSTRAINT `role_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `role_has_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
