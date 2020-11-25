@@ -54,27 +54,25 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if (config('app.debug')) {
-            return $this->prepareJsonResponse($request, $exception);
+        $response = response();
+        if ($exception instanceof AuthenticationException) {
+            return $response->tokenInvalid(); //未认证
+        } else if ($exception instanceof TokenExpiredException) {
+            return $response->tokenInvalid();
+        } else if ($exception instanceof TokenBlacklistedException) {
+            return $response->error('禁止登录', 403);
         } else {
-            $response = response();
-            if ($exception instanceof AuthenticationException) {
-                return $response->tokenInvalid(); //未认证
-            } else if ($exception instanceof TokenExpiredException) {
-                return $response->tokenInvalid();
-            } else if ($exception instanceof TokenBlacklistedException) {
-                return $response->error('禁止登录', 403);
-            } else {
-                Log::error($exception->getMessage() . PHP_EOL .
-                    $exception->getFile() .
-                    $exception->getLine() .
-                    $exception->getTraceAsString()
-                );
-                return ! $request->pjax()
-                    ? $response->error()
-                    : $this->prepareResponse($request, $exception);
+            if (method_exists($exception, 'render') && $response = $exception->render($request)) {
+                return Router::toResponse($request, $response);
             }
-
+            Log::error($exception->getMessage() . PHP_EOL .
+                $exception->getFile() .
+                $exception->getLine() .
+                $exception->getTraceAsString()
+            );
+            return $request->ajax()
+                ? $response->error(config('app.debug') ? $exception->getMessage() : '系统发生错误')
+                : $this->prepareResponse($request, $exception);
         }
     }
 }

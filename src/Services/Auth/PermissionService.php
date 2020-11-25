@@ -17,7 +17,7 @@ class PermissionService extends Service
 
     protected function rules($data, $id): array
     {
-        return [
+        $rules = [
             'title' => ['bail', 'required', 'max:10'],
             'name' => ['bail', 'required', 'string', 'max:255'],
             'guard_name' => ['bail', 'required', 'string', 'max:255'],
@@ -25,6 +25,15 @@ class PermissionService extends Service
             'view_route_name' => ['bail', 'string', 'nullable', 'max:50'],
             'is_menu' => ['bail', Rule::in(0, 1)],
         ];
+
+        $unique = Rule::unique('permissions', 'name');
+        if (isset($data['guard_name']) && $data['guard_name']) {
+            $unique = $unique->where(function($query) use($data){
+                $query->where('guard_name', $data['guard_name']);
+            });
+        }
+        $rules['name'] = $unique;
+        return $rules;
     }
 
     protected function message(): array

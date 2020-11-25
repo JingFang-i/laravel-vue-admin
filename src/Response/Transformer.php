@@ -28,7 +28,7 @@ class Transformer
      * @param $transformer
      * @return array
      */
-    public function paginator($paginator, $transformer)
+    public function paginator($paginator, $transformer = null)
     {
         $collection = $paginator->getCollection();
         if (!is_null($transformer)) {
@@ -49,7 +49,7 @@ class Transformer
      * @param $transformer
      * @return array
      */
-    public function collection($collection, $transformer)
+    public function collection($collection, $transformer = null)
     {
         if (is_null($transformer)) {
             return $collection->toArray();
@@ -66,7 +66,7 @@ class Transformer
      * @param $transformer
      * @return array
      */
-    public function item($item, $transformer)
+    public function item($item, $transformer = null)
     {
         if (is_null($transformer)) {
             return $item->toArray();

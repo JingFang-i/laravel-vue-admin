@@ -144,7 +144,7 @@ class Uploader
     protected function saveFileInfo(UploadedFile $file, $filename)
     {
         $data = [
-            'album_id' => 0,
+            'album_id' => intval(request()->input('album_id')),
             'name' => $file->getClientOriginalName(),
             'admin_id' => auth('admin')->id(),
             'path' => $filename,

@@ -132,8 +132,8 @@ class AdminServiceProvider extends ServiceProvider
             return $responseFactory->make($apiResponse->success($data, $msg, $code));
         });
         //error
-        $responseFactory->macro('error', function(string $msg = '', int $code = 400) use ($responseFactory, $apiResponse){
-            return $responseFactory->make($apiResponse->error($msg, $code));
+        $responseFactory->macro('error', function(string $msg = '', int $code = 400, array $data = []) use ($responseFactory, $apiResponse){
+            return $responseFactory->make($apiResponse->error($msg, $code, $data));
         });
         //other
         foreach ($this->msgMacro as $macro) {
