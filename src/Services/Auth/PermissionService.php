@@ -32,6 +32,9 @@ class PermissionService extends Service
                 $query->where('guard_name', $data['guard_name']);
             });
         }
+        if (!is_null($id)) {
+            $unique->ignore($id);
+        }
         $rules['name'] = $unique;
         return $rules;
     }
@@ -191,8 +194,15 @@ class PermissionService extends Service
                 $allMenu[$item['id']] = $item;
             }
         }
+        $menu = Helper::array2Tree($allMenu);
+        if ($menu[0]['view_route_path'] !== '/') {
+            $menu[0]['view_route_path'] = '/';
+            if (count($menu[0]['children']) > 0) {
+                $menu[0]['redirect_path'] = '/' . $menu[0]['children'][0]['view_route_path'];
+            }
+        }
         $data = [
-            'menu' => Helper::array2Tree($allMenu),
+            'menu' => $menu,
             'permission' => $this->getPermissions($allPermission),
         ];
 
