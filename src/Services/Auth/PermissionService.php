@@ -35,7 +35,7 @@ class PermissionService extends Service
         if (!is_null($id)) {
             $unique->ignore($id);
         }
-        $rules['name'] = $unique;
+        $rules['name'][] = $unique;
         return $rules;
     }
 
