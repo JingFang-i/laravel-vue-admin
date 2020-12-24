@@ -27,7 +27,7 @@ Route::prefix('admin')->namespace('Jmhc\Admin\Controllers')->middleware('api')->
         Route::post('permissions/multi-del', 'Auth\PermissionController@multiDestroy')->name('permissions.multidestroy');
 
         //获取配置组
-        Route::get('config-group', 'System\ConfigController@getConfigGroup')->name('admin-users.config-group');
+        Route::get('config-group', 'System\ConfigController@getConfigGroup')->name('config-group');
 
     });
 
@@ -41,6 +41,12 @@ Route::prefix('admin')->namespace('Jmhc\Admin\Controllers')->middleware('api')->
         Route::get('auth', 'Auth\PermissionController@auth');
         //获取站点配置
         Route::get('website-config', 'System\ConfigController@getWebsiteConfig');
+        // 附件列表
+        Route::get('attachments', 'System\AttachmentController@index');
+        // 相册列表
+        Route::get('albums', 'System\AlbumController@index');
+        // 获取字典值
+        Route::get('dict', 'System\DictionaryController@getDict');
     });
 
     // 需要验证权限且需要自动加载服务的路由
@@ -55,17 +61,31 @@ Route::prefix('admin')->namespace('Jmhc\Admin\Controllers')->middleware('api')->
         // *** 系统设置 ***
         // 字典设置
         Route::resource('dictionary', 'System\DictionaryController');
-        // 获取字典值
-        Route::get('dict', 'System\DictionaryController@getDict');
+
         // 系统配置
         Route::resource('configs', 'System\ConfigController');
         Route::post('configs/update-group', 'System\ConfigController@updateGroup')->name('configs.update-group');
 
-        // 相册
-        Route::resource('albums', 'System\AlbumController');
-        // 图片管理
-        Route::resource('attachments', 'System\AttachmentController');
+        // 相册详情
+        Route::get('albums/{id}', 'System\AlbumController@show')->name('albums.show');
+        // 更新相册
+        Route::put('albums/{id}', 'System\AlbumController@update')->name('albums.update');
+        // 新增相册
+        Route::post('albums', 'System\AlbumController@store')->name('albums.store');
+        // 删除相册
+        Route::delete('albums/{id}', 'System\AlbumController@destroy')->name('albums.destroy');
+
+        // 附件详情
+        Route::get('attachments/{id}', 'System\AttachmentController@show')->name('attachments.show');
+        // 更新附件
+        Route::put('attachments/{id}', 'System\AttachmentController@update')->name('attachments.update');
+        // 新增附件
+        Route::post('attachments', 'System\AttachmentController@store')->name('attachments.store');
+        // 删除附件
+        Route::delete('attachments/{id}', 'System\AttachmentController@destroy')->name('attachments.destroy');
+        // 批量更新
         Route::post('attachments/multi', 'System\AttachmentController@multi')->name('attachments.multi');
+        // 批量删除
         Route::post('attachments/multi-del', 'System\AttachmentController@multiDestroy')->name('attachments.multidestroy');
 
         // AdminLog

@@ -20,10 +20,16 @@ class PermissionService extends Service
         $rules = [
             'title' => ['bail', 'required', 'max:10'],
             'name' => ['bail', 'required', 'string', 'max:255'],
+            'icon' => ['max:255'],
             'guard_name' => ['bail', 'required', 'string', 'max:255'],
             'component_path' => ['bail', 'string', 'nullable', 'max:255'],
             'view_route_name' => ['bail', 'string', 'nullable', 'max:50'],
-            'is_menu' => ['bail', Rule::in(0, 1)],
+            'view_route_path' => 'max:255',
+            'redirect_path' => 'max:80',
+            'is_menu' => 'in:0,1|integer',
+            'is_hidden' => 'in:0,1|integer',
+            'weigh' => 'integer',
+            'pid' => 'integer',
         ];
 
         $unique = Rule::unique('permissions', 'name');
@@ -44,16 +50,24 @@ class PermissionService extends Service
         return [
             'title.required' => '权限标题不能为空',
             'title.max' => '权限标题不能超过10个字',
+            'icon.max' => 'icon不能好过',
             'name.required' => '权限名称不能为空',
             'name.max' => '权限名称最多只能为255个字符',
             'name.unique' => '规则已存在',
+            'view_route_path.max' => '前端路由路径不能超过255个字符',
             'guard_name.required' => '守卫名称不能为空',
             'guard_name.max' => '守卫名称最多只能为255个字符',
             'component_path.max' => '组件路径不能超过255个字符',
             'component_path.required' => '菜单组件路径不能为空',
-            'view_route_name.max' => '视图路由名称不能超过50个字符',
-            'view_route_name.required' => '菜单视图路由名称不能为空',
-            'is_menu.in' => '是否是菜单参数值不正确',
+            'view_route_name.max' => '前端路由名称不能超过50个字符',
+            'view_route_name.required' => '菜单前端路由名称不能为空',
+            'is_menu.in' => '是否是菜单值不正确',
+            'redirect_path.max' => '跳转路径不能超过80个字符',
+            'is_menu.integer' => '是否是菜单值必须为整数',
+            'is_hidden.in' => '是否隐藏值不正确',
+            'is_hidden.integer' => '是否隐藏值必须为一个整数',
+            'weigh.integer' => '权重值必须为一个整数',
+            'pid.integer' => '父级ID必须为一个整数',
         ];
     }
 
@@ -132,6 +146,8 @@ class PermissionService extends Service
     protected function beforeStore(array $data): array
     {
         $data['pid'] = isset($data['pid']) && $data['pid'] ? $data['pid'] : 0;
+        $data['is_hidden'] = isset($data['is_hidden']) && $data['is_hidden'] ? $data['is_hidden'] : 0;
+        $data['is_menu'] = isset($data['is_menu']) && $data['is_menu'] ? $data['is_menu'] : 0;
         return $data;
     }
 
@@ -196,10 +212,12 @@ class PermissionService extends Service
             }
         }
         $menu = Helper::array2Tree($allMenu);
-        if ($menu[0]['view_route_path'] !== '/') {
-            $menu[0]['view_route_path'] = '/';
-            if (count($menu[0]['children']) > 0) {
-                $menu[0]['redirect_path'] = '/' . $menu[0]['children'][0]['view_route_path'];
+        if (count($menu) > 0) {
+            if ($menu[0]['view_route_path'] !== '/') {
+                $menu[0]['view_route_path'] = '/';
+                if (count($menu[0]['children']) > 0) {
+                    $menu[0]['redirect_path'] = '/' . $menu[0]['children'][0]['view_route_path'];
+                }
             }
         }
         $data = [

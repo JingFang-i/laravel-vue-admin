@@ -8,6 +8,7 @@ use Jmhc\Admin\Models\Auth\AdminUser;
 use Jmhc\Admin\Service;
 use Jmhc\Admin\Utils\Helper;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 class RoleService extends Service
 {
@@ -177,6 +178,10 @@ class RoleService extends Service
 
         if (AdminUser::whereIn('id', $userIds)->exists()) {
             $this->errorMsg = '该角色下存在用户，不能删除';
+            return false;
+        }
+        if (Role::where('parent_id', $id)->exists()) {
+            $this->errorMsg = '该角色下存在其他角色，不能删除';
             return false;
         }
         return true;

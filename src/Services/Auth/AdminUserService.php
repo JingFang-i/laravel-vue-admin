@@ -137,6 +137,7 @@ class AdminUserService extends Service
             $this->errorMsg = '超级管理员不能删除';
             return false;
         }
+        return true;
     }
 
 

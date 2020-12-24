@@ -19,7 +19,7 @@ class CreateAuth
         'show'  => '查看',
         'update' => '更新',
         'store'  => '添加',
-        'delete' => '删除',
+        'destroy' => '删除',
         'multi'  => '批量更新',
         'multi-del' => '批量删除',
         'sort' => '排序',

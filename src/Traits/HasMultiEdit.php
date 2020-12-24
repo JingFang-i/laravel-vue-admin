@@ -4,6 +4,8 @@
 namespace Jmhc\Admin\Traits;
 
 
+use Jmhc\Admin\Utils\Helper;
+
 trait HasMultiEdit
 {
 
@@ -19,13 +21,7 @@ trait HasMultiEdit
         if (!isset($params['ids'])) {
             return $this->response->error('缺少需要更新记录的ID');
         }
-        $ids = $params['ids'];
-        if (!is_array($params['ids'])) {
-            $ids = explode(',', $params['ids']);
-        }
-        $ids = array_map(function ($id){
-            return intval($id);
-        }, $ids);
+        $ids = Helper::parseIds($params['ids']);
         if (empty($ids)) {
             return $this->response->error('请选择要更新的记录');
         }

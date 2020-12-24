@@ -4,6 +4,8 @@
 namespace Jmhc\Admin\Traits;
 
 
+use Jmhc\Admin\Utils\Helper;
+
 trait HasMultiDestroy
 {
 
@@ -18,8 +20,13 @@ trait HasMultiDestroy
         if (!isset($params['ids'])) {
             return $this->response->error('缺少需要删除记录的ID');
         }
-        if (is_string($params['ids'])) {
-            $params['ids'] = explode(',', $params['ids']);
+        $params['ids'] = Helper::parseIds($params['ids']);
+        if (method_exists($this, 'beforeDestroy')) {
+            foreach ($params['ids'] as $id) {
+                if (!$this->beforeDestroy($id)) {
+                    return $this->response->error($this->getError());
+                }
+            }
         }
         if($this->repository->multiDestroy($params['ids'])){
             if (method_exists($this, 'afterDestroy')) {
