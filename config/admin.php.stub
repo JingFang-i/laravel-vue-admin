@@ -5,4 +5,5 @@ return [
     'model_prefix'       => "App\\Models",
     'repository_prefix'  => "App\\Repositories",
     'controller_prefix'  => "App\\Http\\{:moduleName}\\Controllers",
+    'allow_write_admin_log'  => env('ALLOW_WRITE_ADMIN_LOG', false),
 ];

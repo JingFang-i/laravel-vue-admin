@@ -28,6 +28,9 @@ class LogOperation
      */
     public function handle($request, Closure $next)
     {
+        if (!config('admin.allow_write_admin_log')) {
+            return $next($request);
+        }
         $user = auth()->user();
         if ($user) {
             $permission = Permission::where('name', Route::currentRouteName())->select('pid', 'title')->first();
@@ -40,7 +43,7 @@ class LogOperation
                 $this->model->admin_id = $user->id;
                 $this->model->name = $user->name;
                 $this->model->title = $permission->title ?? '';
-                $this->ip = ip2long($request->ip());
+                $this->model->ip = ip2long($request->ip());
                 $this->model->content = [
                     'url' => $request->url(),
                     'name' => $request->route()->getName(),

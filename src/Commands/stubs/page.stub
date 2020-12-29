@@ -31,7 +31,7 @@ export default {
         detail: '{%name%}.show',
         edit: '{%name%}.update',
         add: '{%name%}.store',
-        del: '{%name%}.delete',
+        del: '{%name%}.destroy',
         updateBatch: '{%name%}.multi',
         deleteBatch: '{%name%}.multi-del',
         sort: '{%name%}.sort'
