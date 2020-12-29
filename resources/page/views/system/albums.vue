@@ -55,7 +55,7 @@ export default {
         add: 'albums.store',
         del: 'albums.delete',
         updateBatch: 'albums.multi',
-        deleteBatch: 'albums.multi-destroy'
+        deleteBatch: 'albums.multiDestroy'
       }
     }
   },

@@ -33,7 +33,7 @@ export default {
         add: '{%name%}.store',
         del: '{%name%}.destroy',
         updateBatch: '{%name%}.multi',
-        deleteBatch: '{%name%}.multi-destroy',
+        deleteBatch: '{%name%}.multiDestroy',
         sort: '{%name%}.sort'
       },
     }

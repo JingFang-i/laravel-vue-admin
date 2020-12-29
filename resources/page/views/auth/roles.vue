@@ -70,7 +70,7 @@ export default {
         add: 'roles.store',
         del: 'roles.delete',
         updateBatch: 'roles.multi',
-        deleteBatch: 'roles.multi-destroy',
+        deleteBatch: 'roles.multiDestroy',
         assignPermission: 'roles.assign-permission'
       }
     }
