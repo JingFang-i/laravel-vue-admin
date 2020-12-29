@@ -29,7 +29,7 @@ export default {
         add: 'attachments.store',
         del: 'attachments.delete',
         updateBatch: 'attachments.multi',
-        deleteBatch: 'attachments.multi-del'
+        deleteBatch: 'attachments.multi-destroy'
       }
     }
   },

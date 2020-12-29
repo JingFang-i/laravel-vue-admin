@@ -67,7 +67,7 @@ export function multiUpdate(data) {
  */
 export function multiDestroy(data) {
   return request({
-    url: apiName + '/multi-del',
+    url: apiName + '/multi-destroy',
     method: 'post',
     data
   })

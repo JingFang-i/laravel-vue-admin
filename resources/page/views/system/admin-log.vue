@@ -32,7 +32,7 @@ export default {
         add: 'admin-log.store',
         del: 'admin-log.delete',
         updateBatch: 'admin-log.multi',
-        deleteBatch: 'admin-log.multi-del'
+        deleteBatch: 'admin-log.multi-destroy'
       }
     }
   },

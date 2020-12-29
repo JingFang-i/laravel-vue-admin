@@ -51,7 +51,7 @@ export default {
         add: 'permissions.store',
         del: 'permissions.delete',
         updateBatch: 'permissions.multi',
-        deleteBatch: 'permissions.multi-del'
+        deleteBatch: 'permissions.multi-destroy'
       }
     }
   },

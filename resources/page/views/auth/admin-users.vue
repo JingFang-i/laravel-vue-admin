@@ -99,7 +99,7 @@ export default {
         add: 'admin-users.store',
         del: 'admin-users.delete',
         updateBatch: 'admin-users.multi',
-        deleteBatch: 'admin-users.multi-del',
+        deleteBatch: 'admin-users.multi-destroy',
         assignRole: 'admin-users.assign-role'
       },
       operations: ['add', 'edit', 'del'],

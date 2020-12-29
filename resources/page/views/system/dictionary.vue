@@ -30,7 +30,7 @@ export default {
         add: 'dictionary.store',
         del: 'dictionary.delete',
         updateBatch: 'dictionary.multi',
-        deleteBatch: 'dictionary.multi-del'
+        deleteBatch: 'dictionary.multi-destroy'
       }
     }
   },

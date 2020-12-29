@@ -21,7 +21,7 @@ class CreateAuth
         'store'  => '添加',
         'destroy' => '删除',
         'multi'  => '批量更新',
-        'multi-del' => '批量删除',
+        'multi-destroy' => '批量删除',
         'sort' => '排序',
     ];
 
