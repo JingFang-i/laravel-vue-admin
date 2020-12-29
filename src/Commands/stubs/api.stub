@@ -67,7 +67,7 @@ export function del(id) {
  */
 export function multiDel(data) {
   return request({
-    url: apiName + '/multi-del',
+    url: apiName + '/multi-destroy',
     method: 'post',
     data
   })

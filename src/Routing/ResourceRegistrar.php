@@ -88,7 +88,7 @@ class ResourceRegistrar extends BaseResourceRegistrar
      */
     protected function addResourceMultiDestroy($name, $base, $controller, $options)
     {
-        $uri = $this->getResourceUri($name) . '/multi-del';
+        $uri = $this->getResourceUri($name) . '/multi-destroy';
 
         $action = $this->getResourceAction($name, $controller, 'multiDestroy', $options);
 
