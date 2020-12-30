@@ -18,13 +18,13 @@ Route::prefix('admin')->namespace('Jmhc\Admin\Controllers')->middleware('api')->
         //角色
         Route::resource('roles', 'Auth\RoleController');
         Route::post('roles/multi', 'Auth\RoleController@multi')->name('roles.multi');
-        Route::post('roles/multi-destroy', 'Auth\RoleController@multiDestroy')->name('roles.multidestroy');
+        Route::post('roles/multi-destroy', 'Auth\RoleController@multiDestroy')->name('roles.multiDestroy');
         //角色分配权限
         Route::post('assign-permission', 'Auth\RoleController@assignPermission')->name('roles.assign-permission');
         //权限
         Route::resource('permissions', 'Auth\PermissionController');
         Route::post('permissions/multi', 'Auth\PermissionController@multi')->name('permissions.multi');
-        Route::post('permissions/multi-destroy', 'Auth\PermissionController@multiDestroy')->name('permissions.multidestroy');
+        Route::post('permissions/multi-destroy', 'Auth\PermissionController@multiDestroy')->name('permissions.multiDestroy');
 
         //获取配置组
         Route::get('config-group', 'System\ConfigController@getConfigGroup')->name('config-group');
@@ -54,7 +54,7 @@ Route::prefix('admin')->namespace('Jmhc\Admin\Controllers')->middleware('api')->
         //管理员
         Route::resource('admin-users', 'Auth\AdminUserController');
         Route::post('admin-users/multi', 'Auth\AdminUserController@multi')->name('admin-users.multi');
-        Route::post('admin-users/multi-destroy', 'Auth\AdminUserController@multiDestroy')->name('admin-users.multidestroy');
+        Route::post('admin-users/multi-destroy', 'Auth\AdminUserController@multiDestroy')->name('admin-users.multiDestroy');
         //分配角色
         Route::post('assign-role', 'Auth\AdminUserController@assignRole')->name('admin-users.assign-role');
 
@@ -86,14 +86,14 @@ Route::prefix('admin')->namespace('Jmhc\Admin\Controllers')->middleware('api')->
         // 批量更新
         Route::post('attachments/multi', 'System\AttachmentController@multi')->name('attachments.multi');
         // 批量删除
-        Route::post('attachments/multi-destroy', 'System\AttachmentController@multiDestroy')->name('attachments.multidestroy');
+        Route::post('attachments/multi-destroy', 'System\AttachmentController@multiDestroy')->name('attachments.multiDestroy');
 
         // AdminLog
         Route::resource('admin-log', 'System\AdminLogController');
         // AdminLog 批量操作
         Route::post('admin-log/multi', 'System\AdminLogController@multi')->name('admin-log.multi');
         // AdminLog 批量删除
-        Route::post('admin-log/multi-destroy', 'System\AdminLogController@multiDestroy')->name('admin-log.multidestroy');
+        Route::post('admin-log/multi-destroy', 'System\AdminLogController@multiDestroy')->name('admin-log.multiDestroy');
 
     });
 });

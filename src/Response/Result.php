@@ -21,7 +21,7 @@ class Result implements Jsonable, Arrayable
         403 => '禁止访问',
         404 => '未找到',
         405 => '无效的请求',
-        420 => 'token无效',
+        420 => '身份凭证已失效',
         500 => '服务器发生异常',
         503 => '服务器维护中',
     ];
@@ -63,6 +63,6 @@ class Result implements Jsonable, Arrayable
             'code' => $this->codeStatus,
             'msg' => $this->message,
             'data' => $this->data,
-        ]);
+        ], JSON_UNESCAPED_UNICODE);
     }
 }
