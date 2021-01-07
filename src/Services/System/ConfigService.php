@@ -17,7 +17,11 @@ class ConfigService extends Service
             'group' => 'bail|required|max:25',
             'title' => 'bail|required|max:50',
             'name' => 'bail|required|max:50',
-            'type' => 'bail|required|in:string,text,editor,switch,image,images',
+            'type' => 'bail|required|in:string,text,number,editor,switch,image,images',
+            'tips' => 'max:255',
+            'value' => 'max:65535',
+            'extend' => 'max:255',
+            'rule' => 'max:255',
         ];
     }
 
@@ -31,7 +35,11 @@ class ConfigService extends Service
             'name.required' => '标识符不能为空',
             'name.max' => '标识符不能超过50个字符',
             'type.required' => '配置类型不能为空',
-            'type.in' => '配置类型只能为字符串,文本,编辑器,开关,图片',
+            'type.in' => '配置类型只能为字符串,文本,数字,编辑器,开关,图片',
+            'tips.max' => '提示不能超过255个字符',
+            'value.max' => '配置值不能超过65535个字符',
+            'extend.max' => '扩展数据不能超过255个字符',
+            'rule.max' => '验证规则不能超过255个字符',
         ];
     }
 

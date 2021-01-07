@@ -39,7 +39,7 @@ export function multiDestroy(data) {
 
 /**
  * 删除资源
- * @param {Integer} id 资源ID
+ * @param {int} id 资源ID
  */
 export function del(id) {
   return request({

@@ -23,9 +23,9 @@ class HttpRequestClientException extends Exception
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request)
     {
-        return response()->fatalError($exception->getMessage());
+        return response()->fatalError($this->getMessage());
     }
 
 }

@@ -74,7 +74,6 @@ class AdminServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../config/admin.php.stub' => config_path('admin.php'),
-            __DIR__ . '/../config/upload.php.stub' => config_path('upload.php'),
             __DIR__ . '/../config/permission.php.stub' => config_path('permission.php'),
             __DIR__ . '/../routes/RouteServiceProvider.php.stub' => app_path('Providers/RouteServiceProvider.php'),
             __DIR__ . '/../routes/admin.php' => base_path('routes/admin.php'),

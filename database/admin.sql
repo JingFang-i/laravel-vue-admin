@@ -1,12 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 5.0.2
--- https://www.phpmyadmin.net/
---
--- 主机： mysql
--- 生成日期： 2020-11-16 13:32:15
--- 服务器版本： 8.0.16
--- PHP 版本： 7.4.10
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -18,7 +9,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 数据库： `jmhc_questionnaire`
+-- 数据库： `laravel_vue_admin`
 --
 
 -- --------------------------------------------------------
@@ -110,6 +101,7 @@ CREATE TABLE `configs` (
   `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT '配置值内容',
   `rule` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '验证规则',
   `extend` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '扩展数据，一般类型为switch、radio的时候选择值',
+  `tips` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '提示说明',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -118,9 +110,9 @@ CREATE TABLE `configs` (
 -- 转存表中的数据 `configs`
 --
 
-INSERT INTO `configs` (`id`, `group`, `title`, `name`, `type`, `value`, `rule`, `extend`, `created_at`, `updated_at`) VALUES
-(1, 'website', '站点名称', 'name', 'string', 'LaravelVueAdmin', 'required', '', '2020-03-16 05:36:41', '2020-06-16 00:45:17'),
-(2, 'website', 'logo', 'logo', 'image', 'storage/upload/20200616/AL5g3Phy12a5GcOx3YBchaWRYqM6ZEvYf5YDgrvL.png', 'required', '', '2020-03-16 06:56:22', '2020-06-16 00:44:10');
+INSERT INTO `configs` (`id`, `group`, `title`, `name`, `type`, `value`, `rule`, `extend`, `tips`, `created_at`, `updated_at`) VALUES
+(1, 'website', '站点名称', 'name', 'string', 'LaravelVueAdmin', 'required', '', '', '2020-03-16 05:36:41', '2020-06-16 00:45:17'),
+(2, 'website', 'logo', 'logo', 'image', 'storage/upload/20200616/AL5g3Phy12a5GcOx3YBchaWRYqM6ZEvYf5YDgrvL.png', 'required', '', '', '2020-03-16 06:56:22', '2020-06-16 00:44:10');
 
 -- --------------------------------------------------------
 
@@ -153,7 +145,7 @@ INSERT INTO `dictionary` (`id`, `title`, `name`, `describe`, `value`, `created_a
 
 CREATE TABLE `model_has_permissions` (
   `permission_id` bigint(20) UNSIGNED NOT NULL,
-  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -165,9 +157,16 @@ CREATE TABLE `model_has_permissions` (
 
 CREATE TABLE `model_has_roles` (
   `role_id` bigint(20) UNSIGNED NOT NULL,
-  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `model_has_roles`
+--
+
+INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
+(1, 'Jmhc\\Admin\\Models\\Auth\\AdminUser', 1);
 
 -- --------------------------------------------------------
 
@@ -281,11 +280,18 @@ INSERT INTO `permissions` (`id`, `title`, `icon`, `pid`, `name`, `component_path
 CREATE TABLE `roles` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `parent_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '父级id',
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guard_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `roles`
+--
+
+INSERT INTO `roles` (`id`, `parent_id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
+(1, 0, 'admin', 'admin', '2021-01-07 02:43:09', '2021-01-07 02:43:09');
 
 -- --------------------------------------------------------
 
@@ -389,7 +395,7 @@ ALTER TABLE `admin_log`
 -- 使用表AUTO_INCREMENT `admin_users`
 --
 ALTER TABLE `admin_users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- 使用表AUTO_INCREMENT `albums`
@@ -407,13 +413,13 @@ ALTER TABLE `attachments`
 -- 使用表AUTO_INCREMENT `configs`
 --
 ALTER TABLE `configs`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- 使用表AUTO_INCREMENT `dictionary`
 --
 ALTER TABLE `dictionary`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- 使用表AUTO_INCREMENT `permissions`
@@ -425,7 +431,7 @@ ALTER TABLE `permissions`
 -- 使用表AUTO_INCREMENT `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- 限制导出的表

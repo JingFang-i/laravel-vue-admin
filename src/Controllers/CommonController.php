@@ -8,7 +8,6 @@ use Illuminate\Routing\Controller;
 use Illuminate\Routing\ResponseFactory;
 use Jmhc\Admin\Services\Uploader;
 use Jmhc\Admin\UEditor\UEditor;
-use Jmhc\Admin\Services\UploadService;
 use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Token;
 

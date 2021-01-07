@@ -28,7 +28,7 @@ export function add(data) {
 
 /**
  * 更新相册
- * @param {Integer} id 更新相册的ID
+ * @param {int} id 更新相册的ID
  * @param {Object} data 更新的数据
  */
 export function update(id, data) {
@@ -41,7 +41,7 @@ export function update(id, data) {
 
 /**
  * 删除相册
- * @param {Integer} id 相册ID
+ * @param {int} id 相册ID
  */
 export function del(id) {
   return request({
@@ -52,7 +52,7 @@ export function del(id) {
 
 /**
  * 查询一条相册
- * @param {Integer} id 资源ID
+ * @param {int} id 资源ID
  */
 export function show(id) {
   return request({

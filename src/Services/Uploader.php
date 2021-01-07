@@ -21,7 +21,7 @@ class Uploader
     public function __construct(array $config = [], string $disk = 'public')
     {
         $this->disk = $disk;
-        $this->config = config('upload');
+        $this->config = config('admin.upload');
         $this->config = array_merge($this->config, $config);
     }
 
