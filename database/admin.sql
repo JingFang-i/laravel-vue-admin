@@ -112,7 +112,7 @@ CREATE TABLE `configs` (
 
 INSERT INTO `configs` (`id`, `group`, `title`, `name`, `type`, `value`, `rule`, `extend`, `tips`, `created_at`, `updated_at`) VALUES
 (1, 'website', '站点名称', 'name', 'string', 'LaravelVueAdmin', 'required', '', '', '2020-03-16 05:36:41', '2020-06-16 00:45:17'),
-(2, 'website', 'logo', 'logo', 'image', 'storage/upload/20200616/AL5g3Phy12a5GcOx3YBchaWRYqM6ZEvYf5YDgrvL.png', 'required', '', '', '2020-03-16 06:56:22', '2020-06-16 00:44:10');
+(2, 'website', 'logo', 'logo', 'image', '', 'required', '', '', '2020-03-16 06:56:22', '2020-06-16 00:44:10');
 
 -- --------------------------------------------------------
 
