@@ -73,7 +73,7 @@ class ConfigService extends Service
             ->where('name', $formData['name'])
             ->exists();
         if ($exists) {
-            return $this->response->error('该标识符已存在！');
+            return $this->response->error('该变量名称已存在！');
         }
         $model = $this->repository->store($formData);
         if ($model) {

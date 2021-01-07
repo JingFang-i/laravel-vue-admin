@@ -1,51 +1,57 @@
 <template>
   <div class="edit-wrap">
     <el-form
-      ref="simpleForm"
-      :model="editRow"
-      :rules="formRules"
-      label-width="80px"
+        ref="simpleForm"
+        :model="editRow"
+        :rules="formRules"
+        label-width="80px"
     >
       <template v-for="(item, key) in fields">
         <el-form-item
-          :key="key"
-          :label="item.title"
-          :prop="item.name"
-          label-width="12%"
+            :key="key"
+            :label="item.title"
+            :prop="item.name"
+            label-width="12%"
         >
           <el-input
-            v-if="item.type === 'string'"
-            v-model="editRow[item.name]"
+              v-if="item.type === 'string'"
+              v-model="editRow[item.name]"
           />
           <el-input
-            v-if="item.type === 'text'"
-            v-model="editRow[item.name]"
-            type="textarea"
+              v-if="item.type === 'number'"
+              type="number"
+              v-model="editRow[item.name]"
+          />
+          <el-input
+              v-if="item.type === 'text'"
+              v-model="editRow[item.name]"
+              type="textarea"
           />
           <ueditor
-            v-if="item.type === 'editor'"
-            :value.sync="editRow[item.name]"
+              v-if="item.type === 'editor'"
+              :value.sync="editRow[item.name]"
           />
           <el-switch
-            v-if="item.type === 'switch'"
-            v-model="editRow[item.name]"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-            active-value="1"
-            inactive-value="0"
+              v-if="item.type === 'switch'"
+              v-model="editRow[item.name]"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-value="1"
+              inactive-value="0"
           />
           <upload
-            v-if="item.type === 'image'"
-            :multiple="false"
-            :limit="1"
-            v-model="editRow[item.name]"
+              v-if="item.type === 'image'"
+              :multiple="false"
+              :limit="1"
+              v-model="editRow[item.name]"
           />
           <upload
-            v-if="item.type === 'images'"
-            :limit="'limit' in item ? item.limit : 5"
-            :multiple="true"
-            v-model="editRow[item.name]"
+              v-if="item.type === 'images'"
+              :limit="'limit' in item ? item.limit : 5"
+              :multiple="true"
+              v-model="editRow[item.name]"
           />
+          <span style="font-size: 12px;color: #aaa" v-if="item.tips"><i class="el-icon-info"></i>{{ item.tips }}</span>
         </el-form-item>
       </template>
       <el-form-item>
