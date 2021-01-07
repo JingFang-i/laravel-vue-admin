@@ -27,7 +27,7 @@ export default {
         detail: 'attachments.show',
         edit: 'attachments.update',
         add: 'attachments.store',
-        del: 'attachments.delete',
+        del: 'attachments.destroy',
         updateBatch: 'attachments.multi',
         deleteBatch: 'attachments.multiDestroy'
       }

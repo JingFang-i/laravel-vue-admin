@@ -97,7 +97,7 @@ export default {
         detail: 'admin-users.show',
         edit: 'admin-users.update',
         add: 'admin-users.store',
-        del: 'admin-users.delete',
+        del: 'admin-users.destroy',
         updateBatch: 'admin-users.multi',
         deleteBatch: 'admin-users.multiDestroy',
         assignRole: 'admin-users.assign-role'

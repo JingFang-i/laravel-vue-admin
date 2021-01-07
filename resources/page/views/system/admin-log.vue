@@ -30,7 +30,7 @@ export default {
         detail: 'admin-log.show',
         edit: 'admin-log.update',
         add: 'admin-log.store',
-        del: 'admin-log.delete',
+        del: 'admin-log.destroy',
         updateBatch: 'admin-log.multi',
         deleteBatch: 'admin-log.multiDestroy'
       }

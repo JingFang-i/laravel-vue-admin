@@ -68,7 +68,7 @@ export default {
         detail: 'roles.show',
         edit: 'roles.update',
         add: 'roles.store',
-        del: 'roles.delete',
+        del: 'roles.destroy',
         updateBatch: 'roles.multi',
         deleteBatch: 'roles.multiDestroy',
         assignPermission: 'roles.assign-permission'

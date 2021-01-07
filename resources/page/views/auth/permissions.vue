@@ -49,7 +49,7 @@ export default {
         detail: 'permissions.show',
         edit: 'permissions.update',
         add: 'permissions.store',
-        del: 'permissions.delete',
+        del: 'permissions.destroy',
         updateBatch: 'permissions.multi',
         deleteBatch: 'permissions.multiDestroy'
       }

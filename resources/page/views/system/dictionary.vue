@@ -28,7 +28,7 @@ export default {
         detail: 'dictionary.show',
         edit: 'dictionary.update',
         add: 'dictionary.store',
-        del: 'dictionary.delete',
+        del: 'dictionary.destroy',
         updateBatch: 'dictionary.multi',
         deleteBatch: 'dictionary.multiDestroy'
       }

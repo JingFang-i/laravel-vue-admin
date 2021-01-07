@@ -53,7 +53,7 @@ export default {
         detail: 'albums.show',
         edit: 'albums.update',
         add: 'albums.store',
-        del: 'albums.delete',
+        del: 'albums.destroy',
         updateBatch: 'albums.multi',
         deleteBatch: 'albums.multiDestroy'
       }
