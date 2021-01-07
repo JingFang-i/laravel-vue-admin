@@ -110,14 +110,12 @@
         >刷新</el-button
         >
         <el-dropdown
-                v-if="!disableBatch"
-                trigger="click"
-                split-button
-                type="primary"
-                size="mini"
-                @command="handleCommand"
+            v-if="!disableBatch"
+            trigger="click"
+            @command="handleCommand"
         >
-          批量操作
+          <el-button size="mini" type="primary">批量操作<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
           <el-dropdown-menu slot="dropdown">
             <template v-for="(o, k) in batchOperations">
               <el-dropdown-item :key="k" :command="o"
@@ -126,8 +124,8 @@
               >
             </template>
             <el-dropdown-item
-                    v-if="deleteBatch && checkPermission(permissionRules.deleteBatch)"
-                    command="delete"
+                v-if="deleteBatch && checkPermission(permissionRules.deleteBatch)"
+                command="delete"
             ><i class="el-icon-delete"></i>批量删除</el-dropdown-item
             >
           </el-dropdown-menu>

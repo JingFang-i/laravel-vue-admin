@@ -9,6 +9,7 @@
     :del="del"
     :add="add"
     :permission-rules="permissionRules"
+    :disableBatch="true"
   />
 </template>
 <script>
