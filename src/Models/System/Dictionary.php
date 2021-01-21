@@ -16,4 +16,9 @@ class Dictionary extends Model
         'value' => 'array',
     ];
 
+    public function getTable()
+    {
+        return config('admin.table_names.dictionary', parent::getTable());
+    }
+
 }

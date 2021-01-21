@@ -25,6 +25,11 @@ class AdminUser extends Authenticatable implements JWTSubject
         'password',
     ];
 
+    public function getTable()
+    {
+        return config('admin.table_names.admin_users', parent::getTable());
+    }
+
     public function findForPassport($username)
     {
         return $this->where('username', $username)->first();

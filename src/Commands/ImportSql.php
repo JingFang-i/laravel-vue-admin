@@ -23,9 +23,6 @@ class ImportSql extends Command
     protected $description = '导入sql';
 
 
-    protected $sqlFileName = ['admin', 'areas'];
-
-
     public function handle()
     {
         $this->import();
@@ -43,7 +40,7 @@ class ImportSql extends Command
     protected function getSql(): array
     {
         $paths = [];
-        foreach ($this->sqlFileName as $name){
+        foreach (config('admin.import_table') as $name){
             $paths[] = __DIR__ . '/../../database/' . $name . '.sql';
         }
         return $paths;

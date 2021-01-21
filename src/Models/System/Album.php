@@ -16,4 +16,8 @@ class Album extends Model
         'weigh',
     ];
 
+    public function getTable()
+    {
+        return config('admin.table_names.albums', parent::getTable());
+    }
 }

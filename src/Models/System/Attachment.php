@@ -18,4 +18,10 @@ class Attachment extends Model
         'mime_type',
         'size'
     ];
+
+    public function getTable()
+    {
+        return config('admin.table_names.attachments', parent::getTable());
+    }
+
 }

@@ -27,6 +27,11 @@ class AdminLog extends Model
         'content' => 'json',
     ];
 
+    public function getTable()
+    {
+        return config('admin.table_names.admin_log', parent::getTable());
+    }
+
     public function getIpAttribute($value)
     {
         return long2ip($value);
