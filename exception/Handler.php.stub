@@ -40,15 +40,14 @@ class Handler extends ExceptionHandler
             //
         });
 
-        $response = response();
-        $this->renderable(function (AuthenticationException $e, $request) use($response) {
-            return $request->ajax() ? $response->tokenInvalid() : abort(404); //未认证
+        $this->renderable(function (AuthenticationException $e, $request){
+            return $request->ajax() ? response()->tokenInvalid() : abort(404); //未认证
         });
-        $this->renderable(function (TokenExpiredException $e, $request) use($response) {
-            return $request->ajax() ? $response->tokenInvalid() : abort(404); //未认证
+        $this->renderable(function (TokenExpiredException $e, $request){
+            return $request->ajax() ? response()->tokenInvalid() : abort(404); //未认证
         });
-        $this->renderable(function (TokenBlacklistedException $e, $request) use($response) {
-            return $request->ajax() ? $response->error('禁止登录', 403) : abort(403); //未认证
+        $this->renderable(function (TokenBlacklistedException $e, $request){
+            return $request->ajax() ? response()->error('禁止登录', 403) : abort(403); //未认证
         });
 
     }
