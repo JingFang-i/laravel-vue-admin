@@ -26,7 +26,7 @@ return [
     // 上传文件配置
     'upload' => [
         'ext'  => ['jpg', 'jpeg', 'png', 'gif', 'bpm', 'mp4', 'doc', 'dot', 'docx', 'xls', 'xlsx', 'pdf'],
-        'size' => '10', //上传大小限制，单位m(兆)
+        'size' => 10, //上传大小限制，单位M(兆)
         'path' => 'upload/' . date('Ymd'),
     ],
 ];
