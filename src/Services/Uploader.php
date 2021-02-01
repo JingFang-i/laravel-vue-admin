@@ -74,7 +74,9 @@ class Uploader
             } else {
                 $url = '';
             }
-            $this->saveFileInfo($file, $filename);
+            if (!isset($this->config['save_to_table']) || $this->config['save_to_table'] === true) {
+                $this->saveFileInfo($file, $filename);
+            }
             return [
                 'url' => $url,
                 'filename' => $filename,
