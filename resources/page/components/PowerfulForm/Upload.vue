@@ -289,6 +289,9 @@ export default {
       if (typeof files === 'string') {
         files = files !== '' ? files.split(',') : []
       }
+      if (!files) {
+        files = [];
+      }
       let fileLists = []
       files.forEach(v => {
         fileLists.push({ name: v, url: this.getImgUrl(v) })
@@ -302,6 +305,9 @@ export default {
       let files = this.files
       if (typeof this.files === 'string') {
         files = files === '' ? [] : files.split(',')
+      }
+      if (!files) {
+        files = [];
       }
       this.filePathLists = files
       this.previewImgs = files
