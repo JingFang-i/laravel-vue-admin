@@ -94,6 +94,9 @@ class CreatePage
         if (in_array($info['field'], ['id', 'weigh', 'created_at', 'updated_at'])) {
             $fields['editable'] = false;
         }
+        if ($info['type'] === 'image' || $info['type'] === 'images') {
+            $fields['searchable'] = false;
+        }
         return $fields;
     }
 

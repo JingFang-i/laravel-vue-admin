@@ -11,17 +11,6 @@ class ConfigRepository extends Repository
 {
     const CACHE_CONFIG_GROUP_PREFIX = 'config_group:';
 
-    public function __construct(Model $model)
-    {
-        parent::__construct($model);
-
-        config([
-            'admin.model_prefix' => "Jmhc\\Admin\\Models",
-            'admin.repository_prefix' => "Jmhc\\Admin\\Repositories",
-            'admin.service_prefix' => "Jmhc\\Admin\\Services",
-        ]);
-    }
-
     public function getCachedGroupConfigs(string $groupName)
     {
         $cachedKey = $this->getCachedKey($groupName);
