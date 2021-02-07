@@ -97,16 +97,15 @@ class Uploader
     protected function validateFile(UploadedFile $file)
     {
         if (!$file->isValid()) {
-            return $file->getClientOriginalName() . $file->getErrorMessage();
+            return $file->getErrorMessage();
         }
 
         if (!$this->validateExt($file->getClientOriginalExtension())) {
-
-            return $file->getClientOriginalName() . '上传文件格式不正确!';
+            return '文件格式错误';
         }
 
         if (!$this->validateSize($file->getSize())) {
-            return $file->getClientOriginalName() . '上传文件大小超过限制';
+            return '文件大小超限';
         }
         return true;
     }
