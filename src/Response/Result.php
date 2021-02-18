@@ -13,10 +13,10 @@ class Result implements Jsonable, Arrayable
     protected $message; //返回的错误或提示信息
     protected $data; //返回的数据
 
-    protected $code = [
+    protected $codeMessages = [
         200 => '请求成功',
         204 => '请求成功,无数据',
-        400 => '错误请求',
+        400 => '请求发生错误',
         401 => '无权限',
         403 => '禁止访问',
         404 => '未找到',
@@ -31,7 +31,11 @@ class Result implements Jsonable, Arrayable
         $this->data = $data;
         $this->codeStatus = $codeStatus;
         if (!$message) {
-            $this->message = isset($this->code[$codeStatus]) ? $this->code[$codeStatus] : null;
+            $configMessages = config('admin.messages');
+            if ($configMessages && is_array($configMessages)) {
+                $this->codeMessages = array_merge($this->codeMessages, $configMessages);
+            }
+            $this->message = isset($this->codeMessages[$codeStatus]) ? $this->codeMessages[$codeStatus] : null;
         } else {
             $this->message = $message;
         }
