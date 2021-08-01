@@ -49,6 +49,9 @@ class ConfigService extends Service
         $regroupConfigs = [];
 
         foreach ($configs as $config) {
+            $config['value'] = $config['type'] === 'images'
+                ? json_decode($config['value'], true)
+                : $config['value'];
             if (!isset($regroupConfigs[$config['group']])) {
                 $regroupConfigs[$config['group']] = [$config];
             } else {
@@ -75,6 +78,9 @@ class ConfigService extends Service
         if ($exists) {
             return $this->response->error('该变量名称已存在！');
         }
+        if ($formData['type'] === 'images') {
+            $formData['value'] = json_encode($formData['value']);
+        }
         $model = $this->repository->store($formData);
         if ($model) {
             // 更新
@@ -98,7 +104,11 @@ class ConfigService extends Service
         $all = $this->repository->where('group', $group)->get();
         foreach ($all as $item) {
             if (isset($formData[$item->name])) {
-                $item->value = $formData[$item->name];
+                if ($item->type === 'images') {
+                    $item->value = json_encode($formData[$item->name]);
+                } else {
+                    $item->value = $formData[$item->name];
+                }
                 $item->save();
             }
         }

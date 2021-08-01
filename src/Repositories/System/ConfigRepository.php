@@ -33,7 +33,14 @@ class ConfigRepository extends Repository
         $cachedKey = $this->getCachedKey($groupName);
         $groupConfigs = $this->getCachedGroupConfigs($cachedKey);
         if (empty($groupConfigs)) {
-            $groupConfigs = $this->model->where('group', $groupName)->pluck('value', 'name')->toArray();
+            $groupConfigs = $this->model->where('group', $groupName)->get();
+            $regroupArr = [];
+            foreach ($groupConfigs as $groupConfig) {
+                $regroupArr[$groupConfig->name] = $groupConfig->type === 'images'
+                    ? json_decode($groupConfig->value, true)
+                    : $groupConfig->value;
+            }
+            $groupConfigs = $regroupArr;
             if (!empty($groupConfigs)) {
                 $this->updateCachedGroupConfigs($groupName, $groupConfigs);
             }
