@@ -37,7 +37,7 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            //
+            Log::error('systemError', [$e->getMessage(), $e->getTraceAsString()]);
         });
 
         $this->renderable(function (AuthenticationException $e, $request){
@@ -48,6 +48,10 @@ class Handler extends ExceptionHandler
         });
         $this->renderable(function (TokenBlacklistedException $e, $request){
             return $request->ajax() ? response()->error('禁止登录', 403) : abort(403); //未认证
+        });
+
+        $this->renderable(function (Throwable $e) {
+            return response()->error('系统异常');
         });
 
     }
