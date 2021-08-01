@@ -10,6 +10,7 @@ use Jmhc\Admin\Repository;
 class ConfigRepository extends Repository
 {
     const CACHE_CONFIG_GROUP_PREFIX = 'config_group:';
+    const CONFIG_TTL = 86400 * 15;
 
     public function getCachedGroupConfigs(string $groupName)
     {
@@ -20,7 +21,7 @@ class ConfigRepository extends Repository
     public function updateCachedGroupConfigs(string $groupName, array $groupConfigs)
     {
         $cachedKey = $this->getCachedKey($groupName);
-        return Cache::put($cachedKey, $groupConfigs);
+        return Cache::put($cachedKey, $groupConfigs, self::CONFIG_TTL);
     }
 
     /**
