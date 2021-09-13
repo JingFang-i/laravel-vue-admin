@@ -894,10 +894,13 @@ export default {
     // 根据条件查询
     doSearch() {
       this.fields.forEach((item) => {
-        if (item.field in this.searchForm && this.searchForm[item.field]) {
-          this.queryParams.filter[item.field] = this.searchForm[item.field];
+        if (item.field in this.searchForm && this.searchForm[item.field] !== '' && this.searchForm[item.field] !== null) {
+          this.queryParams.filter[item.field] = this.searchForm[item.field]
           this.queryParams.operate[item.field] =
-              'operate' in item && item.operate ? item.operate : '=';
+            'operate' in item && item.operate ? item.operate : '='
+          if (['date', 'datetime'].includes(item.type)) {
+            this.queryParams.operate[item.field] = 'range'
+          }
         }
       });
       this.currentPage = 1;
