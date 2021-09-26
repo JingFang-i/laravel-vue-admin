@@ -1037,12 +1037,12 @@ export default {
       if (this.defaultQueryParams) {
         for (let [field, value] of Object.entries(this.defaultQueryParams)) {
           if (field === 'filter') {
-            Object.assign(
+            params.filter = Object.assign(
                 params.filter,
                 this.defaultQueryParams.filter
             );
           } else if (field === 'operate') {
-            Object.assign(
+            params.operate = Object.assign(
                 params.operate,
                 this.defaultQueryParams.operate
             );
