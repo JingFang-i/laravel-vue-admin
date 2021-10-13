@@ -97,6 +97,9 @@ class CreatePage
         if ($info['type'] === 'image' || $info['type'] === 'images') {
             $fields['searchable'] = false;
         }
+        if (in_array($info['type'], ['date', 'datetime'])) {
+            $fields['operate'] = 'range';
+        }
         return $fields;
     }
 

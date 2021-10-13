@@ -218,6 +218,9 @@ abstract class Repository implements RepositoryInterface
             foreach ($filter as $k => $v) {
                 $op = isset($operate[$k]) ? $operate[$k] : '=';
                 $v = !is_array($v) ? trim($v) : $v;
+                if ($v === '') {
+                    continue;
+                }
                 switch($op) {
                     case '=':
                     case '<>':
@@ -230,13 +233,25 @@ abstract class Repository implements RepositoryInterface
                         $query->where($k, $op, intval($v));
                         break;
                     case 'in':
-                        $query->whereIn($k, explode(',', $v));
+                        $val = $this->convert2Array($v);
+                        if (empty($val)) {
+                            break;
+                        }
+                        $query->whereIn($k, $val);
                         break;
                     case 'not in':
-                        $query->whereNotIn($k, explode(',', $v));
+                        $val = $this->convert2Array($v);
+                        if (empty($val)) {
+                            break;
+                        }
+                        $query->whereNotIn($k, $val);
                         break;
                     case 'between':
-                        $arr = array_slice(explode(',', $v), 0, 2);
+                        $val = $this->convert2Array($v);
+                        if (empty($val)) {
+                            break;
+                        }
+                        $arr = array_slice($val, 0, 2);
                         if (count($arr) !== 2) {
                             break;
                         }
@@ -246,11 +261,15 @@ abstract class Repository implements RepositoryInterface
                         } elseif ($arr[1] === '') {
                             $query->where($k, '>=', $arr[0]);
                         } else {
-                            $query->whereBetween($k, explode(',', $v));
+                            $query->whereBetween($k, $val);
                         }
                         break;
                     case 'not between':
-                        $arr = array_slice(explode(',', $v), 0, 2);
+                        $val = $this->convert2Array($v);
+                        if (empty($val)) {
+                            break;
+                        }
+                        $arr = array_slice($val, 0, 2);
                         if (count($arr) !== 2) {
                             break;
                         }
@@ -260,14 +279,18 @@ abstract class Repository implements RepositoryInterface
                         } elseif ($arr[1] === '') {
                             $query->where($k, '<', $arr[0]);
                         } else {
-                            $query->whereNotBetween($k, explode(',', $v));
+                            $query->whereNotBetween($k, $val);
                         }
                         break;
                     case 'range':
                     case 'not range':
+                        $val = $this->convert2Array($v);
+                        if (empty($val)) {
+                            break;
+                        }
                         $rangeArr = array_map(function($item){
                             return strtotime(trim($item));
-                        }, $v);
+                        }, $val);
                         if (count($rangeArr) !== 2) {
                             break;
                         }
@@ -283,6 +306,7 @@ abstract class Repository implements RepositoryInterface
                         break;
                     case 'like':
                     case 'not like':
+                        $v = (string)$v;
                         $query->where($k, $op, "%{$v}%");
                         break;
                     default:
@@ -294,6 +318,17 @@ abstract class Repository implements RepositoryInterface
         return $where;
 
     }
+
+    /**
+     * 将值转换成数组
+     * @param $value
+     * @return array|false|string[]
+     */
+    private function convert2Array($value)
+    {
+        return is_array($value) ? $value : (strpos($value, ',') !== false ? explode(',', $value) : [$value]);
+    }
+
 
     /**
      * 将参数中的json转换成数组
