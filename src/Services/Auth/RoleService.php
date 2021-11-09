@@ -172,7 +172,8 @@ class RoleService extends Service
             return false;
         }
         if ($this->user()->hasRole($id) && !$this->user()->hasRole('admin')) {
-            return $this->response->error('您不能删除该角色');
+            $this->setError('您不能删除该角色');
+            return false;
         }
         $userIds = DB::table('model_has_roles')->where('role_id', $id)->pluck('model_id');
 
